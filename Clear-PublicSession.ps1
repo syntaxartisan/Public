@@ -8,7 +8,7 @@ Get-ExecutionPolicy
 2) Download PsTools suite
 https://docs.microsoft.com/en-us/sysinternals/downloads/pstools
 3) Extract PsTools to C:\PsTools
-If you extract anywhere else, change the value below for $psToolsPath
+If you extract anywhere else, change the value below for $psToolsPath to the extracted folder
 
 -- Running the script --
 1) Save the script to whereever (say D:\)
