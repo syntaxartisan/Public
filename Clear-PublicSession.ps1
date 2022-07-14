@@ -37,7 +37,7 @@ try
 	# Make sure process is running
 	[void](Get-Process -Name $processName -ErrorAction Stop)
 
-	# Check whether the EULA for pssuspend64 has been accepted
+	# Check whether the EULA for pssuspend64 has been accepted -- NOT REQUIRED
 	# Get-Item -Path "HKCU:\SOFTWARE\Sysinternals\PsSuspend"
 
 	# Suspend the process
