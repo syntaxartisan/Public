@@ -45,7 +45,6 @@ try
 	.\pssuspend64.exe $processName -accepteula
 
 	# Delay
-#	Start-Sleep -Seconds $suspendTimeSeconds
 	Write-Host ""
 	Write-Host "Countdown to resume the process"
 	for ($secondOnTimer = $suspendTimeSeconds; $secondOnTimer -gt 0; $secondOnTimer--)
