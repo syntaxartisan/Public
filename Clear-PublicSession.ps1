@@ -20,6 +20,13 @@ $psToolsPath = "C:\PSTools"
 $suspendTimeSeconds = 8
 $processName = "GTA5"
 
+$executablePath = Join-Path -Path $psToolsPath -ChildPath "pssuspend64.exe"
+if (-not(Test-Path $executablePath))
+{
+	Write-Host "Process suspender not found at $executablePath"
+	Exit
+}
+
 pushd $psToolsPath
 try
 {
