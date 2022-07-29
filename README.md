@@ -1,6 +1,15 @@
-# Scripts
+# Public
 
-This repository contains various scripts that I've built. They are free for public use.
+Welcome to my public repository. The types of content I have hosted are listed below. Thanks for stopping by.
 
-### Clear-PublicSession.ps1
-This script is for folks playing GTA5 Online (PC). This affectively creates a solo public lobby for the player. Be aware that the script takes about 10 seconds to run. Instructions for setting up and running the script are in the script header.
+### Scripts
+
+This folder contains various Powershell scripts that I've built.
+
+### Projects
+
+This folder contains various C# and Python projects that I've built.
+
+### Binaries
+
+This folder contains compiled binaries for my projects.
