@@ -13,7 +13,7 @@ If you extract anywhere else, change the value below for $psToolsPath to the ext
 ## Running the script ##
 1) Save the script to whereever (say D:\)
 2) Run the script in Powershell ISE with the command:
-powershell "D:\Clear-PublicSession.ps1"
+powershell -file "D:\Clear-PublicSession.ps1"
 #>
 
 $psToolsPath = "C:\PSTools"
