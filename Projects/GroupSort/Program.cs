@@ -7,13 +7,13 @@ using System.Diagnostics;
 using System.IO;
 //using System.Threading;
 
-namespace Sorting_2
+namespace GroupSort
 {
 	class Program
 	{
 		static void Main(string[] args)
 		{
-			string input_folder = "C:\\Users\\Bob\\Documents\\workspace\\Sorting 2\\input\\";
+			string input_folder = "D:\\(A) Professional\\Code\\Public\\Projects\\input\\";
 			string input_file = "";
 
 			List<string> all_input_files = new List<string>();
