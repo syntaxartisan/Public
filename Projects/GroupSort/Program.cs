@@ -162,7 +162,32 @@ namespace GroupSort
 			{
 				nanoseconds = "*";
 			}
-			System.Console.WriteLine("Time: " + time_to_sort.Elapsed.Minutes + "m" + time_to_sort.Elapsed.Seconds + "s" + time_to_sort.Elapsed.Milliseconds + "ms" + microseconds + "us"/* + nanoseconds + "ns"*/);
+
+			string timeString = "";
+			if (time_to_sort.Elapsed.Minutes > 0)
+			{
+				timeString += time_to_sort.Elapsed.Minutes + "m";
+			}
+			if (time_to_sort.Elapsed.Seconds > 0)
+			{
+				timeString += time_to_sort.Elapsed.Seconds + "s";
+			}
+			if (time_to_sort.Elapsed.Milliseconds > 0)
+			{
+				timeString += time_to_sort.Elapsed.Milliseconds + "ms";
+			}
+			if (microseconds != "*")
+			{
+				timeString += microseconds + "us";
+			}
+/*
+			if (nanoseconds != "*")
+			{
+				timeString += nanoseconds + "ns";
+			}
+*/
+			//System.Console.WriteLine("Time: " + time_to_sort.Elapsed.Minutes + "m" + time_to_sort.Elapsed.Seconds + "s" + time_to_sort.Elapsed.Milliseconds + "ms" + microseconds + "us"/* + nanoseconds + "ns"*/);
+			System.Console.WriteLine("Time: " + timeString);
 			System.Console.WriteLine("");
 		}
 
