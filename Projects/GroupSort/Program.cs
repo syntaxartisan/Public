@@ -186,7 +186,6 @@ namespace GroupSort
 				timeString += nanoseconds + "ns";
 			}
 */
-			//System.Console.WriteLine("Time: " + time_to_sort.Elapsed.Minutes + "m" + time_to_sort.Elapsed.Seconds + "s" + time_to_sort.Elapsed.Milliseconds + "ms" + microseconds + "us"/* + nanoseconds + "ns"*/);
 			System.Console.WriteLine("Time: " + timeString);
 			System.Console.WriteLine("");
 		}
