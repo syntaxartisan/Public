@@ -31,7 +31,6 @@ $folderItems = [string[]](Get-ChildItem -Path $PathToScan).FullName
 $unsortedDirectories = @()
 $unsortedFiles = @()
 
-#Write-Progress -Activity "Test" -Status "(work)"
 
 for ($folderItemIndex=0; $folderItemIndex -lt $folderItems.Count;$folderItemIndex++)
 {
@@ -96,7 +95,6 @@ else
 	$sortedFiles = $unsortedFiles
 }
 
-#Write-Progress -Activity "Processing.."
 
 for ($resultsIndex=0; $resultsIndex -lt $sortedDirectories.Count; $resultsIndex++)
 {
@@ -196,3 +194,7 @@ for ($resultsIndex=0; $resultsIndex -lt $sortedFiles.Count; $resultsIndex++)
 	Write-Host "$($sortedFiles[$resultsIndex].ItemPath) $sizeString" -ForegroundColor DarkCyan -BackgroundColor Black
 }
 
+$endTime = Get-Date
+$timeElapsed = "$(($endTime - $startTime).Minutes.ToString("0"))m$(($endTime - $startTime).Seconds.ToString("00"))s"
+Write-Host ""
+Write-Host "Scan completed in $timeElapsed"
