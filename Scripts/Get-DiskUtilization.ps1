@@ -1,8 +1,9 @@
 <#
 .SYNOPSIS
 This script helps pinpoint where your disk space is being used.
-It scans a disk (or any subfolder) and display the folders 
-and files in that folder in descending order by size. 
+It scans a disk (or any subfolder) and displays the size of 
+the folders and files in that folder in descending order. 
+Folders are displayed first (in cyan) and then files (in dark cyan).
 
 .PARAMETER PathToScan
 Provide the path that you would like to scan.
@@ -12,7 +13,8 @@ param(
 	[parameter(position=0,mandatory=$true)][string]$PathToScan=""
 )
 
-$startTime = Get-Date
+
+# -- VALIDATE INPUT PARAMETERS -- #
 
 if (!(Test-Path -Path $PathToScan))
 {
@@ -26,6 +28,11 @@ if (!($isDirectory))
 	Write-Host "Please select a directory for PathToScan" -BackgroundColor Black -ForegroundColor Red
 	exit
 }
+
+
+# -- SCAN THE DIRECTORY -- #
+
+$startTime = Get-Date
 
 $folderItems = [string[]](Get-ChildItem -Path $PathToScan).FullName
 $unsortedDirectories = @()
@@ -62,6 +69,7 @@ for ($folderItemIndex=0; $folderItemIndex -lt $folderItems.Count;$folderItemInde
 		exit
 	}
 
+	# One object will be created for each file or folder found in the user-supplied directory
 	$oneFolderItem = New-Object PSObject
 	$oneFolderItem | Add-Member -MemberType NoteProperty -Name "ItemPath" -Value $currentFolderItem
 	$oneFolderItem | Add-Member -MemberType NoteProperty -Name "SizeInBytes" -Value ([System.UInt64]$lengthInBytes)
@@ -76,6 +84,8 @@ for ($folderItemIndex=0; $folderItemIndex -lt $folderItems.Count;$folderItemInde
 	}
 }
 
+
+# -- SORT RESULTS -- #
 
 if ($unsortedDirectories.Count -gt 1)
 {
@@ -95,6 +105,8 @@ else
 	$sortedFiles = $unsortedFiles
 }
 
+
+# -- DISPLAY RESULTS -- #
 
 for ($resultsIndex=0; $resultsIndex -lt $sortedDirectories.Count; $resultsIndex++)
 {
