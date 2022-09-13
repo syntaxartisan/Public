@@ -13,63 +13,63 @@ namespace GroupSort
 	{
 		static void Main(string[] args)
 		{
-			string input_folder = "D:\\(A) Professional\\Code\\Public\\Projects\\input\\";
-			string input_file = "";
+			string inputFolder = "D:\\(A) Professional\\Code\\Public\\Projects\\input\\";
+			string inputFile = "";
 
-			List<string> all_input_files = new List<string>();
-			all_input_files.Add("movies.csv");
-			all_input_files.Add("moviesforwards.txt");
-			all_input_files.Add("moviesbackwards.txt");
-			all_input_files.Add("moviesforwardssplit.txt");
-			all_input_files.Add("moviesrandomsmall.csv");
-			all_input_files.Add("moviesrandomlarge.csv");
-			all_input_files.Add("totallyrandom.txt");
-			all_input_files.Add("InsuranceGroups.csv");
+			List<string> allInputFiles = new List<string>();
+			allInputFiles.Add("movies.csv");
+			allInputFiles.Add("moviesforwards.txt");
+			allInputFiles.Add("moviesbackwards.txt");
+			allInputFiles.Add("moviesforwardssplit.txt");
+			allInputFiles.Add("moviesrandomsmall.csv");
+			allInputFiles.Add("moviesrandomlarge.csv");
+			allInputFiles.Add("totallyrandom.txt");
+			allInputFiles.Add("InsuranceGroups.csv");
 
-			int selection = GatherMenuSelection(all_input_files);
+			int selection = GatherMenuSelection(allInputFiles);
 			while (selection >= 0)
 			{
-				List<string> list_to_sort = new List<string>();
+				List<string> listToSort = new List<string>();
 
-				//public static string file_to_open = "C:\\testing\\movies.csv";
-				//public static string file_to_open = "C:\\testing\\moviesforwards.txt";	// same as movies2
-				//public static string file_to_open = "C:\\testing\\moviesbackwards.txt";
-				//public static string file_to_open = "C:\\testing\\moviesforwardssplit.txt";
-				//public static string file_to_open = "C:\\testing\\moviesrandomsmall.csv";
-				//public static string file_to_open = "C:\\testing\\moviesrandomlarge.csv";
+				//public static string fileToOpen = "C:\\testing\\movies.csv";
+				//public static string fileToOpen = "C:\\testing\\moviesforwards.txt";	// same as movies2
+				//public static string fileToOpen = "C:\\testing\\moviesbackwards.txt";
+				//public static string fileToOpen = "C:\\testing\\moviesforwardssplit.txt";
+				//public static string fileToOpen = "C:\\testing\\moviesrandomsmall.csv";
+				//public static string fileToOpen = "C:\\testing\\moviesrandomlarge.csv";
 
 				// SELECTIONS
-				System.Console.WriteLine("Processing " + all_input_files[selection - 1]);
-				input_file = input_folder + all_input_files[selection - 1];
+				System.Console.WriteLine("Processing " + allInputFiles[selection - 1]);
+				inputFile = inputFolder + allInputFiles[selection - 1];
 
-				if (BuildListFromFile(ref list_to_sort, input_file))
+				if (BuildListFromFile(ref listToSort, inputFile))
 				{
-					Stopwatch time_to_sort = new Stopwatch();
-					List<string> groupsort_sorted_list = new List<string>();
-					List<string> quicksort_sorted_list = new List<string>();
-					List<string> groupsort_list_to_sort = list_to_sort.ToList<string>();
-					List<string> quicksort_list_to_sort = list_to_sort.ToList<string>();
+					Stopwatch timeToSort = new Stopwatch();
+					List<string> groupsortSortedList = new List<string>();
+					List<string> quicksortSortedList = new List<string>();
+					List<string> groupsortListToSort = listToSort.ToList<string>();
+					List<string> quicksortListToSort = listToSort.ToList<string>();
 
-					groupsort_sorted_list.Clear();
+					groupsortSortedList.Clear();
 					Console.WriteLine("-- GroupSort --");
-					time_to_sort.Restart();
-					groupsort_sorted_list = SortingAlgorithms.GroupSort.SortStrings(groupsort_list_to_sort);
-					time_to_sort.Stop();
-					PrintList(groupsort_sorted_list, time_to_sort);
+					timeToSort.Restart();
+					groupsortSortedList = SortingAlgorithms.GroupSort.SortStrings(groupsortListToSort);
+					timeToSort.Stop();
+					PrintList(groupsortSortedList, timeToSort);
 
-					quicksort_sorted_list.Clear();
+					quicksortSortedList.Clear();
 					Console.WriteLine("-- QuickSort --");
-					time_to_sort.Restart();
-					quicksort_sorted_list = SortingAlgorithms.QuickSort.SortStrings(quicksort_list_to_sort);
-					time_to_sort.Stop();
-					PrintList(quicksort_sorted_list, time_to_sort);
+					timeToSort.Restart();
+					quicksortSortedList = SortingAlgorithms.QuickSort.SortStrings(quicksortListToSort);
+					timeToSort.Stop();
+					PrintList(quicksortSortedList, timeToSort);
 				}
 				else
 				{
-					System.Console.WriteLine("Unable to build a list from " + input_file);
+					System.Console.WriteLine("Unable to build a list from " + inputFile);
 				}
 
-				selection = GatherMenuSelection(all_input_files);
+				selection = GatherMenuSelection(allInputFiles);
 			}
 
 			System.Console.WriteLine("");
@@ -78,77 +78,77 @@ namespace GroupSort
 			//SortingAlgorithms.QuickSort.
 		}
 
-		static int GatherMenuSelection(List<string> all_input_files)
+		static int GatherMenuSelection(List<string> allInputFiles)
 		{
 			// SELECTIONS
 			System.Console.WriteLine("-------------------------");
 			System.Console.WriteLine("Select your option:");
-			for (int fileIndex = 0; fileIndex < all_input_files.Count; fileIndex++)
+			for (int fileIndex = 0; fileIndex < allInputFiles.Count; fileIndex++)
 			{
-				int file_number = fileIndex + 1;
-				System.Console.WriteLine(file_number + " - " + all_input_files[fileIndex]);
+				int fileNumber = fileIndex + 1;
+				System.Console.WriteLine(fileNumber + " - " + allInputFiles[fileIndex]);
 			}
 			System.Console.WriteLine("-------------------------");
-			string input_string = System.Console.ReadLine();
-			//System.Console.WriteLine(input_string);
+			string inputString = System.Console.ReadLine();
+			//System.Console.WriteLine(inputString);
 
 			int selection = -1;
 			try
 			{
-				int input_int = Convert.ToInt16(input_string);
-				if ((input_int >= 1) && (input_int <= all_input_files.Count))
+				int inputInt = Convert.ToInt16(inputString);
+				if ((inputInt >= 1) && (inputInt <= allInputFiles.Count))
 				{
-					selection = input_int;
+					selection = inputInt;
 				}
 			}
 			catch
 			{
-				System.Console.WriteLine("Invalid input " + input_string);
+				System.Console.WriteLine("Invalid input " + inputString);
 			}
 
 			return selection;
 		}
 
-		private static Boolean BuildListFromFile(ref List<string> list_to_build, string input_file)
+		private static Boolean BuildListFromFile(ref List<string> listToBuild, string inputFile)
 		{
-			FileStream my_file;
+			FileStream myFile;
 			try
 			{
-				my_file = File.OpenRead(input_file);
+				myFile = File.OpenRead(inputFile);
 			}
 			catch
 			{
 				System.Console.WriteLine("Unable to open file: ");
-				System.Console.WriteLine(input_file);
+				System.Console.WriteLine(inputFile);
 				return false;
 			}
 
-			string[] my_list = File.ReadAllLines(input_file, Encoding.ASCII);
+			string[] myList = File.ReadAllLines(inputFile, Encoding.ASCII);
 
-			list_to_build.Clear();
-			for (int listIndex = 0; listIndex < my_list.Length; listIndex++)
+			listToBuild.Clear();
+			for (int listIndex = 0; listIndex < myList.Length; listIndex++)
 			{
-				list_to_build.Add(my_list[listIndex]);
+				listToBuild.Add(myList[listIndex]);
 			}
 
 			return true;
 		}
 
-		private static void PrintList(List<string> list_to_print, Stopwatch time_to_sort)
+		private static void PrintList(List<string> listToPrint, Stopwatch timeToSort)
 		{
 			//System.Console.WriteLine("List: ");
-			//for (Int32 listIndex = 0; listIndex < list_to_print.Count; listIndex++)
+			//for (Int32 listIndex = 0; listIndex < listToPrint.Count; listIndex++)
 			//{
-			//	System.Console.WriteLine(list_to_print[listIndex].ToString());
+			//	System.Console.WriteLine(listToPrint[listIndex].ToString());
 			//}
-			System.Console.WriteLine(list_to_print.Count + " items in list");
+			System.Console.WriteLine(listToPrint.Count + " items in list");
 			long million = 1000L * 1000L;
 			long billion = 1000L * 1000L * 1000L;
 			string microseconds;
 			string nanoseconds;
 			try
 			{
-				microseconds = Convert.ToString((time_to_sort.ElapsedTicks / (Stopwatch.Frequency / million)) % 1000);
+				microseconds = Convert.ToString((timeToSort.ElapsedTicks / (Stopwatch.Frequency / million)) % 1000);
 			}
 			catch
 			{
@@ -156,7 +156,7 @@ namespace GroupSort
 			}
 			try
 			{
-				nanoseconds = Convert.ToString(time_to_sort.ElapsedTicks / (Stopwatch.Frequency / billion));
+				nanoseconds = Convert.ToString(timeToSort.ElapsedTicks / (Stopwatch.Frequency / billion));
 			}
 			catch
 			{
@@ -164,17 +164,17 @@ namespace GroupSort
 			}
 
 			string timeString = "";
-			if (time_to_sort.Elapsed.Minutes > 0)
+			if (timeToSort.Elapsed.Minutes > 0)
 			{
-				timeString += time_to_sort.Elapsed.Minutes + "m";
+				timeString += timeToSort.Elapsed.Minutes + "m";
 			}
-			if (time_to_sort.Elapsed.Seconds > 0)
+			if (timeToSort.Elapsed.Seconds > 0)
 			{
-				timeString += time_to_sort.Elapsed.Seconds + "s";
+				timeString += timeToSort.Elapsed.Seconds + "s";
 			}
-			if (time_to_sort.Elapsed.Milliseconds > 0)
+			if (timeToSort.Elapsed.Milliseconds > 0)
 			{
-				timeString += time_to_sort.Elapsed.Milliseconds + "ms";
+				timeString += timeToSort.Elapsed.Milliseconds + "ms";
 			}
 			if (microseconds != "*")
 			{
