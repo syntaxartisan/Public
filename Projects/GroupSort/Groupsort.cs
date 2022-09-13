@@ -8,7 +8,7 @@ namespace SortingAlgorithms
 {
     public class GroupSort
     {
-        public static double algorithmSwitchoverThreshold = .1;
+        private static double algorithmSwitchoverThreshold = .1;
 
         public class listGrouped
         {
