@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using SortingAlgorithms;
 //using System.Threading;
 
-namespace GroupSort
-{
 	class Program
 	{
 		static void Main(string[] args)
@@ -53,14 +52,14 @@ namespace GroupSort
 					groupsortSortedList.Clear();
 					Console.WriteLine("-- GroupSort --");
 					timeToSort.Restart();
-					groupsortSortedList = SortingAlgorithms.GroupSort.SortStrings(groupsortListToSort);
+					groupsortSortedList = GroupSort.SortStrings(groupsortListToSort);
 					timeToSort.Stop();
 					PrintList(groupsortSortedList, timeToSort);
 
 					quicksortSortedList.Clear();
 					Console.WriteLine("-- QuickSort --");
 					timeToSort.Restart();
-					quicksortSortedList = SortingAlgorithms.QuickSort.SortStrings(quicksortListToSort);
+					quicksortSortedList = QuickSort.SortStrings(quicksortListToSort);
 					timeToSort.Stop();
 					PrintList(quicksortSortedList, timeToSort);
 				}
@@ -191,4 +190,3 @@ namespace GroupSort
 		}
 
 	}
-}
