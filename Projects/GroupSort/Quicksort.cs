@@ -8,19 +8,19 @@ namespace SortingAlgorithms
 {
     public class QuickSort
     {
-        public static List<int> SortIntegers(List<int> int_list)
+        public static List<int> SortIntegers(List<int> intList)
         {
             List<int> loe = new List<int>(), gt = new List<int>();
-            if (int_list.Count < 2)
-                return int_list;
-            int pivot = int_list.Count / 2;
-            int pivot_val = int_list[pivot];
-            int_list.RemoveAt(pivot);
-            foreach (int i in int_list)
+            if (intList.Count < 2)
+                return intList;
+            int pivot = intList.Count / 2;
+            int pivotVal = intList[pivot];
+            intList.RemoveAt(pivot);
+            foreach (int i in intList)
             {
-                if (i <= pivot_val)
+                if (i <= pivotVal)
                     loe.Add(i);
-                else if (i > pivot_val)
+                else if (i > pivotVal)
                     gt.Add(i);
             }
 
@@ -28,29 +28,29 @@ namespace SortingAlgorithms
             resultSet.AddRange(QuickSort.SortIntegers(loe));
             if (loe.Count == 0)
             {
-                loe.Add(pivot_val);
+                loe.Add(pivotVal);
             }
             else
             {
-                gt.Add(pivot_val);
+                gt.Add(pivotVal);
             }
             resultSet.AddRange(QuickSort.SortIntegers(gt));
             return resultSet;
         }
 
-        public static List<string> SortStrings(List<string> string_list)
+        public static List<string> SortStrings(List<string> stringList)
         {
             List<string> loe = new List<string>(), gt = new List<string>();
-            if (string_list.Count < 2)
-                return string_list;
-            int pivot = string_list.Count / 2;
-            string pivot_val = string_list[pivot];
-            string_list.RemoveAt(pivot);
-            foreach (string i in string_list)
+            if (stringList.Count < 2)
+                return stringList;
+            int pivot = stringList.Count / 2;
+            string pivotVal = stringList[pivot];
+            stringList.RemoveAt(pivot);
+            foreach (string i in stringList)
             {
-                if (i.CompareTo(pivot_val) <= 0)
+                if (i.CompareTo(pivotVal) <= 0)
                     loe.Add(i);
-                else if (i.CompareTo(pivot_val) > 0)
+                else if (i.CompareTo(pivotVal) > 0)
                     gt.Add(i);
             }
 
@@ -58,12 +58,12 @@ namespace SortingAlgorithms
             resultSet.AddRange(QuickSort.SortStrings(loe));
             if (loe.Count == 0)
             {
-                resultSet.Add(pivot_val);
+                resultSet.Add(pivotVal);
             }
             else
             {
-                //gt.Add(pivot_val);
-                gt.Insert(0, pivot_val);
+                //gt.Add(pivotVal);
+                gt.Insert(0, pivotVal);
             }
             resultSet.AddRange(QuickSort.SortStrings(gt));
             return resultSet;

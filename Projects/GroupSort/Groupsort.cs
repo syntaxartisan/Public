@@ -8,59 +8,59 @@ namespace SortingAlgorithms
 {
     public class GroupSort
     {
-        public static double algorithm_switchover_threshold_factor = .1;
+        public static double algorithmSwitchoverThreshold = .1;
 
-        public class list_grouped
+        public class listGrouped
         {
-            public char current_character { get; set; }
-            public Int32 count_digits_in_group { get; set; }
-            public Int32 group_offset { get; set; }
+            public char currentCharacter { get; set; }
+            public Int32 countDigitsInGroup { get; set; }
+            public Int32 groupOffset { get; set; }
 
-            public list_grouped(char in_current_character, Int32 in_count_digits_in_group, Int32 in_group_offset)
+            public listGrouped(char inCurrentCharacter, Int32 inCountDigitsInGroup, Int32 inGroupOffset)
             {
-                this.current_character = in_current_character;
-                this.count_digits_in_group = in_count_digits_in_group;
-                this.group_offset = in_group_offset;
+                this.currentCharacter = inCurrentCharacter;
+                this.countDigitsInGroup = inCountDigitsInGroup;
+                this.groupOffset = inGroupOffset;
             }
         }
 
-        public static List<string> SortStrings(List<string> list_to_sort)
+        public static List<string> SortStrings(List<string> listToSort)
         {
-            return SortStrings(list_to_sort, 0);
+            return SortStrings(listToSort, 0);
         }
 
-        private static List<string> SortStrings(List<string> list_to_sort, Int32 current_depth/*, FallbackType insertion_sort, CharacterSet latin1*/)
+        private static List<string> SortStrings(List<string> listToSort, Int32 currentDepth/*, FallbackType insertionSort, CharacterSet latin1*/)
         {
-            if (list_to_sort.Count == 0)
+            if (listToSort.Count == 0)
             {
                 return new List<string>();
             }
-            //else if (list_to_sort.Count == 1)
+            //else if (listToSort.Count == 1)
             //{
-            //	return list_to_sort;
+            //	return listToSort;
             //}
 
-            List<string> final_out_list = new List<string>();
-            List<list_grouped> groups_in_list = new List<list_grouped>();
+            List<string> finalOutList = new List<string>();
+            List<listGrouped> groupsInList = new List<listGrouped>();
 
-            char current_group_character = ' ';
-            Int32 current_group_count = 0;
-            Int32 current_group_offset = 0;
-            Int32 threshold = Convert.ToInt32(list_to_sort.Count * algorithm_switchover_threshold_factor);
+            char currentGroupCharacter = ' ';
+            Int32 currentGroupCount = 0;
+            Int32 currentGroupOffset = 0;
+            Int32 threshold = Convert.ToInt32(listToSort.Count * algorithmSwitchoverThreshold);
 
-            for (Int32 listIndex = 0; listIndex < list_to_sort.Count; listIndex++)
+            for (Int32 listIndex = 0; listIndex < listToSort.Count; listIndex++)
             {
-                if (list_to_sort[listIndex].Length <= current_depth)
+                if (listToSort[listIndex].Length <= currentDepth)
                 {
-                    final_out_list.Add(list_to_sort[listIndex]);
+                    finalOutList.Add(listToSort[listIndex]);
 
-                    groups_in_list.Add(new list_grouped(current_group_character, current_group_count, current_group_offset));
+                    groupsInList.Add(new listGrouped(currentGroupCharacter, currentGroupCount, currentGroupOffset));
 
-                    if (groups_in_list.Count < threshold)
+                    if (groupsInList.Count < threshold)
                     {
-                        current_group_character = ' ';
-                        current_group_count = 0;
-                        current_group_offset = 0;
+                        currentGroupCharacter = ' ';
+                        currentGroupCount = 0;
+                        currentGroupOffset = 0;
                         continue;
                     }
                     else
@@ -68,107 +68,107 @@ namespace SortingAlgorithms
                         // If we are here then we have determined that it will be quicker to use
                         // QuickSort instead of GroupSort to sort our list. Step where we're at,
                         // start resorting (this level and below) using QuickSort.
-                        final_out_list.Clear();
-                        final_out_list = QuickSort.SortStrings(list_to_sort);
-                        return final_out_list;
+                        finalOutList.Clear();
+                        finalOutList = QuickSort.SortStrings(listToSort);
+                        return finalOutList;
                     }
                 }
 
-                if (current_group_count == 0)
+                if (currentGroupCount == 0)
                 {
-                    current_group_character = list_to_sort[listIndex][current_depth];
-                    current_group_offset = listIndex;
-                    current_group_count = 1;
+                    currentGroupCharacter = listToSort[listIndex][currentDepth];
+                    currentGroupOffset = listIndex;
+                    currentGroupCount = 1;
                 }
                 else
                 {
-                    if (list_to_sort[listIndex][current_depth] == current_group_character)
+                    if (listToSort[listIndex][currentDepth] == currentGroupCharacter)
                     {
-                        current_group_count++;
+                        currentGroupCount++;
                     }
                     else
                     {
-                        groups_in_list.Add(new list_grouped(current_group_character, current_group_count, current_group_offset));
+                        groupsInList.Add(new listGrouped(currentGroupCharacter, currentGroupCount, currentGroupOffset));
 
-                        if (groups_in_list.Count < threshold)
+                        if (groupsInList.Count < threshold)
                         {
-                            current_group_character = list_to_sort[listIndex][current_depth];
-                            current_group_offset = listIndex;
-                            current_group_count = 1;
+                            currentGroupCharacter = listToSort[listIndex][currentDepth];
+                            currentGroupOffset = listIndex;
+                            currentGroupCount = 1;
                         }
                         else
                         {
                             // If we are here then we have determined that it will be quicker to use
                             // QuickSort instead of GroupSort to sort our list. Step where we're at,
                             // start resorting (this level and below) using QuickSort.
-                            final_out_list.Clear();
-                            final_out_list = QuickSort.SortStrings(list_to_sort);
-                            return final_out_list;
+                            finalOutList.Clear();
+                            finalOutList = QuickSort.SortStrings(listToSort);
+                            return finalOutList;
                         }
                     }
                 }
             }
 
-            // The last group is still in memory, add it to groups_in_list.
-            if (current_group_count > 0)
+            // The last group is still in memory, add it to groupsInList.
+            if (currentGroupCount > 0)
             {
-                groups_in_list.Add(new list_grouped(current_group_character, current_group_count, current_group_offset));
+                groupsInList.Add(new listGrouped(currentGroupCharacter, currentGroupCount, currentGroupOffset));
             }
 
 
-            // groups_in_list now has all the items in it
+            // groupsInList now has all the items in it
 
 
-            List<list_grouped> groups_in_list_sorted = QuickSort_Structures(groups_in_list);
+            List<listGrouped> groupsInListSorted = QuickSortStructures(groupsInList);
 
-            char current_character = ' ';
+            char currentCharacter = ' ';
 
-            List<string> character_found_list = new List<string>();
+            List<string> characterFoundList = new List<string>();
 
-            for (Int32 eachGroupIndex = 0; eachGroupIndex < groups_in_list_sorted.Count; eachGroupIndex++)
+            for (Int32 eachGroupIndex = 0; eachGroupIndex < groupsInListSorted.Count; eachGroupIndex++)
             {
                 if (eachGroupIndex == 0)
                 {
                     // This is the first pass. All items from the original list that pertain to this group can be added to a new list.
-                    current_character = groups_in_list_sorted[eachGroupIndex].current_character;
-                    character_found_list.Clear();
-                    for (Int32 groupItemIndex = 0; groupItemIndex < groups_in_list_sorted[eachGroupIndex].count_digits_in_group; groupItemIndex++)
+                    currentCharacter = groupsInListSorted[eachGroupIndex].currentCharacter;
+                    characterFoundList.Clear();
+                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].countDigitsInGroup; groupItemIndex++)
                     {
-                        character_found_list.Add(list_to_sort[groups_in_list_sorted[eachGroupIndex].group_offset + groupItemIndex]);
+                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].groupOffset + groupItemIndex]);
                     }
                     continue;
                 }
 
-                if (groups_in_list_sorted[eachGroupIndex].current_character == current_character)
+                if (groupsInListSorted[eachGroupIndex].currentCharacter == currentCharacter)
                 {
                     // This character matches the current character being searched for.
                     // Add the items from this group to the list too.
-                    for (Int32 groupItemIndex = 0; groupItemIndex < groups_in_list_sorted[eachGroupIndex].count_digits_in_group; groupItemIndex++)
+                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].countDigitsInGroup; groupItemIndex++)
                     {
-                        character_found_list.Add(list_to_sort[groups_in_list_sorted[eachGroupIndex].group_offset + groupItemIndex]);
+                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].groupOffset + groupItemIndex]);
                     }
                     continue;
                 }
                 else
                 {
                     // This is a new character. Sort the existing list and add it to our final list.
-                    List<string> character_sorted_list = new List<string>();
-                    Int32 next_depth = Convert.ToInt32(current_depth + 1);
-                    character_sorted_list = GroupSort.SortStrings(character_found_list, next_depth);
+                    List<string> characterSortedList = new List<string>();
+                    Int32 nextDepth = Convert.ToInt32(currentDepth + 1);
+                    characterSortedList = GroupSort.SortStrings(characterFoundList, nextDepth);
 
                     // This character is completely done. Add these items to the final list.
-                    for (Int32 listIndex = 0; listIndex < character_sorted_list.Count; listIndex++)
+                    for (Int32 listIndex = 0; listIndex < characterSortedList.Count; listIndex++)
                     {
-                        final_out_list.Add(character_sorted_list[listIndex]);
+                        finalOutList.Add(characterSortedList[listIndex]);
                     }
 
 
                     // Start a new list for the new character.
-                    current_character = groups_in_list_sorted[eachGroupIndex].current_character;
-                    character_found_list.Clear();
-                    for (Int32 groupItemIndex = 0; groupItemIndex < groups_in_list_sorted[eachGroupIndex].count_digits_in_group; groupItemIndex++)
+                    currentCharacter = groupsInListSorted[eachGroupIndex].currentCharacter;
+                    characterFoundList.Clear();
+                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].countDigitsInGroup; groupItemIndex++)
                     {
-                        character_found_list.Add(list_to_sort[groups_in_list_sorted[eachGroupIndex].group_offset + groupItemIndex]);
+                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].groupOffset + groupItemIndex]);
                     }
                     continue;
                 }
@@ -176,47 +176,47 @@ namespace SortingAlgorithms
 
             // sort last list
             {
-                List<string> character_sorted_list = new List<string>();
-                Int32 next_depth = Convert.ToInt32(current_depth + 1);
-                character_sorted_list = GroupSort.SortStrings(character_found_list, next_depth);
+                List<string> characterSortedList = new List<string>();
+                Int32 nextDepth = Convert.ToInt32(currentDepth + 1);
+                characterSortedList = GroupSort.SortStrings(characterFoundList, nextDepth);
 
-                for (Int32 listIndex = 0; listIndex < character_sorted_list.Count; listIndex++)
+                for (Int32 listIndex = 0; listIndex < characterSortedList.Count; listIndex++)
                 {
-                    final_out_list.Add(character_sorted_list[listIndex]);
+                    finalOutList.Add(characterSortedList[listIndex]);
                 }
             }
 
-            return final_out_list;
+            return finalOutList;
         }
 
-        private static List<list_grouped> QuickSort_Structures(List<list_grouped> arr)
+        private static List<listGrouped> QuickSortStructures(List<listGrouped> arr)
         {
-            List<list_grouped> loe = new List<list_grouped>(), gt = new List<list_grouped>();
+            List<listGrouped> loe = new List<listGrouped>(), gt = new List<listGrouped>();
             if (arr.Count < 2)
                 return arr;
             int pivot = arr.Count / 2;
-            list_grouped pivot_val = arr[pivot];
+            listGrouped pivotVal = arr[pivot];
             arr.RemoveAt(pivot);
-            foreach (list_grouped i in arr)
+            foreach (listGrouped i in arr)
             {
-                if (i.current_character.CompareTo(pivot_val.current_character) <= 0)
+                if (i.currentCharacter.CompareTo(pivotVal.currentCharacter) <= 0)
                     loe.Add(i);
-                else if (i.current_character.CompareTo(pivot_val.current_character) > 0)
+                else if (i.currentCharacter.CompareTo(pivotVal.currentCharacter) > 0)
                     gt.Add(i);
             }
 
-            List<list_grouped> resultSet = new List<list_grouped>();
-            resultSet.AddRange(QuickSort_Structures(loe));
+            List<listGrouped> resultSet = new List<listGrouped>();
+            resultSet.AddRange(QuickSortStructures(loe));
             if (loe.Count == 0)
             {
-                resultSet.Add(pivot_val);
+                resultSet.Add(pivotVal);
             }
             else
             {
-                //gt.Add(pivot_val);
-                gt.Insert(0, pivot_val);
+                //gt.Add(pivotVal);
+                gt.Insert(0, pivotVal);
             }
-            resultSet.AddRange(QuickSort_Structures(gt));
+            resultSet.AddRange(QuickSortStructures(gt));
             return resultSet;
         }
 
