@@ -8,19 +8,19 @@ namespace SortingAlgorithms
 {
     public class GroupSort
     {
-        private static double algorithmSwitchoverThreshold = .1;
+        private static double _algorithmSwitchoverThreshold = .1;
 
         public class listGrouped
         {
-            public char currentCharacter { get; set; }
-            public Int32 countDigitsInGroup { get; set; }
-            public Int32 groupOffset { get; set; }
+            public char CurrentCharacter { get; set; }
+            public Int32 CountDigitsInGroup { get; set; }
+            public Int32 GroupOffset { get; set; }
 
             public listGrouped(char inCurrentCharacter, Int32 inCountDigitsInGroup, Int32 inGroupOffset)
             {
-                this.currentCharacter = inCurrentCharacter;
-                this.countDigitsInGroup = inCountDigitsInGroup;
-                this.groupOffset = inGroupOffset;
+                CurrentCharacter = inCurrentCharacter;
+                CountDigitsInGroup = inCountDigitsInGroup;
+                GroupOffset = inGroupOffset;
             }
         }
 
@@ -46,7 +46,7 @@ namespace SortingAlgorithms
             char currentGroupCharacter = ' ';
             Int32 currentGroupCount = 0;
             Int32 currentGroupOffset = 0;
-            Int32 threshold = Convert.ToInt32(listToSort.Count * algorithmSwitchoverThreshold);
+            Int32 threshold = Convert.ToInt32(listToSort.Count * _algorithmSwitchoverThreshold);
 
             for (Int32 listIndex = 0; listIndex < listToSort.Count; listIndex++)
             {
@@ -121,7 +121,7 @@ namespace SortingAlgorithms
 
             List<listGrouped> groupsInListSorted = QuickSortStructures(groupsInList);
 
-            char currentCharacter = ' ';
+            char currCharacter = ' ';
 
             List<string> characterFoundList = new List<string>();
 
@@ -130,22 +130,22 @@ namespace SortingAlgorithms
                 if (eachGroupIndex == 0)
                 {
                     // This is the first pass. All items from the original list that pertain to this group can be added to a new list.
-                    currentCharacter = groupsInListSorted[eachGroupIndex].currentCharacter;
+                    currCharacter = groupsInListSorted[eachGroupIndex].CurrentCharacter;
                     characterFoundList.Clear();
-                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].countDigitsInGroup; groupItemIndex++)
+                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].CountDigitsInGroup; groupItemIndex++)
                     {
-                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].groupOffset + groupItemIndex]);
+                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].GroupOffset + groupItemIndex]);
                     }
                     continue;
                 }
 
-                if (groupsInListSorted[eachGroupIndex].currentCharacter == currentCharacter)
+                if (groupsInListSorted[eachGroupIndex].CurrentCharacter == currCharacter)
                 {
                     // This character matches the current character being searched for.
                     // Add the items from this group to the list too.
-                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].countDigitsInGroup; groupItemIndex++)
+                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].CountDigitsInGroup; groupItemIndex++)
                     {
-                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].groupOffset + groupItemIndex]);
+                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].GroupOffset + groupItemIndex]);
                     }
                     continue;
                 }
@@ -164,11 +164,11 @@ namespace SortingAlgorithms
 
 
                     // Start a new list for the new character.
-                    currentCharacter = groupsInListSorted[eachGroupIndex].currentCharacter;
+                    currCharacter = groupsInListSorted[eachGroupIndex].CurrentCharacter;
                     characterFoundList.Clear();
-                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].countDigitsInGroup; groupItemIndex++)
+                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].CountDigitsInGroup; groupItemIndex++)
                     {
-                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].groupOffset + groupItemIndex]);
+                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].GroupOffset + groupItemIndex]);
                     }
                     continue;
                 }
@@ -199,9 +199,9 @@ namespace SortingAlgorithms
             arr.RemoveAt(pivot);
             foreach (listGrouped i in arr)
             {
-                if (i.currentCharacter.CompareTo(pivotVal.currentCharacter) <= 0)
+                if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) <= 0)
                     loe.Add(i);
-                else if (i.currentCharacter.CompareTo(pivotVal.currentCharacter) > 0)
+                else if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) > 0)
                     gt.Add(i);
             }
 
