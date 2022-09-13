@@ -13,7 +13,7 @@ class Program
 	static void Main(string[] args)
 	{
 		string inputFolder = "D:\\(A) Professional\\Code\\Public\\Projects\\input\\";
-		string inputFile = "";
+		string inputFile = String.Empty;
 
 		List<string> allInputFiles = new List<string>();
 		allInputFiles.Add("movies.csv");
@@ -74,7 +74,6 @@ class Program
 		System.Console.WriteLine("");
 		System.Console.WriteLine("Press any key to exit...");
 		System.Console.Read();
-		//SortingAlgorithms.QuickSort.
 	}
 
 	static int GatherMenuSelection(List<string> allInputFiles)
@@ -89,7 +88,6 @@ class Program
 		}
 		System.Console.WriteLine("-------------------------");
 		string inputString = System.Console.ReadLine();
-		//System.Console.WriteLine(inputString);
 
 		int selection = -1;
 		try
@@ -110,36 +108,14 @@ class Program
 
 	private static Boolean BuildListFromFile(ref List<string> listToBuild, string inputFile)
 	{
-		FileStream myFile;
-		try
-		{
-			myFile = File.OpenRead(inputFile);
-		}
-		catch
-		{
-			System.Console.WriteLine("Unable to open file: ");
-			System.Console.WriteLine(inputFile);
-			return false;
-		}
-
-		string[] myList = File.ReadAllLines(inputFile, Encoding.ASCII);
-
-		listToBuild.Clear();
-		for (int listIndex = 0; listIndex < myList.Length; listIndex++)
-		{
-			listToBuild.Add(myList[listIndex]);
-		}
+		string[] fileLines = File.ReadAllLines(inputFile, Encoding.ASCII);
+		listToBuild = new List<string>(fileLines);
 
 		return true;
 	}
 
 	private static void PrintList(List<string> listToPrint, Stopwatch timeToSort)
 	{
-		//System.Console.WriteLine("List: ");
-		//for (Int32 listIndex = 0; listIndex < listToPrint.Count; listIndex++)
-		//{
-		//	System.Console.WriteLine(listToPrint[listIndex].ToString());
-		//}
 		System.Console.WriteLine(listToPrint.Count + " items in list");
 		long million = 1000L * 1000L;
 		long billion = 1000L * 1000L * 1000L;
@@ -162,7 +138,7 @@ class Program
 			nanoseconds = "*";
 		}
 
-		string timeString = "";
+		string timeString = String.Empty;
 		if (timeToSort.Elapsed.Minutes > 0)
 		{
 			timeString += timeToSort.Elapsed.Minutes + "m";
