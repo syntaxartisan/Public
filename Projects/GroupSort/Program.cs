@@ -54,7 +54,7 @@ class Program
 				timeToSort.Restart();
 				groupsortSortedList = GroupSort.SortStrings(groupsortListToSort);
 				timeToSort.Stop();
-				CheckList(groupsortSortedList);
+				CheckList(groupsortListToSort, groupsortSortedList);
 				PrintTimeResult(groupsortSortedList, timeToSort);
 
 				quicksortSortedList.Clear();
@@ -62,7 +62,7 @@ class Program
 				timeToSort.Restart();
 				quicksortSortedList = QuickSort.SortStrings(quicksortListToSort);
 				timeToSort.Stop();
-                CheckList(quicksortSortedList);
+                CheckList(quicksortListToSort, quicksortSortedList);
                 PrintTimeResult(quicksortSortedList, timeToSort);
 			}
 			else
@@ -116,38 +116,46 @@ class Program
 		return true;
 	}
 
-	private static void CheckList(List<string> listToCheck)
+	private static void CheckList(List<string> originalList, List<string> sortedListToCheck)
 	{
 		int falseSortCount = 0;
 
-		if (listToCheck.Count > 1)
+		if (originalList.Count == sortedListToCheck.Count)
 		{
-            for (int listIndex = 1; listIndex < listToCheck.Count; listIndex++)
-            {
-				if ( (String.Compare(listToCheck[listIndex - 1], listToCheck[listIndex])) > 0 )
+			if (sortedListToCheck.Count > 1)
+			{
+				for (int listIndex = 1; listIndex < sortedListToCheck.Count; listIndex++)
 				{
-					if (falseSortCount < 3)
+					if ( (String.Compare(sortedListToCheck[listIndex - 1], sortedListToCheck[listIndex])) > 0 )
 					{
-                        string previous = listToCheck[listIndex - 1];
-                        if (previous.Length > 10)
-                        {
-                            previous = previous.Substring(0, 10);
-                        }
-                        string current = listToCheck[listIndex];
-                        if (current.Length > 10)
-                        {
-                            current = current.Substring(0, 10);
-                        }
-                        Console.WriteLine(current + " is before " + previous);
-                    }
-                    falseSortCount++;
-                }
-            }
-        }
+						if (falseSortCount < 3)
+						{
+							string previous = sortedListToCheck[listIndex - 1];
+							if (previous.Length > 10)
+							{
+								previous = previous.Substring(0, 10);
+							}
+							string current = sortedListToCheck[listIndex];
+							if (current.Length > 10)
+							{
+								current = current.Substring(0, 10);
+							}
+							Console.WriteLine(current + " is before " + previous);
+						}
+						falseSortCount++;
+					}
+				}
+			}
 
-        if (falseSortCount > 0)
-        {
-            Console.WriteLine(falseSortCount + " mis-sorts found.");
+			if (falseSortCount > 0)
+			{
+				Console.WriteLine(falseSortCount + " mis-sorts found.");
+			}
+        }
+		else
+		{
+			Console.WriteLine("The original list count (" + originalList.Count + ") doesn't match the sorted list count (" + sortedListToCheck.Count + ")");
+
         }
     }
 
