@@ -10,13 +10,29 @@ namespace SortingAlgorithms
     {
         private static double _algorithmSwitchoverThreshold = .1;
 
-        public class listGrouped
+        public class CharacterGroup
         {
-            public char CurrentCharacter { get; set; }
-            public Int32 CountDigitsInGroup { get; set; }
-            public Int32 GroupOffset { get; set; }
+            private char _currentCharacter;
+            private Int32 _countDigitsInGroup;
+            private Int32 _groupOffset;
 
-            public listGrouped(char inCurrentCharacter, Int32 inCountDigitsInGroup, Int32 inGroupOffset)
+            public char CurrentCharacter
+            {
+                get { return _currentCharacter; }
+                set { _currentCharacter = value; }
+            }
+            public Int32 CountDigitsInGroup
+            {
+                get { return _countDigitsInGroup; }
+                set { value = _countDigitsInGroup; }
+            }
+            public Int32 GroupOffset
+            {
+                get { return _groupOffset; }
+                set { value = _groupOffset; }
+            }
+
+            public CharacterGroup(char inCurrentCharacter, Int32 inCountDigitsInGroup, Int32 inGroupOffset)
             {
                 CurrentCharacter = inCurrentCharacter;
                 CountDigitsInGroup = inCountDigitsInGroup;
@@ -41,7 +57,7 @@ namespace SortingAlgorithms
             //}
 
             List<string> finalOutList = new List<string>();
-            List<listGrouped> groupsInList = new List<listGrouped>();
+            List<CharacterGroup> characters = new List<CharacterGroup>();
 
             char currentGroupCharacter = ' ';
             Int32 currentGroupCount = 0;
@@ -54,9 +70,9 @@ namespace SortingAlgorithms
                 {
                     finalOutList.Add(listToSort[listIndex]);
 
-                    groupsInList.Add(new listGrouped(currentGroupCharacter, currentGroupCount, currentGroupOffset));
+                    characters.Add(new CharacterGroup(currentGroupCharacter, currentGroupCount, currentGroupOffset));
 
-                    if (groupsInList.Count < threshold)
+                    if (characters.Count < threshold)
                     {
                         currentGroupCharacter = ' ';
                         currentGroupCount = 0;
@@ -66,7 +82,7 @@ namespace SortingAlgorithms
                     else
                     {
                         // If we are here then we have determined that it will be quicker to use
-                        // QuickSort instead of GroupSort to sort our list. Step where we're at,
+                        // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                         // start resorting (this level and below) using QuickSort.
                         finalOutList.Clear();
                         finalOutList = QuickSort.SortStrings(listToSort);
@@ -88,9 +104,9 @@ namespace SortingAlgorithms
                     }
                     else
                     {
-                        groupsInList.Add(new listGrouped(currentGroupCharacter, currentGroupCount, currentGroupOffset));
+                        characters.Add(new CharacterGroup(currentGroupCharacter, currentGroupCount, currentGroupOffset));
 
-                        if (groupsInList.Count < threshold)
+                        if (characters.Count < threshold)
                         {
                             currentGroupCharacter = listToSort[listIndex][currentDepth];
                             currentGroupOffset = listIndex;
@@ -99,7 +115,7 @@ namespace SortingAlgorithms
                         else
                         {
                             // If we are here then we have determined that it will be quicker to use
-                            // QuickSort instead of GroupSort to sort our list. Step where we're at,
+                            // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                             // start resorting (this level and below) using QuickSort.
                             finalOutList.Clear();
                             finalOutList = QuickSort.SortStrings(listToSort);
@@ -109,17 +125,17 @@ namespace SortingAlgorithms
                 }
             }
 
-            // The last group is still in memory, add it to groupsInList.
+            // The last group is still in memory, add it to characters.
             if (currentGroupCount > 0)
             {
-                groupsInList.Add(new listGrouped(currentGroupCharacter, currentGroupCount, currentGroupOffset));
+                characters.Add(new CharacterGroup(currentGroupCharacter, currentGroupCount, currentGroupOffset));
             }
 
 
-            // groupsInList now has all the items in it
+            // characters now has all the items in it
 
 
-            List<listGrouped> groupsInListSorted = QuickSortStructures(groupsInList);
+            List<CharacterGroup> groupsInListSorted = QuickSortStructures(characters);
 
             char currCharacter = ' ';
 
@@ -189,15 +205,15 @@ namespace SortingAlgorithms
             return finalOutList;
         }
 
-        private static List<listGrouped> QuickSortStructures(List<listGrouped> arr)
+        private static List<CharacterGroup> QuickSortStructures(List<CharacterGroup> arr)
         {
-            List<listGrouped> loe = new List<listGrouped>(), gt = new List<listGrouped>();
+            List<CharacterGroup> loe = new List<CharacterGroup>(), gt = new List<CharacterGroup>();
             if (arr.Count < 2)
                 return arr;
             int pivot = arr.Count / 2;
-            listGrouped pivotVal = arr[pivot];
+            CharacterGroup pivotVal = arr[pivot];
             arr.RemoveAt(pivot);
-            foreach (listGrouped i in arr)
+            foreach (CharacterGroup i in arr)
             {
                 if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) <= 0)
                     loe.Add(i);
@@ -205,7 +221,7 @@ namespace SortingAlgorithms
                     gt.Add(i);
             }
 
-            List<listGrouped> resultSet = new List<listGrouped>();
+            List<CharacterGroup> resultSet = new List<CharacterGroup>();
             resultSet.AddRange(QuickSortStructures(loe));
             if (loe.Count == 0)
             {
