@@ -13,26 +13,26 @@ namespace SortingAlgorithms
         public class CharacterGroup
         {
             private char _currentCharacter;
-            private Int32 _countDigitsInGroup;
-            private Int32 _groupOffset;
+            private int _countDigitsInGroup;
+            private int _groupOffset;
 
             public char CurrentCharacter
             {
                 get { return _currentCharacter; }
                 set { _currentCharacter = value; }
             }
-            public Int32 CountDigitsInGroup
+            public int CountDigitsInGroup
             {
                 get { return _countDigitsInGroup; }
                 set { value = _countDigitsInGroup; }
             }
-            public Int32 GroupOffset
+            public int GroupOffset
             {
                 get { return _groupOffset; }
                 set { value = _groupOffset; }
             }
 
-            public CharacterGroup(char inCurrentCharacter, Int32 inCountDigitsInGroup, Int32 inGroupOffset)
+            public CharacterGroup(char inCurrentCharacter, int inCountDigitsInGroup, int inGroupOffset)
             {
                 CurrentCharacter = inCurrentCharacter;
                 CountDigitsInGroup = inCountDigitsInGroup;
@@ -45,7 +45,7 @@ namespace SortingAlgorithms
             return SortStrings(listToSort, 0);
         }
 
-        private static List<string> SortStrings(List<string> listToSort, Int32 currentDepth/*, FallbackType insertionSort, CharacterSet latin1*/)
+        private static List<string> SortStrings(List<string> listToSort, int currentDepth/*, FallbackType insertionSort, CharacterSet latin1*/)
         {
             if (listToSort.Count == 0)
             {
@@ -60,11 +60,11 @@ namespace SortingAlgorithms
             List<CharacterGroup> characters = new List<CharacterGroup>();
 
             char currentGroupCharacter = ' ';
-            Int32 currentGroupCount = 0;
-            Int32 currentGroupOffset = 0;
-            Int32 threshold = Convert.ToInt32(listToSort.Count * _algorithmSwitchoverThreshold);
+            int currentGroupCount = 0;
+            int currentGroupOffset = 0;
+            int threshold = Convert.ToInt32(listToSort.Count * _algorithmSwitchoverThreshold);
 
-            for (Int32 listIndex = 0; listIndex < listToSort.Count; listIndex++)
+            for (int listIndex = 0; listIndex < listToSort.Count; listIndex++)
             {
                 if (listToSort[listIndex].Length <= currentDepth)
                 {
@@ -135,56 +135,48 @@ namespace SortingAlgorithms
             // characters now has all the items in it
 
 
-            List<CharacterGroup> groupsInListSorted = QuickSortStructures(characters);
+            List<CharacterGroup> charactersSorted = QuickSortStructures(characters);
 
             char currCharacter = ' ';
 
             List<string> characterFoundList = new List<string>();
 
-            for (Int32 eachGroupIndex = 0; eachGroupIndex < groupsInListSorted.Count; eachGroupIndex++)
+            for (int eachGroupIndex = 0; eachGroupIndex < charactersSorted.Count; eachGroupIndex++)
             {
                 if (eachGroupIndex == 0)
                 {
                     // This is the first pass. All items from the original list that pertain to this group can be added to a new list.
-                    currCharacter = groupsInListSorted[eachGroupIndex].CurrentCharacter;
+                    currCharacter = charactersSorted[eachGroupIndex].CurrentCharacter;
                     characterFoundList.Clear();
-                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].CountDigitsInGroup; groupItemIndex++)
+                    for (int groupItemIndex = 0; groupItemIndex < charactersSorted[eachGroupIndex].CountDigitsInGroup; groupItemIndex++)
                     {
-                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].GroupOffset + groupItemIndex]);
+                        characterFoundList.Add(listToSort[charactersSorted[eachGroupIndex].GroupOffset + groupItemIndex]);
                     }
                     continue;
                 }
 
-                if (groupsInListSorted[eachGroupIndex].CurrentCharacter == currCharacter)
+                if (charactersSorted[eachGroupIndex].CurrentCharacter == currCharacter)
                 {
                     // This character matches the current character being searched for.
                     // Add the items from this group to the list too.
-                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].CountDigitsInGroup; groupItemIndex++)
+                    for (int groupItemIndex = 0; groupItemIndex < charactersSorted[eachGroupIndex].CountDigitsInGroup; groupItemIndex++)
                     {
-                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].GroupOffset + groupItemIndex]);
+                        characterFoundList.Add(listToSort[charactersSorted[eachGroupIndex].GroupOffset + groupItemIndex]);
                     }
                     continue;
                 }
                 else
                 {
                     // This is a new character. Sort the existing list and add it to our final list.
-                    List<string> characterSortedList = new List<string>();
-                    Int32 nextDepth = Convert.ToInt32(currentDepth + 1);
-                    characterSortedList = GroupSort.SortStrings(characterFoundList, nextDepth);
-
-                    // This character is completely done. Add these items to the final list.
-                    for (Int32 listIndex = 0; listIndex < characterSortedList.Count; listIndex++)
-                    {
-                        finalOutList.Add(characterSortedList[listIndex]);
-                    }
+                    finalOutList.AddRange(GroupSort.SortStrings(characterFoundList, currentDepth + 1));
 
 
                     // Start a new list for the new character.
-                    currCharacter = groupsInListSorted[eachGroupIndex].CurrentCharacter;
+                    currCharacter = charactersSorted[eachGroupIndex].CurrentCharacter;
                     characterFoundList.Clear();
-                    for (Int32 groupItemIndex = 0; groupItemIndex < groupsInListSorted[eachGroupIndex].CountDigitsInGroup; groupItemIndex++)
+                    for (int groupItemIndex = 0; groupItemIndex < charactersSorted[eachGroupIndex].CountDigitsInGroup; groupItemIndex++)
                     {
-                        characterFoundList.Add(listToSort[groupsInListSorted[eachGroupIndex].GroupOffset + groupItemIndex]);
+                        characterFoundList.Add(listToSort[charactersSorted[eachGroupIndex].GroupOffset + groupItemIndex]);
                     }
                     continue;
                 }
@@ -192,14 +184,7 @@ namespace SortingAlgorithms
 
             // sort last list
             {
-                List<string> characterSortedList = new List<string>();
-                Int32 nextDepth = Convert.ToInt32(currentDepth + 1);
-                characterSortedList = GroupSort.SortStrings(characterFoundList, nextDepth);
-
-                for (Int32 listIndex = 0; listIndex < characterSortedList.Count; listIndex++)
-                {
-                    finalOutList.Add(characterSortedList[listIndex]);
-                }
+                finalOutList.AddRange(GroupSort.SortStrings(characterFoundList, currentDepth + 1));
             }
 
             return finalOutList;
