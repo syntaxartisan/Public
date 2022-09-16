@@ -54,14 +54,16 @@ class Program
 				timeToSort.Restart();
 				groupsortSortedList = GroupSort.SortStrings(groupsortListToSort);
 				timeToSort.Stop();
-				PrintList(groupsortSortedList, timeToSort);
+				CheckList(groupsortSortedList);
+				PrintTimeResult(groupsortSortedList, timeToSort);
 
 				quicksortSortedList.Clear();
 				Console.WriteLine("-- QuickSort --");
 				timeToSort.Restart();
 				quicksortSortedList = QuickSort.SortStrings(quicksortListToSort);
 				timeToSort.Stop();
-				PrintList(quicksortSortedList, timeToSort);
+                CheckList(quicksortSortedList);
+                PrintTimeResult(quicksortSortedList, timeToSort);
 			}
 			else
 			{
@@ -114,7 +116,42 @@ class Program
 		return true;
 	}
 
-	private static void PrintList(List<string> listToPrint, Stopwatch timeToSort)
+	private static void CheckList(List<string> listToCheck)
+	{
+		int falseSortCount = 0;
+
+		if (listToCheck.Count > 1)
+		{
+            for (int listIndex = 1; listIndex < listToCheck.Count; listIndex++)
+            {
+				if ( (String.Compare(listToCheck[listIndex - 1], listToCheck[listIndex])) > 0 )
+				{
+					if (falseSortCount < 3)
+					{
+                        string previous = listToCheck[listIndex - 1];
+                        if (previous.Length > 10)
+                        {
+                            previous = previous.Substring(0, 10);
+                        }
+                        string current = listToCheck[listIndex];
+                        if (current.Length > 10)
+                        {
+                            current = current.Substring(0, 10);
+                        }
+                        Console.WriteLine(current + " is before " + previous);
+                    }
+                    falseSortCount++;
+                }
+            }
+        }
+
+        if (falseSortCount > 0)
+        {
+            Console.WriteLine(falseSortCount + " mis-sorts found.");
+        }
+    }
+
+    private static void PrintTimeResult(List<string> listToPrint, Stopwatch timeToSort)
 	{
 		System.Console.WriteLine(listToPrint.Count + " items in list");
 		long million = 1000L * 1000L;
