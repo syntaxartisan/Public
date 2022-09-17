@@ -10,10 +10,17 @@ using SortingAlgorithms;
 
 class Program
 {
-	static void Main(string[] args)
+	static class GlobalVariables
 	{
-		string inputFolder = "D:\\(A) Professional\\Code\\Public\\Projects\\input\\";
-		string inputFile = String.Empty;
+        //public const string inputFolder = "D:\\(A) Professional\\Code\\Public\\Projects\\input\\";
+        public const string inputFolder = @"D:\(A) Professional\Code\Public\Projects\input\";
+        public const string outputFolder = @"D:\(A) Professional\Code\Public\Projects\GroupSort\output\";
+    }
+
+    static void Main(string[] args)
+	{
+
+        string inputFile = String.Empty;
 
 		List<string> allInputFiles = new List<string>();
 		allInputFiles.Add("movies.csv");
@@ -39,10 +46,12 @@ class Program
 
 			// SELECTIONS
 			System.Console.WriteLine("Processing " + allInputFiles[selection - 1]);
-			inputFile = inputFolder + allInputFiles[selection - 1];
+			inputFile = GlobalVariables.inputFolder + allInputFiles[selection - 1];
 
 			if (BuildListFromFile(ref listToSort, inputFile))
 			{
+                WriteToFile(listToSort, "master");
+                
 				Stopwatch timeToSort = new Stopwatch();
 				List<string> groupsortSortedList = new List<string>();
 				List<string> quicksortSortedList = new List<string>();
@@ -52,22 +61,22 @@ class Program
 				groupsortSortedList.Clear();
 				Console.WriteLine("-- GroupSort --");
 				timeToSort.Restart();
-				groupsortSortedList = GroupSort.SortStrings(groupsortListToSort);
+                // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
+                groupsortSortedList = GroupSort.SortStrings(groupsortListToSort.ToList<string>());
 				timeToSort.Stop();
 				CheckList(groupsortListToSort, groupsortSortedList);
-				PrintTimeResult(groupsortSortedList, timeToSort);
+                WriteToFile(groupsortSortedList, "groupsort");
+                PrintTimeResult(groupsortSortedList, timeToSort);
 
 				quicksortSortedList.Clear();
 				Console.WriteLine("-- QuickSort --");
 				timeToSort.Restart();
-				quicksortSortedList = QuickSort.SortStrings(quicksortListToSort);
+                // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
+                quicksortSortedList = QuickSort.SortStrings(quicksortListToSort.ToList<string>());
 				timeToSort.Stop();
                 CheckList(quicksortListToSort, quicksortSortedList);
+                WriteToFile(quicksortSortedList, "quicksort");
                 PrintTimeResult(quicksortSortedList, timeToSort);
-			}
-			else
-			{
-				System.Console.WriteLine("Unable to build a list from " + inputFile);
 			}
 
 			selection = GatherMenuSelection(allInputFiles);
@@ -110,10 +119,19 @@ class Program
 
 	private static Boolean BuildListFromFile(ref List<string> listToBuild, string inputFile)
 	{
-		string[] fileLines = File.ReadAllLines(inputFile, Encoding.ASCII);
-		listToBuild = new List<string>(fileLines);
+		try
+		{
+            string[] fileLines = File.ReadAllLines(inputFile, Encoding.ASCII);
+            listToBuild = new List<string>(fileLines);
 
-		return true;
+            return true;
+        }
+		catch
+		{
+			Console.WriteLine("Unable to read the content of " + inputFile);
+		}
+
+        return false;
 	}
 
 	private static void CheckList(List<string> originalList, List<string> sortedListToCheck)
@@ -156,6 +174,20 @@ class Program
 		{
 			Console.WriteLine("The original list count (" + originalList.Count + ") doesn't match the sorted list count (" + sortedListToCheck.Count + ")");
 
+        }
+    }
+
+	public static void WriteToFile(List<string> listToSave, string baseFileName)
+	{
+        string fileName = GlobalVariables.outputFolder + baseFileName + ".csv";
+        
+		try
+        {
+            File.WriteAllLines(fileName, listToSave);
+        }
+		catch
+		{
+			Console.WriteLine("Unable to save file " + fileName);
         }
     }
 
