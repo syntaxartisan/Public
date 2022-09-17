@@ -184,9 +184,9 @@ namespace SortingAlgorithms
             arr.RemoveAt(pivot);
             foreach (CharacterGroup i in arr)
             {
-                if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) <= 0)
+                if (i.CurrentCharacter.ToString().CompareTo(pivotVal.CurrentCharacter.ToString()) <= 0)
                     loe.Add(i);
-                else if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) > 0)
+                else if (i.CurrentCharacter.ToString().CompareTo(pivotVal.CurrentCharacter.ToString()) > 0)
                     gt.Add(i);
             }
 
