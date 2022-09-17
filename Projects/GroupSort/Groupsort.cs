@@ -12,25 +12,9 @@ namespace SortingAlgorithms
 
         public class CharacterGroup
         {
-            private char _currentCharacter;
-            private int _countDigitsInGroup;
-            private int _groupOffset;
-
-            public char CurrentCharacter
-            {
-                get { return _currentCharacter; }
-                set { _currentCharacter = value; }
-            }
-            public int CountDigitsInGroup
-            {
-                get { return _countDigitsInGroup; }
-                set { value = _countDigitsInGroup; }
-            }
-            public int GroupOffset
-            {
-                get { return _groupOffset; }
-                set { value = _groupOffset; }
-            }
+            public char CurrentCharacter { get; set; }
+            public Int32 CountDigitsInGroup { get; set; }
+            public Int32 GroupOffset { get; set; }
 
             public CharacterGroup(char inCurrentCharacter, int inCountDigitsInGroup, int inGroupOffset)
             {
