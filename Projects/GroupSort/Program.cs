@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using SortingAlgorithms;
+using System.Globalization;
 //using System.Threading;
 
 class Program
@@ -19,7 +20,6 @@ class Program
 
     static void Main(string[] args)
 	{
-
         string inputFile = String.Empty;
 
 		List<string> allInputFiles = new List<string>();
@@ -144,7 +144,7 @@ class Program
 			{
 				for (int listIndex = 1; listIndex < sortedListToCheck.Count; listIndex++)
 				{
-					if ( (String.Compare(sortedListToCheck[listIndex - 1], sortedListToCheck[listIndex])) > 0 )
+					if (String.Compare(sortedListToCheck[listIndex - 1], sortedListToCheck[listIndex], CultureInfo.CurrentCulture, CompareOptions.Ordinal) > 0)
 					{
 						if (falseSortCount < 3)
 						{

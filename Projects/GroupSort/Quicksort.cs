@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,9 +49,9 @@ namespace SortingAlgorithms
             stringList.RemoveAt(pivot);
             foreach (string i in stringList)
             {
-                if (i.CompareTo(pivotVal) <= 0)
+                if (String.Compare(i, pivotVal, CultureInfo.CurrentCulture, CompareOptions.Ordinal) <= 0)
                     loe.Add(i);
-                else if (i.CompareTo(pivotVal) > 0)
+                else if (String.Compare(i, pivotVal, CultureInfo.CurrentCulture, CompareOptions.Ordinal) > 0)
                     gt.Add(i);
             }
 

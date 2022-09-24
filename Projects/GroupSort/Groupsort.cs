@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -184,9 +185,9 @@ namespace SortingAlgorithms
             arr.RemoveAt(pivot);
             foreach (CharacterGroup i in arr)
             {
-                if (i.CurrentCharacter.ToString().CompareTo(pivotVal.CurrentCharacter.ToString()) <= 0)
+                if (String.Compare(i.CurrentCharacter.ToString(), pivotVal.CurrentCharacter.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) <= 0)
                     loe.Add(i);
-                else if (i.CurrentCharacter.ToString().CompareTo(pivotVal.CurrentCharacter.ToString()) > 0)
+                else if (String.Compare(i.CurrentCharacter.ToString(), pivotVal.CurrentCharacter.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) > 0)
                     gt.Add(i);
             }
 
