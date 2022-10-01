@@ -116,7 +116,7 @@ namespace SortingAlgorithms
             public string Stopwatch1MonitorDescription = "PUSHING TO STACK";
 
             public Stopwatch Stopwatch2 = new Stopwatch();
-            public string Stopwatch2MonitorDescription = "SWAP METHOD";
+            public string Stopwatch2MonitorDescription = "SWAP()";
 
             public Stopwatch Stopwatch3 = new Stopwatch();
             public string Stopwatch3MonitorDescription = "STRING.COMPARE()";
@@ -158,9 +158,9 @@ namespace SortingAlgorithms
                 int startIndex = 0;
                 int endIndex = stringList.Count - 1;
 
-                Stopwatch1.Start();
+                //Stopwatch1.Start();
                 stack.Push(new Boundary(startIndex, endIndex));
-                Stopwatch1.Stop();
+                //Stopwatch1.Stop();
 
                 while (stack.Count > 0)
                 {
@@ -170,15 +170,15 @@ namespace SortingAlgorithms
                     int pivotIndex = this.Partition(stringList, startIndex, endIndex);
                     if (pivotIndex - 1 > startIndex)
                     {
-                        Stopwatch1.Start();
+                        //Stopwatch1.Start();
                         stack.Push(new Boundary(startIndex, pivotIndex - 1));
-                        Stopwatch1.Stop();
+                        //Stopwatch1.Stop();
                     }
                     if (pivotIndex + 1 < endIndex)
                     {
-                        Stopwatch1.Start();
+                        //Stopwatch1.Start();
                         stack.Push(new Boundary(pivotIndex + 1, endIndex));
-                        Stopwatch1.Stop();
+                        //Stopwatch1.Stop();
                     }
                 }
 
@@ -213,22 +213,22 @@ namespace SortingAlgorithms
                 int i = lowIndex - 1;
                 for (int j = lowIndex; j < highIndex; ++j)
                 {
-                    Stopwatch3.Start();
+                    //Stopwatch3.Start();
                     if (String.Compare(stringList[j], pivotValue, CultureInfo.CurrentCulture, CompareOptions.Ordinal) < 0)
                     //if (stringList[j] < pivotValue)
                     {
-                        Stopwatch3.Stop();
+                        //Stopwatch3.Stop();
                         i++;
-                        Stopwatch2.Start();
+                        //Stopwatch2.Start();
                         Swap(stringList, i, j);
-                        Stopwatch2.Stop();
+                        //Stopwatch2.Stop();
                     }
-                    Stopwatch3.Stop();
+                    //Stopwatch3.Stop();
                 }
                 // Set the high index value to its sorted position
-                Stopwatch2.Start();
+                //Stopwatch2.Start();
                 Swap(stringList, i + 1, highIndex);
-                Stopwatch2.Stop();
+                //Stopwatch2.Stop();
                 // Returns the next sorting  element location
                 return i + 1;
             }
