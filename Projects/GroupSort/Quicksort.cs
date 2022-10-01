@@ -69,5 +69,81 @@ namespace SortingAlgorithms
             resultSet.AddRange(QuickSort.SortStrings(gt));
             return resultSet;
         }
+
+        public static List<int> SortIntegersNoRecursion(List<int> intList)
+        {
+            Stack<Boundary> stack = new Stack<Boundary>();
+            int startIndex = 0;
+            int endIndex = intList.Count - 1;
+
+            stack.Push(new Boundary(startIndex, endIndex));
+
+            while (stack.Count > 0)
+            {
+                startIndex = stack.Peek().startIndex;
+                endIndex = stack.Peek().endIndex;
+                stack.Pop();
+                int pivotIndex = Partition(intList, startIndex, endIndex);
+                if (pivotIndex - 1 > startIndex)
+                {
+                    stack.Push(new Boundary(startIndex, pivotIndex - 1));
+                }
+                if (pivotIndex + 1 < endIndex)
+                {
+                    stack.Push(new Boundary(pivotIndex + 1, endIndex));
+                }
+            }
+
+            return intList;
+        }
+
+        private class Boundary
+        {
+            public int startIndex;
+            public int endIndex;
+            public Boundary(int startIndex, int endIndex)
+            {
+                this.startIndex = startIndex;
+                this.endIndex = endIndex;
+            }
+        }
+
+        // Swap the array element
+        private static void Swap(List<int> arr, int i, int j)
+        {
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+
+        // Provide this function a subset of the original array or List.
+        // This sorts the array such that smaller elements are to the left (low indices)
+        // and larger elements are to the right (high indices).
+        // Then it returns the starting index are the larger elements.
+        // "Large" is defined by the pivot value selection, which is the last element of the subset.
+        private static int Partition(List<int> intList, int lowIndex, int highIndex)
+        {
+            // Set the high index element to its 
+            // proper sorted position
+            int pivotValue = intList[highIndex];
+            int i = lowIndex - 1;
+            for (int j = lowIndex; j < highIndex; ++j)
+            {
+                if (intList[j] < pivotValue)
+                {
+                    i++;
+                    Swap(intList, i, j);
+                }
+            }
+            // Set the high index value to its sorted position
+            Swap(intList, i + 1, highIndex);
+            // Returns the next sorting  element location
+            return i + 1;
+        }
+
+        //public static List<string> SortStringsNoRecursion(List<string> stringList)
+        //{
+        //    Stack<string> stack = new Stack<string>();
+        //}
     }
 }
