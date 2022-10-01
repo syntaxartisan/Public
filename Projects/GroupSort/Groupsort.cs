@@ -185,9 +185,14 @@ namespace SortingAlgorithms
             arr.RemoveAt(pivot);
             foreach (CharacterGroup i in arr)
             {
-                if (String.Compare(i.CurrentCharacter.ToString(), pivotVal.CurrentCharacter.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) <= 0)
+                //if (String.Compare(i.CurrentCharacter.ToString(), pivotVal.CurrentCharacter.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) <= 0)
+                //    loe.Add(i);
+                //else if (String.Compare(i.CurrentCharacter.ToString(), pivotVal.CurrentCharacter.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) > 0)
+                //    gt.Add(i);
+
+                if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) <= 0)
                     loe.Add(i);
-                else if (String.Compare(i.CurrentCharacter.ToString(), pivotVal.CurrentCharacter.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) > 0)
+                else if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) > 0)
                     gt.Add(i);
             }
 
