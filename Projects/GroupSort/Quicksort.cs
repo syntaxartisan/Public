@@ -97,6 +97,33 @@ namespace SortingAlgorithms
             return intList;
         }
 
+        public static List<string> SortStringsNoRecursion(List<string> stringList)
+        {
+            Stack<Boundary> stack = new Stack<Boundary>();
+            int startIndex = 0;
+            int endIndex = stringList.Count - 1;
+
+            stack.Push(new Boundary(startIndex, endIndex));
+
+            while (stack.Count > 0)
+            {
+                startIndex = stack.Peek().startIndex;
+                endIndex = stack.Peek().endIndex;
+                stack.Pop();
+                int pivotIndex = Partition(stringList, startIndex, endIndex);
+                if (pivotIndex - 1 > startIndex)
+                {
+                    stack.Push(new Boundary(startIndex, pivotIndex - 1));
+                }
+                if (pivotIndex + 1 < endIndex)
+                {
+                    stack.Push(new Boundary(pivotIndex + 1, endIndex));
+                }
+            }
+
+            return stringList;
+        }
+
         private class Boundary
         {
             public int startIndex;
@@ -109,11 +136,19 @@ namespace SortingAlgorithms
         }
 
         // Swap the array element
-        private static void Swap(List<int> arr, int i, int j)
+        private static void Swap(List<int> intList, int val1Index, int val2Index)
         {
-            int temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
+            int temp = intList[val1Index];
+            intList[val1Index] = intList[val2Index];
+            intList[val2Index] = temp;
+        }
+
+        // Swap the array element
+        private static void Swap(List<string> stringList, int val1Index, int val2Index)
+        {
+            string temp = stringList[val1Index];
+            stringList[val1Index] = stringList[val2Index];
+            stringList[val2Index] = temp;
         }
 
         // Provide this function a subset of the original array or List.
@@ -141,9 +176,31 @@ namespace SortingAlgorithms
             return i + 1;
         }
 
-        //public static List<string> SortStringsNoRecursion(List<string> stringList)
-        //{
-        //    Stack<string> stack = new Stack<string>();
-        //}
+        // Provide this function a subset of the original array or List.
+        // This sorts the array such that smaller elements are to the left (low indices)
+        // and larger elements are to the right (high indices).
+        // Then it returns the starting index are the larger elements.
+        // "Large" is defined by the pivot value selection, which is the last element of the subset.
+        private static int Partition(List<string> stringList, int lowIndex, int highIndex)
+        {
+            // Set the high index element to its 
+            // proper sorted position
+            string pivotValue = stringList[highIndex];
+            int i = lowIndex - 1;
+            for (int j = lowIndex; j < highIndex; ++j)
+            {
+                if (String.Compare(stringList[j], pivotValue, CultureInfo.CurrentCulture, CompareOptions.Ordinal) < 0)
+                //if (stringList[j] < pivotValue)
+                {
+                    i++;
+                    Swap(stringList, i, j);
+                }
+            }
+            // Set the high index value to its sorted position
+            Swap(stringList, i + 1, highIndex);
+            // Returns the next sorting  element location
+            return i + 1;
+        }
+
     }
 }
