@@ -66,20 +66,26 @@ class Program
 				timeToSort.Stop();
 				CheckList(groupsortListToSort, groupsortSortedList);
                 WriteToFile(groupsortSortedList, "groupsort");
-                PrintTimeResult(groupsortSortedList, timeToSort);
+                PrintOverallTimeResult(groupsortSortedList, timeToSort);
+                Console.WriteLine("");
 
-				quicksortSortedList.Clear();
+                quicksortSortedList.Clear();
 				Console.WriteLine("-- QuickSort --");
 				timeToSort.Restart();
                 // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-                quicksortSortedList = QuickSort.SortStrings(quicksortListToSort.ToList<string>());
-				timeToSort.Stop();
+                //quicksortSortedList = QuickSort.Strings.SortStrings(quicksortListToSort.ToList<string>());
+                //quicksortSortedList = QuickSort.Strings.SortStringsNoRecursion(quicksortListToSort.ToList<string>());
+				QuickSort.Strings stringSorter = new QuickSort.Strings();
+				quicksortSortedList = stringSorter.SortStringsNoRecursion(quicksortListToSort.ToList<string>());
+                timeToSort.Stop();
                 CheckList(quicksortListToSort, quicksortSortedList);
                 WriteToFile(quicksortSortedList, "quicksort");
-                PrintTimeResult(quicksortSortedList, timeToSort);
-			}
+                PrintOverallTimeResult(quicksortSortedList, timeToSort);
+                PrintQuicksortDetailTimeResult(stringSorter);
+                Console.WriteLine("");
+            }
 
-			selection = GatherMenuSelection(allInputFiles);
+            selection = GatherMenuSelection(allInputFiles);
 		}
 
 		System.Console.WriteLine("");
@@ -191,9 +197,21 @@ class Program
         }
     }
 
-    private static void PrintTimeResult(List<string> listToPrint, Stopwatch timeToSort)
+	private static void PrintOverallTimeResult(List<string> listToPrint, Stopwatch timeToSort)
 	{
-		System.Console.WriteLine(listToPrint.Count + " items in list");
+        Console.WriteLine(listToPrint.Count + " items in list");
+        Console.WriteLine("Time: " + ConvertTimeToString(timeToSort));
+    }
+
+    private static void PrintQuicksortDetailTimeResult(QuickSort.Strings stringSorter)
+    {
+        Console.WriteLine(stringSorter.Stopwatch1MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch1));
+        Console.WriteLine(stringSorter.Stopwatch2MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch2));
+        Console.WriteLine(stringSorter.Stopwatch3MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch3));
+    }
+
+    private static string ConvertTimeToString(Stopwatch timeToSort)
+	{
 		long million = 1000L * 1000L;
 		long billion = 1000L * 1000L * 1000L;
 		string microseconds;
@@ -238,8 +256,9 @@ class Program
 			timeString += nanoseconds + "ns";
 		}
 */
-		System.Console.WriteLine("Time: " + timeString);
-		System.Console.WriteLine("");
-	}
+		
+		return timeString;
+
+    }
 
 }

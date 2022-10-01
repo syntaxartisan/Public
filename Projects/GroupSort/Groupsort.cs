@@ -70,7 +70,7 @@ namespace SortingAlgorithms
                         // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                         // start resorting (this level and below) using QuickSort.
                         finalOutList.Clear();
-                        finalOutList = QuickSort.SortStrings(listToSort);
+                        finalOutList = QuickSort.Strings.SortStrings(listToSort);
                         return finalOutList;
                     }
                 }
@@ -103,7 +103,7 @@ namespace SortingAlgorithms
                             // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                             // start resorting (this level and below) using QuickSort.
                             finalOutList.Clear();
-                            finalOutList = QuickSort.SortStrings(listToSort);
+                            finalOutList = QuickSort.Strings.SortStrings(listToSort);
                             return finalOutList;
                         }
                     }
