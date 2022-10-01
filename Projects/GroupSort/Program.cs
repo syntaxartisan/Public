@@ -7,13 +7,11 @@ using System.Diagnostics;
 using System.IO;
 using SortingAlgorithms;
 using System.Globalization;
-//using System.Threading;
 
 class Program
 {
 	static class GlobalVariables
 	{
-        //public const string inputFolder = "D:\\(A) Professional\\Code\\Public\\Projects\\input\\";
         public const string inputFolder = @"D:\(A) Professional\Code\Public\Projects\input\";
         public const string outputFolder = @"D:\(A) Professional\Code\Public\Projects\GroupSort\output\";
     }
@@ -36,13 +34,6 @@ class Program
 		while (selection >= 0)
 		{
 			List<string> listToSort = new List<string>();
-
-			//public static string fileToOpen = "C:\\testing\\movies.csv";
-			//public static string fileToOpen = "C:\\testing\\moviesforwards.txt";	// same as movies2
-			//public static string fileToOpen = "C:\\testing\\moviesbackwards.txt";
-			//public static string fileToOpen = "C:\\testing\\moviesforwardssplit.txt";
-			//public static string fileToOpen = "C:\\testing\\moviesrandomsmall.csv";
-			//public static string fileToOpen = "C:\\testing\\moviesrandomlarge.csv";
 
 			// SELECTIONS
 			System.Console.WriteLine("Processing " + allInputFiles[selection - 1]);
@@ -205,9 +196,12 @@ class Program
 
     private static void PrintQuicksortDetailTimeResult(QuickSort.Strings stringSorter)
     {
-        Console.WriteLine(stringSorter.Stopwatch1MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch1));
-        Console.WriteLine(stringSorter.Stopwatch2MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch2));
-        Console.WriteLine(stringSorter.Stopwatch3MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch3));
+		if (stringSorter.Stopwatch1.Elapsed.TotalMilliseconds > 0)
+	        Console.WriteLine(stringSorter.Stopwatch1MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch1));
+        if (stringSorter.Stopwatch2.Elapsed.TotalMilliseconds > 0)
+            Console.WriteLine(stringSorter.Stopwatch2MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch2));
+        if (stringSorter.Stopwatch3.Elapsed.TotalMilliseconds > 0)
+            Console.WriteLine(stringSorter.Stopwatch3MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch3));
     }
 
     private static string ConvertTimeToString(Stopwatch timeToSort)
