@@ -21,14 +21,26 @@ class Program
         string inputFile = String.Empty;
 
 		List<string> allInputFiles = new List<string>();
-		allInputFiles.Add("movies.csv");
-		allInputFiles.Add("moviesforwards.txt");
-		allInputFiles.Add("moviesbackwards.txt");
-		allInputFiles.Add("moviesforwardssplit.txt");
-		allInputFiles.Add("moviesrandomsmall.csv");
-		allInputFiles.Add("moviesrandomlarge.csv");
-		allInputFiles.Add("totallyrandom.txt");
-		allInputFiles.Add("InsuranceGroups.csv");
+		//allInputFiles.Add("movies.csv");
+		//allInputFiles.Add("moviesforwards.txt");
+		//allInputFiles.Add("moviesbackwards.txt");
+		//allInputFiles.Add("moviesforwardssplit.txt");
+		//allInputFiles.Add("moviesrandomsmall.csv");
+		//allInputFiles.Add("moviesrandomlarge.csv");
+		//allInputFiles.Add("totallyrandom.txt");
+		//allInputFiles.Add("InsuranceGroups.csv");
+
+		allInputFiles.Add("background-checks-original-order.txt");
+		allInputFiles.Add("background-checks-combo1-sorted-asc.txt");
+		allInputFiles.Add("background-checks-combo1-sorted-desc.txt");
+		allInputFiles.Add("background-checks-combo1-sort-permit-asc.txt");
+		allInputFiles.Add("background-checks-combo1-sort-permit-desc.txt");
+
+		//allInputFiles.Add("feds3-planes-original-order.txt");
+		//allInputFiles.Add("feds3-planes-sorted-asc.txt");
+		//allInputFiles.Add("feds3-planes-sorted-desc.txt");
+		//allInputFiles.Add("feds3-detailed-string-sorted-asc.txt");
+		//allInputFiles.Add("feds3-detailed-string-sorted-desc.txt");
 
 		int selection = GatherMenuSelection(allInputFiles);
 		while (selection >= 0)
@@ -52,8 +64,8 @@ class Program
 				groupsortSortedList.Clear();
 				Console.WriteLine("-- GroupSort --");
 				timeToSort.Restart();
-                // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-                groupsortSortedList = GroupSort.SortStrings(groupsortListToSort.ToList<string>());
+				// Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
+				groupsortSortedList = GroupSort.SortStrings(groupsortListToSort.ToList<string>());
 				timeToSort.Stop();
 				CheckList(groupsortListToSort, groupsortSortedList);
                 WriteToFile(groupsortSortedList, "groupsort");
