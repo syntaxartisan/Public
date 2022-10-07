@@ -208,12 +208,15 @@ class Program
 
     private static void PrintQuicksortDetailTimeResult(QuickSort.Strings stringSorter)
     {
-		if (stringSorter.Stopwatch1.Elapsed.TotalMilliseconds > 0)
-	        Console.WriteLine(stringSorter.Stopwatch1MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch1));
-        if (stringSorter.Stopwatch2.Elapsed.TotalMilliseconds > 0)
-            Console.WriteLine(stringSorter.Stopwatch2MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch2));
-        if (stringSorter.Stopwatch3.Elapsed.TotalMilliseconds > 0)
-            Console.WriteLine(stringSorter.Stopwatch3MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch3));
+		if (stringSorter.UseStopwatches)
+		{
+            if (stringSorter.Stopwatch1.Elapsed.TotalMilliseconds > 0)
+                Console.WriteLine(stringSorter.Stopwatch1MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch1));
+            if (stringSorter.Stopwatch2.Elapsed.TotalMilliseconds > 0)
+                Console.WriteLine(stringSorter.Stopwatch2MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch2));
+            if (stringSorter.Stopwatch3.Elapsed.TotalMilliseconds > 0)
+                Console.WriteLine(stringSorter.Stopwatch3MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch3));
+        }
     }
 
     private static string ConvertTimeToString(Stopwatch timeToSort)

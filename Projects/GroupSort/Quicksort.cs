@@ -112,14 +112,34 @@ namespace SortingAlgorithms
 
         public class Strings
         {
-            public Stopwatch Stopwatch1 = new Stopwatch();
-            public string Stopwatch1MonitorDescription = "PUSHING TO STACK";
+            private static readonly bool _useStopwatches = false;
 
-            public Stopwatch Stopwatch2 = new Stopwatch();
-            public string Stopwatch2MonitorDescription = "SWAP()";
+            public bool UseStopwatches { get { return _useStopwatches; } }
 
-            public Stopwatch Stopwatch3 = new Stopwatch();
-            public string Stopwatch3MonitorDescription = "STRING.COMPARE()";
+            public Stopwatch Stopwatch1 { get; private set; } = new Stopwatch();
+            public Stopwatch Stopwatch2 { get; private set; } = new Stopwatch();
+            public Stopwatch Stopwatch3 { get; private set; } = new Stopwatch();
+
+            public readonly string Stopwatch1MonitorDescription = "PUSHING TO STACK";
+            public readonly string Stopwatch2MonitorDescription = "SWAP()";
+            public readonly string Stopwatch3MonitorDescription = "STRING.COMPARE()";
+
+            public void StartStopwatch(Stopwatch selectedStopwatch)
+            {
+                if (_useStopwatches)
+                {
+                    selectedStopwatch.Start();
+                }
+            }
+
+            public void StopStopwatch(Stopwatch selectedStopwatch)
+            {
+                if (_useStopwatches)
+                {
+                    selectedStopwatch.Stop();
+                }
+            }
+
 
             public static List<string> SortStrings(List<string> stringList)
             {
@@ -158,9 +178,9 @@ namespace SortingAlgorithms
                 int startIndex = 0;
                 int endIndex = stringList.Count - 1;
 
-                //Stopwatch1.Start();
+                StartStopwatch(Stopwatch1);
                 stack.Push(new Boundary(startIndex, endIndex));
-                //Stopwatch1.Stop();
+                StopStopwatch(Stopwatch1);
 
                 while (stack.Count > 0)
                 {
@@ -170,15 +190,15 @@ namespace SortingAlgorithms
                     int pivotIndex = this.Partition(stringList, startIndex, endIndex);
                     if (pivotIndex - 1 > startIndex)
                     {
-                        //Stopwatch1.Start();
+                        StartStopwatch(Stopwatch1);
                         stack.Push(new Boundary(startIndex, pivotIndex - 1));
-                        //Stopwatch1.Stop();
+                        StopStopwatch(Stopwatch1);
                     }
                     if (pivotIndex + 1 < endIndex)
                     {
-                        //Stopwatch1.Start();
+                        StartStopwatch(Stopwatch1);
                         stack.Push(new Boundary(pivotIndex + 1, endIndex));
-                        //Stopwatch1.Stop();
+                        StopStopwatch(Stopwatch1);
                     }
                 }
 
@@ -213,22 +233,22 @@ namespace SortingAlgorithms
                 int i = lowIndex - 1;
                 for (int j = lowIndex; j < highIndex; ++j)
                 {
-                    //Stopwatch3.Start();
+                    StartStopwatch(Stopwatch3);
                     if (String.Compare(stringList[j], pivotValue, CultureInfo.CurrentCulture, CompareOptions.Ordinal) < 0)
                     //if (stringList[j] < pivotValue)
                     {
-                        //Stopwatch3.Stop();
+                        StopStopwatch(Stopwatch3);
                         i++;
-                        //Stopwatch2.Start();
+                        StartStopwatch(Stopwatch2);
                         Swap(stringList, i, j);
-                        //Stopwatch2.Stop();
+                        StopStopwatch(Stopwatch2);
                     }
-                    //Stopwatch3.Stop();
+                    StopStopwatch(Stopwatch3);
                 }
                 // Set the high index value to its sorted position
-                //Stopwatch2.Start();
+                StopStopwatch(Stopwatch2);
                 Swap(stringList, i + 1, highIndex);
-                //Stopwatch2.Stop();
+                StopStopwatch(Stopwatch2);
                 // Returns the next sorting  element location
                 return i + 1;
             }
