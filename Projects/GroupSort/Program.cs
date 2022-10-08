@@ -30,13 +30,13 @@ class Program
 		//allInputFiles.Add("totallyrandom.txt");
 		//allInputFiles.Add("InsuranceGroups.csv");
 
+		allInputFiles.Add("test1.txt");
 		allInputFiles.Add("background-checks-original-order.txt");
 		allInputFiles.Add("background-checks-combo1-sorted-asc.txt");
 		allInputFiles.Add("background-checks-combo1-sorted-desc.txt");
 		allInputFiles.Add("background-checks-combo1-sort-permit-asc.txt");
 		allInputFiles.Add("background-checks-combo1-sort-permit-desc.txt");
 
-		//allInputFiles.Add("test1.txt");
 		//allInputFiles.Add("feds3-planes-original-order.txt");
 		//allInputFiles.Add("feds3-planes-sorted-asc.txt");
 		//allInputFiles.Add("feds3-planes-sorted-desc.txt");
@@ -68,7 +68,8 @@ class Program
                 // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
                 //groupsortSortedList = GroupSort.SortStrings(groupsortListToSort.ToList<string>());
                 GroupSort.Strings stringGroupSorter = new GroupSort.Strings();
-				groupsortSortedList = stringGroupSorter.SortStrings(groupsortListToSort.ToList<string>());
+				//groupsortSortedList = stringGroupSorter.SortStrings(groupsortListToSort.ToList<string>());
+                groupsortSortedList = stringGroupSorter.SortStringsNoRecursion(groupsortListToSort.ToList<string>());
                 timeToSort.Stop();
 				CheckList(groupsortListToSort, groupsortSortedList);
                 WriteToFile(groupsortSortedList, "groupsort");
