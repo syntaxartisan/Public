@@ -36,6 +36,7 @@ class Program
 		allInputFiles.Add("background-checks-combo1-sort-permit-asc.txt");
 		allInputFiles.Add("background-checks-combo1-sort-permit-desc.txt");
 
+		//allInputFiles.Add("test1.txt");
 		//allInputFiles.Add("feds3-planes-original-order.txt");
 		//allInputFiles.Add("feds3-planes-sorted-asc.txt");
 		//allInputFiles.Add("feds3-planes-sorted-desc.txt");
@@ -64,9 +65,11 @@ class Program
 				groupsortSortedList.Clear();
 				Console.WriteLine("-- GroupSort --");
 				timeToSort.Restart();
-				// Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-				groupsortSortedList = GroupSort.SortStrings(groupsortListToSort.ToList<string>());
-				timeToSort.Stop();
+                // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
+                //groupsortSortedList = GroupSort.SortStrings(groupsortListToSort.ToList<string>());
+                GroupSort.Strings stringGroupSorter = new GroupSort.Strings();
+				groupsortSortedList = stringGroupSorter.SortStrings(groupsortListToSort.ToList<string>());
+                timeToSort.Stop();
 				CheckList(groupsortListToSort, groupsortSortedList);
                 WriteToFile(groupsortSortedList, "groupsort");
                 PrintOverallTimeResult(groupsortSortedList, timeToSort);
@@ -78,13 +81,13 @@ class Program
                 // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
                 //quicksortSortedList = QuickSort.Strings.SortStrings(quicksortListToSort.ToList<string>());
                 //quicksortSortedList = QuickSort.Strings.SortStringsNoRecursion(quicksortListToSort.ToList<string>());
-				QuickSort.Strings stringSorter = new QuickSort.Strings();
-				quicksortSortedList = stringSorter.SortStringsNoRecursion(quicksortListToSort.ToList<string>());
+				QuickSort.Strings stringQuickSorter = new QuickSort.Strings();
+				quicksortSortedList = stringQuickSorter.SortStringsNoRecursion(quicksortListToSort.ToList<string>());
                 timeToSort.Stop();
                 CheckList(quicksortListToSort, quicksortSortedList);
                 WriteToFile(quicksortSortedList, "quicksort");
                 PrintOverallTimeResult(quicksortSortedList, timeToSort);
-                PrintQuicksortDetailTimeResult(stringSorter);
+                PrintQuicksortDetailTimeResult(stringQuickSorter);
                 Console.WriteLine("");
             }
 

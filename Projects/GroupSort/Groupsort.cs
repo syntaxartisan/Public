@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,8 @@ namespace SortingAlgorithms
 {
     public class GroupSort
     {
+        public class Strings
+        {
         private static readonly double _algorithmSwitchoverThreshold = .1;
 
         public class CharacterGroup
@@ -37,12 +40,12 @@ namespace SortingAlgorithms
             }
         }
 
-        public static List<string> SortStrings(List<string> listToSort)
+        public List<string> SortStrings(List<string> listToSort)
         {
             return SortStrings(listToSort, 0);
         }
 
-        private static List<string> SortStrings(List<string> listToSort, int currentDepth)
+        private List<string> SortStrings(List<string> listToSort, int currentDepth)
         {
             if (listToSort.Count == 0)
             {
@@ -165,7 +168,7 @@ namespace SortingAlgorithms
                 else
                 {
                     // This is a new character. Sort the existing list and add it to our final list.
-                    finalOutList.AddRange(GroupSort.SortStrings(characterFoundList, currentDepth + 1));
+                    finalOutList.AddRange(SortStrings(characterFoundList, currentDepth + 1));
 
 
                     // Start a new list for the new character.
@@ -181,7 +184,7 @@ namespace SortingAlgorithms
             if (groupIndex == charactersSorted.Count)
             {
                 // sort last list
-                finalOutList.AddRange(GroupSort.SortStrings(characterFoundList, currentDepth + 1));
+                finalOutList.AddRange(SortStrings(characterFoundList, currentDepth + 1));
             }
 
             return finalOutList;
@@ -223,5 +226,6 @@ namespace SortingAlgorithms
             return resultSet;
         }
 
+        }
     }
 }
