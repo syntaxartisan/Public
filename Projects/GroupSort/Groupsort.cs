@@ -9,7 +9,7 @@ namespace SortingAlgorithms
 {
     public class GroupSort
     {
-        private static double _algorithmSwitchoverThreshold = .1;
+        private static readonly double _algorithmSwitchoverThreshold = .1;
 
         public class CharacterGroup
         {
