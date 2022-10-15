@@ -219,12 +219,6 @@ namespace SortingAlgorithms
             // and larger elements are to the right (high indices).
             // Then it returns the starting index are the larger elements.
             // "Large" is defined by the pivot value selection, which is the last element of the subset.
-
-            // Provide this function a subset of the original array or List.
-            // This sorts the array such that smaller elements are to the left (low indices)
-            // and larger elements are to the right (high indices).
-            // Then it returns the starting index are the larger elements.
-            // "Large" is defined by the pivot value selection, which is the last element of the subset.
             private int Partition(List<string> stringList, int lowIndex, int highIndex)
             {
                 // Set the high index element to its 
