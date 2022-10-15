@@ -21,21 +21,21 @@ class Program
         string inputFile = String.Empty;
 
 		List<string> allInputFiles = new List<string>();
-		//allInputFiles.Add("movies.csv");
-		//allInputFiles.Add("moviesforwards.txt");
-		//allInputFiles.Add("moviesbackwards.txt");
-		//allInputFiles.Add("moviesforwardssplit.txt");
-		//allInputFiles.Add("moviesrandomsmall.csv");
-		//allInputFiles.Add("moviesrandomlarge.csv");
-		//allInputFiles.Add("totallyrandom.txt");
-		//allInputFiles.Add("InsuranceGroups.csv");
+        allInputFiles.Add("test1.txt");
+		allInputFiles.Add("movies.csv");
+		allInputFiles.Add("moviesforwards.txt");
+		allInputFiles.Add("moviesbackwards.txt");
+		allInputFiles.Add("moviesforwardssplit.txt");
+		allInputFiles.Add("moviesrandomsmall.csv");
+		allInputFiles.Add("moviesrandomlarge.csv");
+		allInputFiles.Add("totallyrandom.txt");
+		allInputFiles.Add("InsuranceGroups.csv");
 
-		allInputFiles.Add("test1.txt");
-		allInputFiles.Add("background-checks-original-order.txt");
-		allInputFiles.Add("background-checks-combo1-sorted-asc.txt");
-		allInputFiles.Add("background-checks-combo1-sorted-desc.txt");
-		allInputFiles.Add("background-checks-combo1-sort-permit-asc.txt");
-		allInputFiles.Add("background-checks-combo1-sort-permit-desc.txt");
+		//allInputFiles.Add("background-checks-original-order.txt");
+		//allInputFiles.Add("background-checks-combo1-sorted-asc.txt");
+		//allInputFiles.Add("background-checks-combo1-sorted-desc.txt");
+		//allInputFiles.Add("background-checks-combo1-sort-permit-asc.txt");
+		//allInputFiles.Add("background-checks-combo1-sort-permit-desc.txt");
 
 		//allInputFiles.Add("feds3-planes-original-order.txt");
 		//allInputFiles.Add("feds3-planes-sorted-asc.txt");
@@ -57,26 +57,26 @@ class Program
                 WriteToFile(listToSort, "master");
                 
 				Stopwatch timeToSort = new Stopwatch();
-				List<string> groupsortSortedList = new List<string>();
-				List<string> quicksortSortedList = new List<string>();
-				List<string> groupsortListToSort = listToSort.ToList<string>();
-				List<string> quicksortListToSort = listToSort.ToList<string>();
 
-				groupsortSortedList.Clear();
-				Console.WriteLine("-- GroupSort --");
-				timeToSort.Restart();
+                List<string> groupsortListToSort = listToSort.ToList<string>();
+                List<string> groupsortSortedList = listToSort.ToList<string>();
+
+                Console.WriteLine("-- GroupSort --");
+                timeToSort.Restart();
                 // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
                 //groupsortSortedList = GroupSort.SortStrings(groupsortListToSort.ToList<string>());
+                //groupsortSortedList = stringGroupSorter.SortStrings(groupsortListToSort.ToList<string>());
                 GroupSort.Strings stringGroupSorter = new GroupSort.Strings();
-				//groupsortSortedList = stringGroupSorter.SortStrings(groupsortListToSort.ToList<string>());
-                groupsortSortedList = stringGroupSorter.SortStringsNoRecursion(groupsortListToSort.ToList<string>());
+                stringGroupSorter.SortStringsNoRecursion(ref groupsortSortedList);
                 timeToSort.Stop();
-				CheckList(groupsortListToSort, groupsortSortedList);
+                CheckList(groupsortListToSort, groupsortSortedList);
                 WriteToFile(groupsortSortedList, "groupsort");
                 PrintOverallTimeResult(groupsortSortedList, timeToSort);
                 Console.WriteLine("");
 
-                quicksortSortedList.Clear();
+                List<string> quicksortListToSort = listToSort.ToList<string>();
+                List<string> quicksortSortedList = new List<string>();
+
 				Console.WriteLine("-- QuickSort --");
 				timeToSort.Restart();
                 // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
