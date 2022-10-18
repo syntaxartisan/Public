@@ -347,26 +347,32 @@ namespace SortingAlgorithms
 
                 while (stack.Count > 0)
                 {
-                    DepthRange currentDepthRange = stack.Peek();
+                    DepthRange sortCriteria = stack.Peek();
                     stack.Pop();
 
-                    RemoveShortStringsFromRange(ref stringList, ref currentDepthRange);
-                    if (currentDepthRange.IndexRange.StartIndex > currentDepthRange.IndexRange.EndIndex)
+                    RemoveShortStringsFromRange(ref stringList, ref sortCriteria);
+
+                    if (sortCriteria.IndexRange.StartIndex >= sortCriteria.IndexRange.EndIndex)
                     {
-                        // In the case where the current DepthRange consists entirely of short strings, 
-                        // stop processing as no further sorting is necessary.
+                        // Our range consists of less than two strings.
+                        // Stop processing this sort iteration as no further sorting is necessary.
                         continue;
                     }
 
-                    List<CharRange> charRangesAtGivenDepth = BuildCharRanges(stringList, currentDepthRange);
+                    // Potential performance boost: Instead of utilizing CharRange structures, utilize 
+                    // CharIndex structures instead. And more specifically, utilize CharIndex structures 
+                    // when the string list is heavily randomly sorted. (any good way to tell?) 
+                    // Otherwise use CharRange structures. The first iteration is more likely to use 
+                    // a CharRange structure, but further iterations are more likely to use CharIndex structures.
+                    List<CharRange> charRangesAtGivenDepth = BuildCharRanges(stringList, sortCriteria);
 
                     Structures.SortGroupsNoRecursion(ref charRangesAtGivenDepth);
-                    SortList(ref stringList, charRangesAtGivenDepth, currentDepthRange);
+                    SortList(ref stringList, charRangesAtGivenDepth, sortCriteria);
 
-                    List<DepthRange> depthRanges = BuildDepthRanges(stringList, currentDepthRange);
-
+                    List<DepthRange> depthRanges = BuildDepthRanges(stringList, sortCriteria);
                     foreach (DepthRange depthRange in depthRanges)
                     {
+                        // No need to process (sort) the range unless there are at least two elements in it.
                         if (depthRange.IndexRange.EndIndex > depthRange.IndexRange.StartIndex)
                         {
                             stack.Push(depthRange);
@@ -381,15 +387,15 @@ namespace SortingAlgorithms
             // If a string is shorter than the depth, the string should be moved 
             // to the beginning of the range and not sorted further.
             // Also update the range to excluded the already sorted strings.
-            private void RemoveShortStringsFromRange(ref List<string> stringList, ref DepthRange currentDepthRange)
+            private void RemoveShortStringsFromRange(ref List<string> stringList, ref DepthRange sortCriteria)
             {
-                int startIndex = currentDepthRange.IndexRange.StartIndex;
-                int endIndex = currentDepthRange.IndexRange.EndIndex;
+                int startIndex = sortCriteria.IndexRange.StartIndex;
+                int endIndex = sortCriteria.IndexRange.EndIndex;
 
                 int insertIndex = startIndex;
                 for (int stringListIndex = startIndex; stringListIndex <= endIndex; stringListIndex++)
                 {
-                    if (stringList[stringListIndex].Length < currentDepthRange.CharDepth)
+                    if (stringList[stringListIndex].Length < sortCriteria.CharDepth)
                     {
                         // String is too short to be sorted further, thus it is already sorted.
                         // Move it to the beginning of the range.
@@ -402,16 +408,16 @@ namespace SortingAlgorithms
                     }
                 }
 
-                currentDepthRange.IndexRange.StartIndex = insertIndex;
+                sortCriteria.IndexRange.StartIndex = insertIndex;
             }
 
             // This method builds a List of CharRange structures that represents a subset of the stringList 
-            // according to the criteria specified by currentDepthRange.
-            private List<CharRange> BuildCharRanges(List<string> stringList, DepthRange currentDepthRange)
+            // according to the criteria specified by sortCriteria.
+            private List<CharRange> BuildCharRanges(List<string> stringList, DepthRange sortCriteria)
             {
-                int depthIndex = currentDepthRange.CharDepth - 1;
-                int lowIndex = currentDepthRange.IndexRange.StartIndex;
-                int highIndex = currentDepthRange.IndexRange.EndIndex;
+                int depthIndex = sortCriteria.CharDepth - 1;
+                int lowIndex = sortCriteria.IndexRange.StartIndex;
+                int highIndex = sortCriteria.IndexRange.EndIndex;
 
                 List<CharRange> charRanges = new List<CharRange>();
                 int newStartIndex = 0;
@@ -453,7 +459,7 @@ namespace SortingAlgorithms
 
             // Sort the string list at the current depth, for the given range, based upon the list of 
             // sorted ranges that are supplied.
-            private void SortList(ref List<string> stringList, List<CharRange> sortedCharRanges, DepthRange currentDepthRange)
+            private void SortList(ref List<string> stringList, List<CharRange> sortedCharRanges, DepthRange sortCriteria)
             {
                 List<string> sortedStrings = new List<string>();
 
@@ -465,17 +471,17 @@ namespace SortingAlgorithms
                     }
                 }
 
-                stringList.RemoveRange(currentDepthRange.IndexRange.StartIndex, sortedStrings.Count);
-                stringList.InsertRange(currentDepthRange.IndexRange.StartIndex, sortedStrings);
+                stringList.RemoveRange(sortCriteria.IndexRange.StartIndex, sortedStrings.Count);
+                stringList.InsertRange(sortCriteria.IndexRange.StartIndex, sortedStrings);
             }
 
             // This method builds a list of DepthRange structures that represents the future iterations 
             // of sortings that will need to be completed.
-            private List<DepthRange> BuildDepthRanges(List<string> stringList, DepthRange currentDepthRange)
+            private List<DepthRange> BuildDepthRanges(List<string> stringList, DepthRange sortCriteria)
             {
-                int depthIndex = currentDepthRange.CharDepth - 1;
-                int lowIndex = currentDepthRange.IndexRange.StartIndex;
-                int highIndex = currentDepthRange.IndexRange.EndIndex;
+                int depthIndex = sortCriteria.CharDepth - 1;
+                int lowIndex = sortCriteria.IndexRange.StartIndex;
+                int highIndex = sortCriteria.IndexRange.EndIndex;
 
                 List<DepthRange> depthRanges = new List<DepthRange>();
                 int newStartIndex = -1;
@@ -483,7 +489,7 @@ namespace SortingAlgorithms
                 char newChar = ' ';
                 int stringIndex;
 
-                for (stringIndex = lowIndex; stringIndex <= currentDepthRange.IndexRange.EndIndex; stringIndex++)
+                for (stringIndex = lowIndex; stringIndex <= sortCriteria.IndexRange.EndIndex; stringIndex++)
                 {
                     if (stringIndex == lowIndex)
                     {
@@ -495,7 +501,7 @@ namespace SortingAlgorithms
                         if (stringList[stringIndex][depthIndex] != newChar)
                         {
                             newEndIndex = stringIndex - 1;
-                            depthRanges.Add(new DepthRange(currentDepthRange.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
+                            depthRanges.Add(new DepthRange(sortCriteria.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
 
                             newChar = stringList[stringIndex][depthIndex];
                             newStartIndex = stringIndex;
@@ -505,7 +511,7 @@ namespace SortingAlgorithms
                 if (stringIndex > highIndex)
                 {
                     newEndIndex = stringIndex - 1;
-                    depthRanges.Add(new DepthRange(currentDepthRange.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
+                    depthRanges.Add(new DepthRange(sortCriteria.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
                 }
 
                 return depthRanges;
