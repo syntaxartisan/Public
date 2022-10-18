@@ -358,12 +358,12 @@ namespace SortingAlgorithms
                         continue;
                     }
 
-                    List<CharRange> charRangesAtGivenDepth = BuildGroups(stringList, currentDepthRange);
+                    List<CharRange> charRangesAtGivenDepth = BuildCharRanges(stringList, currentDepthRange);
 
                     Structures.SortGroupsNoRecursion(ref charRangesAtGivenDepth);
                     SortList(ref stringList, charRangesAtGivenDepth, currentDepthRange);
 
-                    List<DepthRange> depthRanges = CombineLikeGroups(charRangesAtGivenDepth, currentDepthRange);
+                    List<DepthRange> depthRanges = BuildDepthRanges(stringList, currentDepthRange);
 
                     foreach (DepthRange depthRange in depthRanges)
                     {
@@ -407,7 +407,7 @@ namespace SortingAlgorithms
 
             // This method builds a List of CharRange structures that represents a subset of the stringList 
             // according to the criteria specified by currentDepthRange.
-            private List<CharRange> BuildGroups(List<string> stringList, DepthRange currentDepthRange)
+            private List<CharRange> BuildCharRanges(List<string> stringList, DepthRange currentDepthRange)
             {
                 int depthIndex = currentDepthRange.CharDepth - 1;
                 int lowIndex = currentDepthRange.IndexRange.StartIndex;
@@ -432,6 +432,10 @@ namespace SortingAlgorithms
                         {
                             newEndIndex = stringIndex - 1;
                             charRanges.Add(new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+                            // Potential performance boost: Build a list of CharGroups instead of CharRanges, 
+                            // and add to existing character groups whenever you can.
+                            // I.e. if you're adding a range for the letter 'T', check if a 'T' group already exists 
+                            // and add the range to that group.
 
                             newChar = stringList[stringIndex][depthIndex];
                             newStartIndex = stringIndex;
@@ -447,6 +451,8 @@ namespace SortingAlgorithms
                 return charRanges;
             }
 
+            // Sort the string list at the current depth, for the given range, based upon the list of 
+            // sorted ranges that are supplied.
             private void SortList(ref List<string> stringList, List<CharRange> sortedCharRanges, DepthRange currentDepthRange)
             {
                 List<string> sortedStrings = new List<string>();
@@ -463,48 +469,43 @@ namespace SortingAlgorithms
                 stringList.InsertRange(currentDepthRange.IndexRange.StartIndex, sortedStrings);
             }
 
-            private List<DepthRange> CombineLikeGroups(List<CharRange> charRanges, DepthRange currentDepthRange)
+            // This method builds a list of DepthRange structures that represents the future iterations 
+            // of sortings that will need to be completed.
+            private List<DepthRange> BuildDepthRanges(List<string> stringList, DepthRange currentDepthRange)
             {
-                List<DepthRange> depthRanges = new List<DepthRange>();
-                int rangeIndex;
-                char newChar = ' ';
+                int depthIndex = currentDepthRange.CharDepth - 1;
+                int lowIndex = currentDepthRange.IndexRange.StartIndex;
+                int highIndex = currentDepthRange.IndexRange.EndIndex;
 
+                List<DepthRange> depthRanges = new List<DepthRange>();
                 int newStartIndex = -1;
                 int newEndIndex = -1;
-                int stringCounter = 0;
+                char newChar = ' ';
+                int stringIndex;
 
-                for (rangeIndex = 0; rangeIndex < charRanges.Count; rangeIndex++)
+                for (stringIndex = lowIndex; stringIndex <= currentDepthRange.IndexRange.EndIndex; stringIndex++)
                 {
-                    if (rangeIndex == 0)
+                    if (stringIndex == lowIndex)
                     {
-                        newChar = charRanges[rangeIndex].CurrentChar;
-                        newStartIndex = stringCounter;
-                        stringCounter += charRanges[rangeIndex].IndexRange.EndIndex - charRanges[rangeIndex].IndexRange.StartIndex + 1;
+                        newChar = stringList[stringIndex][depthIndex];
+                        newStartIndex = stringIndex;
                     }
                     else
                     {
-                        if (charRanges[rangeIndex].CurrentChar == newChar)
+                        if (stringList[stringIndex][depthIndex] != newChar)
                         {
-                            stringCounter += charRanges[rangeIndex].IndexRange.EndIndex - charRanges[rangeIndex].IndexRange.StartIndex + 1;
-                        }
-                        else
-                        {
-                            newEndIndex = stringCounter - 1;
+                            newEndIndex = stringIndex - 1;
                             depthRanges.Add(new DepthRange(currentDepthRange.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
 
-                            newChar = charRanges[rangeIndex].CurrentChar;
-                            newStartIndex = stringCounter;
-                            stringCounter += charRanges[rangeIndex].IndexRange.EndIndex - charRanges[rangeIndex].IndexRange.StartIndex + 1;
+                            newChar = stringList[stringIndex][depthIndex];
+                            newStartIndex = stringIndex;
                         }
                     }
                 }
-                if (rangeIndex == charRanges.Count)
+                if (stringIndex > highIndex)
                 {
-                    if (stringCounter > 0)
-                    {
-                        newEndIndex = stringCounter - 1;
-                        depthRanges.Add(new DepthRange(currentDepthRange.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
-                    }
+                    newEndIndex = stringIndex - 1;
+                    depthRanges.Add(new DepthRange(currentDepthRange.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
                 }
 
                 return depthRanges;
@@ -512,33 +513,25 @@ namespace SortingAlgorithms
 
         }
 
+
         private class Structures
         {
             private class Boundary
             {
                 private int _startIndex;
-                private int _endIndex;
-
                 public int StartIndex
                 {
                     get { return _startIndex; }
                     set { _startIndex = value; }
                 }
+
+                private int _endIndex;
                 public int EndIndex
                 {
-                    get
-                    {
-                        if (_endIndex < 0)
-                            _endIndex = -1;
-                        return _endIndex;
-                    }
-                    set 
-                    {
-                        if (value < 0)
-                            _endIndex = -1;
-                        _endIndex = value;
-                    }
+                    get { return _endIndex; }
+                    set { _endIndex = value; }
                 }
+
                 public Boundary(int startIndex, int endIndex)
                 {
                     this._startIndex = startIndex;
@@ -605,8 +598,8 @@ namespace SortingAlgorithms
                 for (int j = lowIndex; j < highIndex; ++j)
                 {
                     if (charRanges[j].CurrentChar.CompareTo(pivotValue) < 0)
-                    //if (String.Compare(groups[j].CurrentChar, pivotValue, CultureInfo.CurrentCulture, CompareOptions.Ordinal) < 0)
-                    //if (stringList[j] < pivotValue)
+                    //if (String.Compare(charRanges[j].CurrentChar.ToString(), pivotValue.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) < 0)
+                    //if (charRanges[j].CurrentChar < pivotValue)
                     {
                         i++;
                         Swap(ref charRanges, i, j);
