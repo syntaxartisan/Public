@@ -359,25 +359,13 @@ namespace SortingAlgorithms
                         continue;
                     }
 
-                    // Potential performance boost: Instead of utilizing CharRange structures, utilize 
-                    // CharIndex structures instead. And more specifically, utilize CharIndex structures 
-                    // when the string list is heavily randomly sorted. (any good way to tell?) 
-                    // Otherwise use CharRange structures. The first iteration is more likely to use 
-                    // a CharRange structure, but further iterations are more likely to use CharIndex structures.
-                    List<CharRange> charRangesAtGivenDepth = BuildCharRanges(stringList, sortCriteria);
+                    List<CharGroup> charGroups = BuildCharGroups(stringList, sortCriteria);
 
-                    Structures.SortGroupsNoRecursion(ref charRangesAtGivenDepth);
-                    SortList(ref stringList, charRangesAtGivenDepth, sortCriteria);
+                    Structures.SortGroupsNoRecursion(ref charGroups);
+                    SortList(ref stringList, charGroups, sortCriteria);
 
-                    List<DepthRange> depthRanges = BuildDepthRanges(stringList, sortCriteria);
-                    foreach (DepthRange depthRange in depthRanges)
-                    {
-                        // No need to process (sort) the range unless there are at least two elements in it.
-                        if (depthRange.IndexRange.EndIndex > depthRange.IndexRange.StartIndex)
-                        {
-                            stack.Push(depthRange);
-                        }
-                    }
+                    AddRangesToStack(ref stack, stringList, sortCriteria);
+
                 }
 
             }
@@ -411,15 +399,15 @@ namespace SortingAlgorithms
                 sortCriteria.IndexRange.StartIndex = insertIndex;
             }
 
-            // This method builds a List of CharRange structures that represents a subset of the stringList 
+            // This method builds a List of CharGroup structures that represents a subset of the stringList 
             // according to the criteria specified by sortCriteria.
-            private List<CharRange> BuildCharRanges(List<string> stringList, DepthRange sortCriteria)
+            private List<CharGroup> BuildCharGroups(List<string> stringList, DepthRange sortCriteria)
             {
                 int depthIndex = sortCriteria.CharDepth - 1;
                 int lowIndex = sortCriteria.IndexRange.StartIndex;
                 int highIndex = sortCriteria.IndexRange.EndIndex;
 
-                List<CharRange> charRanges = new List<CharRange>();
+                List<CharGroup> charGroups = new List<CharGroup>();
                 int newStartIndex = 0;
                 int newEndIndex = 0;
                 char newChar = ' ';
@@ -437,11 +425,7 @@ namespace SortingAlgorithms
                         if (stringList[stringIndex][depthIndex] != newChar)
                         {
                             newEndIndex = stringIndex - 1;
-                            charRanges.Add(new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
-                            // Potential performance boost: Build a list of CharGroups instead of CharRanges, 
-                            // and add to existing character groups whenever you can.
-                            // I.e. if you're adding a range for the letter 'T', check if a 'T' group already exists 
-                            // and add the range to that group.
+                            AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
 
                             newChar = stringList[stringIndex][depthIndex];
                             newStartIndex = stringIndex;
@@ -451,23 +435,52 @@ namespace SortingAlgorithms
                 if (stringIndex > highIndex)
                 {
                     newEndIndex = stringIndex - 1;
-                    charRanges.Add(new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+                    AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
                 }
 
-                return charRanges;
+                return charGroups;
+            }
+
+            private void AddCharRangeToCharGroup(ref List<CharGroup> charGroups, CharRange newCharRange)
+            {
+                int groupIndex = 0;
+
+                for (groupIndex = 0; groupIndex < charGroups.Count; groupIndex++)
+                {
+                    if (charGroups[groupIndex].CurrentChar == newCharRange.CurrentChar)
+                    {
+                        charGroups[groupIndex].IndexRanges.Add(newCharRange.IndexRange);
+                        break;
+                    }
+                }
+                if (groupIndex == charGroups.Count)
+                {
+                    List<Range> newList = new List<Range>();
+                    newList.Add(newCharRange.IndexRange);
+                    charGroups.Add(new CharGroup(newCharRange.CurrentChar, newList));
+                }
             }
 
             // Sort the string list at the current depth, for the given range, based upon the list of 
             // sorted ranges that are supplied.
-            private void SortList(ref List<string> stringList, List<CharRange> sortedCharRanges, DepthRange sortCriteria)
+            private void SortList(ref List<string> stringList, List<CharGroup> sortedCharGroups, DepthRange sortCriteria)
             {
                 List<string> sortedStrings = new List<string>();
+                int groupIndex = 0;
+                int rangeIndex = 0;
 
-                foreach (CharRange range in sortedCharRanges)
+                for (groupIndex = 0; groupIndex < sortedCharGroups.Count; groupIndex++)
                 {
-                    for (int sourceIndex = range.IndexRange.StartIndex; sourceIndex <= range.IndexRange.EndIndex; sourceIndex++)
+                    CharGroup group = sortedCharGroups[groupIndex];
+
+                    for (rangeIndex = 0; rangeIndex < group.IndexRanges.Count; rangeIndex++)
                     {
-                        sortedStrings.Add(stringList[sourceIndex]);
+                        Range range = group.IndexRanges[rangeIndex];
+
+                        for (int stringIndex = range.StartIndex; stringIndex <= range.EndIndex; stringIndex++)
+                        {
+                            sortedStrings.Add(stringList[stringIndex]);
+                        }
                     }
                 }
 
@@ -475,15 +488,13 @@ namespace SortingAlgorithms
                 stringList.InsertRange(sortCriteria.IndexRange.StartIndex, sortedStrings);
             }
 
-            // This method builds a list of DepthRange structures that represents the future iterations 
-            // of sortings that will need to be completed.
-            private List<DepthRange> BuildDepthRanges(List<string> stringList, DepthRange sortCriteria)
+            // This method adds future iterations of sortings to the stack for processing.
+            private void AddRangesToStack(ref Stack<DepthRange> stack, List<string> stringList, DepthRange sortCriteria)
             {
                 int depthIndex = sortCriteria.CharDepth - 1;
                 int lowIndex = sortCriteria.IndexRange.StartIndex;
                 int highIndex = sortCriteria.IndexRange.EndIndex;
 
-                List<DepthRange> depthRanges = new List<DepthRange>();
                 int newStartIndex = -1;
                 int newEndIndex = -1;
                 char newChar = ' ';
@@ -501,7 +512,10 @@ namespace SortingAlgorithms
                         if (stringList[stringIndex][depthIndex] != newChar)
                         {
                             newEndIndex = stringIndex - 1;
-                            depthRanges.Add(new DepthRange(sortCriteria.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
+                            if (newStartIndex < newEndIndex)
+                            {
+                                stack.Push(new DepthRange(sortCriteria.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
+                            }
 
                             newChar = stringList[stringIndex][depthIndex];
                             newStartIndex = stringIndex;
@@ -511,10 +525,12 @@ namespace SortingAlgorithms
                 if (stringIndex > highIndex)
                 {
                     newEndIndex = stringIndex - 1;
-                    depthRanges.Add(new DepthRange(sortCriteria.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
+                    if (newStartIndex < newEndIndex)
+                    {
+                        stack.Push(new DepthRange(sortCriteria.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
+                    }
                 }
 
-                return depthRanges;
             }
 
         }
@@ -545,11 +561,11 @@ namespace SortingAlgorithms
                 }
             }
 
-            public static void SortGroupsNoRecursion(ref List<CharRange> charRanges)
+            public static void SortGroupsNoRecursion(ref List<CharGroup> charGroups)
             {
                 Stack<Boundary> stack = new Stack<Boundary>();
                 int startIndex = 0;
-                int endIndex = charRanges.Count - 1;
+                int endIndex = charGroups.Count - 1;
 
                 stack.Push(new Boundary(startIndex, endIndex));
 
@@ -558,7 +574,7 @@ namespace SortingAlgorithms
                     startIndex = stack.Peek().StartIndex;
                     endIndex = stack.Peek().EndIndex;
                     stack.Pop();
-                    int pivotIndex = Partition(ref charRanges, startIndex, endIndex);
+                    int pivotIndex = Partition(ref charGroups, startIndex, endIndex);
                     if (pivotIndex - 1 > startIndex)
                     {
                         stack.Push(new Boundary(startIndex, pivotIndex - 1));
@@ -572,21 +588,21 @@ namespace SortingAlgorithms
 
 
             // Swap the array element
-            private static void Swap(ref List<CharRange> charRanges, int val1Index, int val2Index)
+            private static void Swap(ref List<CharGroup> charGroups, int val1Index, int val2Index)
             {
                 if (val1Index > val2Index)
                 {
-                    charRanges.Insert(val2Index, charRanges[val1Index]);
-                    charRanges.Insert(val1Index + 1, charRanges[val2Index + 1]);
-                    charRanges.RemoveAt(val1Index + 2);
-                    charRanges.RemoveAt(val2Index + 1);
+                    charGroups.Insert(val2Index, charGroups[val1Index]);
+                    charGroups.Insert(val1Index + 1, charGroups[val2Index + 1]);
+                    charGroups.RemoveAt(val1Index + 2);
+                    charGroups.RemoveAt(val2Index + 1);
                 }
                 else if (val2Index > val1Index)
                 {
-                    charRanges.Insert(val1Index, charRanges[val2Index]);
-                    charRanges.Insert(val2Index + 1, charRanges[val1Index + 1]);
-                    charRanges.RemoveAt(val2Index + 2);
-                    charRanges.RemoveAt(val1Index + 1);
+                    charGroups.Insert(val1Index, charGroups[val2Index]);
+                    charGroups.Insert(val2Index + 1, charGroups[val1Index + 1]);
+                    charGroups.RemoveAt(val2Index + 2);
+                    charGroups.RemoveAt(val1Index + 1);
                 }
             }
 
@@ -595,24 +611,24 @@ namespace SortingAlgorithms
             // and larger elements are to the right (high indices).
             // Then it returns the starting index are the larger elements.
             // "Large" is defined by the pivot value selection, which is the last element of the subset.
-            private static int Partition(ref List<CharRange> charRanges, int lowIndex, int highIndex)
+            private static int Partition(ref List<CharGroup> charGroups, int lowIndex, int highIndex)
             {
                 // Set the high index element to its 
                 // proper sorted position
-                char pivotValue = charRanges[highIndex].CurrentChar;
+                char pivotValue = charGroups[highIndex].CurrentChar;
                 int i = lowIndex - 1;
                 for (int j = lowIndex; j < highIndex; ++j)
                 {
-                    if (charRanges[j].CurrentChar.CompareTo(pivotValue) < 0)
-                    //if (String.Compare(charRanges[j].CurrentChar.ToString(), pivotValue.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) < 0)
-                    //if (charRanges[j].CurrentChar < pivotValue)
+                    if (charGroups[j].CurrentChar.CompareTo(pivotValue) < 0)
+                    //if (String.Compare(charGroups[j].CurrentChar.ToString(), pivotValue.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) < 0)
+                    //if (charGroups[j].CurrentChar < pivotValue)
                     {
                         i++;
-                        Swap(ref charRanges, i, j);
+                        Swap(ref charGroups, i, j);
                     }
                 }
                 // Set the high index value to its sorted position
-                Swap(ref charRanges, i + 1, highIndex);
+                Swap(ref charGroups, i + 1, highIndex);
                 // Returns the next sorting  element location
                 return i + 1;
             }
