@@ -350,19 +350,11 @@ namespace SortingAlgorithms
                     DepthRange sortCriteria = stack.Peek();
                     stack.Pop();
 
-                    RemoveShortStringsFromRange(ref stringList, ref sortCriteria);
-
-                    if (sortCriteria.IndexRange.StartIndex >= sortCriteria.IndexRange.EndIndex)
-                    {
-                        // Our range consists of less than two strings.
-                        // Stop processing this sort iteration as no further sorting is necessary.
-                        continue;
-                    }
-
-                    List<CharGroup> charGroups = BuildCharGroups(stringList, sortCriteria);
+                    CharGroup shortStringsGroup;
+                    List<CharGroup> charGroups = BuildCharGroups(out shortStringsGroup, stringList, sortCriteria);
 
                     Structures.SortGroupsNoRecursion(ref charGroups);
-                    SortList(ref stringList, charGroups, sortCriteria);
+                    SortList(ref stringList, shortStringsGroup, charGroups, ref sortCriteria);
 
                     AddRangesToStack(ref stack, stringList, sortCriteria);
 
@@ -401,44 +393,104 @@ namespace SortingAlgorithms
 
             // This method builds a List of CharGroup structures that represents a subset of the stringList 
             // according to the criteria specified by sortCriteria.
-            private List<CharGroup> BuildCharGroups(List<string> stringList, DepthRange sortCriteria)
+            private List<CharGroup> BuildCharGroups(out CharGroup shortStringsGroup, List<string> stringList, DepthRange sortCriteria)
             {
                 int depthIndex = sortCriteria.CharDepth - 1;
                 int lowIndex = sortCriteria.IndexRange.StartIndex;
                 int highIndex = sortCriteria.IndexRange.EndIndex;
 
+                List<Range> shortStringsRanges = new List<Range>();
                 List<CharGroup> charGroups = new List<CharGroup>();
                 int newStartIndex = 0;
                 int newEndIndex = 0;
                 char newChar = ' ';
                 int stringIndex;
+                bool rangeOfStringsIsSorted = false;
+                bool nextStringIsSorted = false;
 
                 for (stringIndex = lowIndex; stringIndex <= highIndex; stringIndex++)
                 {
                     if (stringIndex == lowIndex)
                     {
-                        newChar = stringList[stringIndex][depthIndex];
+                        if (StringIsSorted(stringList, stringIndex, sortCriteria.CharDepth))
+                        {
+                            rangeOfStringsIsSorted = true;
+                        }
+                        else
+                        {
+                            newChar = stringList[stringIndex][depthIndex];
+                            rangeOfStringsIsSorted = false;
+                        }
                         newStartIndex = stringIndex;
                     }
                     else
                     {
-                        if (stringList[stringIndex][depthIndex] != newChar)
+                        // Save the range to shortStringsRanges when the strings are short (i.e. already sorted).
+                        // Save the range to charGroups when the strings are long enough to need further sorting.
+                        // Switching between saving to shortStringsRanges and charGroups is an implied character change.
+
+                        nextStringIsSorted = StringIsSorted(stringList, stringIndex, sortCriteria.CharDepth);
+                        if (rangeOfStringsIsSorted && !nextStringIsSorted)
+                        {
+                            newEndIndex = stringIndex - 1;
+                            shortStringsRanges.Add(new Range(newStartIndex, newEndIndex));
+
+                            newChar = stringList[stringIndex][depthIndex];
+                            newStartIndex = stringIndex;
+
+                            rangeOfStringsIsSorted = false;
+                        }
+                        else if (!rangeOfStringsIsSorted && nextStringIsSorted)
                         {
                             newEndIndex = stringIndex - 1;
                             AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
 
-                            newChar = stringList[stringIndex][depthIndex];
                             newStartIndex = stringIndex;
+
+                            rangeOfStringsIsSorted = true;
+                        }
+                        else if (!rangeOfStringsIsSorted && !nextStringIsSorted)
+                        {
+                            if (stringList[stringIndex][depthIndex] != newChar)
+                            {
+                                newEndIndex = stringIndex - 1;
+                                AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+
+                                newChar = stringList[stringIndex][depthIndex];
+                                newStartIndex = stringIndex;
+                            }
                         }
                     }
                 }
                 if (stringIndex > highIndex)
                 {
                     newEndIndex = stringIndex - 1;
-                    AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+
+                    if (rangeOfStringsIsSorted)
+                    {
+                        shortStringsRanges.Add(new Range(newStartIndex, newEndIndex));
+                    }
+                    else
+                    {
+                        AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+                    }
                 }
 
+                shortStringsGroup = new CharGroup(' ', shortStringsRanges);
+
                 return charGroups;
+            }
+
+            private bool StringIsSorted(List<string> stringList, int stringIndex, int charDepth)
+            {
+                if (stringList[stringIndex].Length < charDepth)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             private void AddCharRangeToCharGroup(ref List<CharGroup> charGroups, CharRange newCharRange)
@@ -463,12 +515,26 @@ namespace SortingAlgorithms
 
             // Sort the string list at the current depth, for the given range, based upon the list of 
             // sorted ranges that are supplied.
-            private void SortList(ref List<string> stringList, List<CharGroup> sortedCharGroups, DepthRange sortCriteria)
+            private void SortList(ref List<string> stringList, CharGroup shortStringsGroup, List<CharGroup> sortedCharGroups, ref DepthRange sortCriteria)
             {
                 List<string> sortedStrings = new List<string>();
                 int groupIndex = 0;
                 int rangeIndex = 0;
+                int shortStringsCount = 0;
 
+                // Strings in shortStringsGroup are sorted and can be moved to the front of stringList.
+                for (rangeIndex = 0; rangeIndex < shortStringsGroup.IndexRanges.Count; rangeIndex++)
+                {
+                    Range range = shortStringsGroup.IndexRanges[rangeIndex];
+
+                    for (int stringIndex = range.StartIndex; stringIndex <= range.EndIndex; stringIndex++)
+                    {
+                        sortedStrings.Add(stringList[stringIndex]);
+                    }
+                }
+                shortStringsCount = sortedStrings.Count;
+
+                // Strings in sortedCharGroups will need further sorting beyond the current iteration.
                 for (groupIndex = 0; groupIndex < sortedCharGroups.Count; groupIndex++)
                 {
                     CharGroup group = sortedCharGroups[groupIndex];
@@ -486,6 +552,10 @@ namespace SortingAlgorithms
 
                 stringList.RemoveRange(sortCriteria.IndexRange.StartIndex, sortedStrings.Count);
                 stringList.InsertRange(sortCriteria.IndexRange.StartIndex, sortedStrings);
+
+                // Short (sorted) strings have been moved to the front of the list.
+                // Remove them from sortCriteria range so that we don't attempt to sort them further.
+                sortCriteria.IndexRange.StartIndex += shortStringsCount;
             }
 
             // This method adds future iterations of sortings to the stack for processing.
