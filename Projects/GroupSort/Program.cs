@@ -22,7 +22,8 @@ class Program
 
 		List<string> allInputFiles = new List<string>();
         allInputFiles.Add("test1.txt");
-		allInputFiles.Add("movies.csv");
+        allInputFiles.Add("test2.txt");
+        allInputFiles.Add("movies.csv");
 		allInputFiles.Add("moviesforwards.txt");
 		allInputFiles.Add("moviesbackwards.txt");
 		allInputFiles.Add("moviesforwardssplit.txt");
@@ -247,26 +248,32 @@ class Program
 		}
 
 		string timeString = String.Empty;
-		if (timeToSort.Elapsed.Minutes > 0)
+		bool displayFurtherUnits = false;
+		if (displayFurtherUnits || (timeToSort.Elapsed.Minutes > 0))
 		{
 			timeString += timeToSort.Elapsed.Minutes + "m";
-		}
-		if (timeToSort.Elapsed.Seconds > 0)
-		{
+			displayFurtherUnits = true;
+        }
+        if (displayFurtherUnits || (timeToSort.Elapsed.Seconds > 0))
+        {
 			timeString += timeToSort.Elapsed.Seconds + "s";
-		}
-		if (timeToSort.Elapsed.Milliseconds > 0)
-		{
+            displayFurtherUnits = true;
+        }
+        if (displayFurtherUnits || (timeToSort.Elapsed.Milliseconds > 0))
+        {
 			timeString += timeToSort.Elapsed.Milliseconds + "ms";
-		}
-		if (microseconds != "*")
-		{
+            displayFurtherUnits = true;
+        }
+        if (displayFurtherUnits || (microseconds != "*"))
+        {
 			timeString += microseconds + "us";
+			displayFurtherUnits = true;
 		}
 /*
-		if (nanoseconds != "*")
+		if (displayFurtherUnits || (nanoseconds != "*"))
 		{
 			timeString += nanoseconds + "ns";
+			displayFurtherUnits = true;
 		}
 */
 		
