@@ -401,8 +401,8 @@ namespace SortingAlgorithms
 
                 List<Range> shortStringsRanges = new List<Range>();
                 List<CharGroup> charGroups = new List<CharGroup>();
-                int newStartIndex = 0;
-                int newEndIndex = 0;
+                int newStartIndex = -1;
+                int newEndIndex = -1;
                 char newChar = ' ';
                 int stringIndex;
                 bool rangeOfStringsIsSorted = false;
@@ -464,15 +464,18 @@ namespace SortingAlgorithms
                 }
                 if (stringIndex > highIndex)
                 {
-                    newEndIndex = stringIndex - 1;
+                    if (newStartIndex > -1)
+                    {
+                        newEndIndex = stringIndex - 1;
 
-                    if (rangeOfStringsIsSorted)
-                    {
-                        shortStringsRanges.Add(new Range(newStartIndex, newEndIndex));
-                    }
-                    else
-                    {
-                        AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+                        if (rangeOfStringsIsSorted)
+                        {
+                            shortStringsRanges.Add(new Range(newStartIndex, newEndIndex));
+                        }
+                        else
+                        {
+                            AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+                        }
                     }
                 }
 
@@ -570,7 +573,7 @@ namespace SortingAlgorithms
                 char newChar = ' ';
                 int stringIndex;
 
-                for (stringIndex = lowIndex; stringIndex <= sortCriteria.IndexRange.EndIndex; stringIndex++)
+                for (stringIndex = lowIndex; stringIndex <= highIndex; stringIndex++)
                 {
                     if (stringIndex == lowIndex)
                     {
@@ -594,10 +597,13 @@ namespace SortingAlgorithms
                 }
                 if (stringIndex > highIndex)
                 {
-                    newEndIndex = stringIndex - 1;
-                    if (newStartIndex < newEndIndex)
+                    if (newStartIndex > -1)
                     {
-                        stack.Push(new DepthRange(sortCriteria.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
+                        newEndIndex = stringIndex - 1;
+                        if (newStartIndex < newEndIndex)
+                        {
+                            stack.Push(new DepthRange(sortCriteria.CharDepth + 1, new Range(newStartIndex, newEndIndex)));
+                        }
                     }
                 }
 
@@ -637,21 +643,24 @@ namespace SortingAlgorithms
                 int startIndex = 0;
                 int endIndex = charGroups.Count - 1;
 
-                stack.Push(new Boundary(startIndex, endIndex));
-
-                while (stack.Count > 0)
+                if (endIndex >= 0)
                 {
-                    startIndex = stack.Peek().StartIndex;
-                    endIndex = stack.Peek().EndIndex;
-                    stack.Pop();
-                    int pivotIndex = Partition(ref charGroups, startIndex, endIndex);
-                    if (pivotIndex - 1 > startIndex)
+                    stack.Push(new Boundary(startIndex, endIndex));
+
+                    while (stack.Count > 0)
                     {
-                        stack.Push(new Boundary(startIndex, pivotIndex - 1));
-                    }
-                    if (pivotIndex + 1 < endIndex)
-                    {
-                        stack.Push(new Boundary(pivotIndex + 1, endIndex));
+                        startIndex = stack.Peek().StartIndex;
+                        endIndex = stack.Peek().EndIndex;
+                        stack.Pop();
+                        int pivotIndex = Partition(ref charGroups, startIndex, endIndex);
+                        if (pivotIndex - 1 > startIndex)
+                        {
+                            stack.Push(new Boundary(startIndex, pivotIndex - 1));
+                        }
+                        if (pivotIndex + 1 < endIndex)
+                        {
+                            stack.Push(new Boundary(pivotIndex + 1, endIndex));
+                        }
                     }
                 }
             }
