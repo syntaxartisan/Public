@@ -10,7 +10,17 @@ using System.Globalization;
 
 class Program
 {
-	static class GlobalVariables
+    /* Conclusions:
+	 * For a list of completely unique items, QuickSort is faster than GroupSort.
+	 * For a list of completely duplicate items, GroupSort is faster than QuickSort.
+	 * GroupSort is much faster at sorting duplicate items than QuickSort is at sorting unique items.
+	 * In a list containing both unique and duplicate items, the percentage of duplicates has to be 
+	 * relatively low in order for GroupSort and QuickSort to sort the list in the same amount of time.
+	 * I'm seeing that the percentage of duplicates would need to stay below 10% in order for 
+	 * QuickSort to be more viable than GroupSort for heftier lists. However I haven't run tests 
+	 * in data sets of 1 million records or more.
+	*/
+    static class GlobalVariables
 	{
         public const string inputFolder = @"D:\(A) Professional\Code\Public\Projects\input\";
         public const string outputFolder = @"D:\(A) Professional\Code\Public\Projects\GroupSort\output\";
@@ -21,30 +31,55 @@ class Program
         string inputFile = String.Empty;
 
 		List<string> allInputFiles = new List<string>();
-        allInputFiles.Add("test1.txt");
-        allInputFiles.Add("test2.txt");
-        allInputFiles.Add("movies.csv");
-		allInputFiles.Add("moviesforwards.txt");
-		allInputFiles.Add("moviesbackwards.txt");
-		allInputFiles.Add("moviesforwardssplit.txt");
-		allInputFiles.Add("moviesrandomsmall.csv");
-		allInputFiles.Add("moviesrandomlarge.csv");
-		allInputFiles.Add("totallyrandom.txt");
-		allInputFiles.Add("InsuranceGroups.csv");
+		//allInputFiles.Add("test1.txt"); // QuickSort is 4x faster
+		//allInputFiles.Add("test2.txt"); // QuickSort is 2x faster
+		//allInputFiles.Add("movies.csv"); // QuickSort is 2x faster
+		//allInputFiles.Add("moviesforwards.txt"); // QuickSort is 6x faster
+		//allInputFiles.Add("moviesbackwards.txt"); // GroupSort is 250x faster
+		//allInputFiles.Add("moviesforwardssplit.txt"); // QuickSort is 3x faster
+		//allInputFiles.Add("moviesrandomsmall.csv"); // QuickSort is 8x faster
+		//allInputFiles.Add("moviesrandomlarge.csv"); // QuickSort is 45x faster
+		//allInputFiles.Add("totallyrandom.txt"); // QuickSort is 2x faster
+		//allInputFiles.Add("InsuranceGroups.csv"); // QuickSort is 5x faster
 
-		//allInputFiles.Add("background-checks-original-order.txt");
-		//allInputFiles.Add("background-checks-combo1-sorted-asc.txt");
-		//allInputFiles.Add("background-checks-combo1-sorted-desc.txt");
-		//allInputFiles.Add("background-checks-combo1-sort-permit-asc.txt");
-		//allInputFiles.Add("background-checks-combo1-sort-permit-desc.txt");
+		//allInputFiles.Add("background-checks-original-order.txt"); // about the same
+		//allInputFiles.Add("background-checks-combo1-sorted-asc.txt"); // GroupSort is 233x faster
+		//allInputFiles.Add("background-checks-combo1-sorted-desc.txt"); // GroupSort is 167x faster
+		//allInputFiles.Add("background-checks-combo1-sort-permit-asc.txt"); // QuickSort is 57% faster
+		//allInputFiles.Add("background-checks-combo1-sort-permit-desc.txt"); // GroupSort is 10x faster
 
-		//allInputFiles.Add("feds3-planes-original-order.txt");
-		//allInputFiles.Add("feds3-planes-sorted-asc.txt");
-		//allInputFiles.Add("feds3-planes-sorted-desc.txt");
-		//allInputFiles.Add("feds3-detailed-string-sorted-asc.txt");
-		//allInputFiles.Add("feds3-detailed-string-sorted-desc.txt");
+		//allInputFiles.Add("feds3-planes-original-order.txt"); // GroupSort is 433x faster
+		//allInputFiles.Add("feds3-planes-sorted-asc.txt"); // GroupSort is 587x faster
+		//allInputFiles.Add("feds3-planes-sorted-desc.txt"); // GroupSort is 578x faster
+		allInputFiles.Add("feds3-detailed-string-sorted-asc.txt"); // GroupSort is 114x faster
+		allInputFiles.Add("feds3-detailed-string-sorted-desc.txt"); // GroupSort is 114x faster
 
-		int selection = GatherMenuSelection(allInputFiles);
+        //allInputFiles.Add("feds3-6char.txt"); // GroupSort is 3762x faster
+        //allInputFiles.Add("feds3-10char.txt"); // GroupSort is 34600x faster
+        //allInputFiles.Add("feds3-14char.txt"); // GroupSort is 26556x faster
+
+        //allInputFiles.Add("feds3-5k-unique.txt"); // QuickSort is 2.5x faster
+        //allInputFiles.Add("DOB_Job-800k-unique.txt"); // QuickSort is 64x faster
+        //allInputFiles.Add("DOB_Job-500k-unique.txt"); // QuickSort is 41x faster
+        //allInputFiles.Add("DOB_Job-100k-unique.txt"); // QuickSort is 5.5x faster
+        //allInputFiles.Add("DOB_Job-50k-unique.txt"); // QuickSort is 4x faster
+        //allInputFiles.Add("DOB_Job-10k-unique.txt"); // QuickSort is 1.6x faster
+        //allInputFiles.Add("the-same-17char-string-repeated.txt"); // 1k records: GroupSort is 23x faster
+        //allInputFiles.Add("the-same-17char-string-repeated.txt"); // 5k records: GroupSort is 110x faster
+        //allInputFiles.Add("the-same-17char-string-repeated.txt"); // 10k records: GroupSort is 160x faster
+        //allInputFiles.Add("the-same-17char-string-repeated.txt"); // 50k records: GroupSort is 982x faster
+        //allInputFiles.Add("the-same-17char-string-repeated.txt"); // 100k records: GroupSort is 2155x faster
+        //allInputFiles.Add("200k-unique-and-duplicate.txt"); // GroupSort is 45x faster
+        //allInputFiles.Add("20k-unique-and-duplicate.txt"); // GroupSort is 29x faster
+        //allInputFiles.Add("unique-and-duplicate-mix.txt"); // 100 uniques, 90 dupes: same speed
+        //allInputFiles.Add("unique-and-duplicate-mix.txt"); // 1,000 uniques, 220 dupes: same speed
+        //allInputFiles.Add("unique-and-duplicate-mix.txt"); // 10,000 uniques, 865 dupes: same speed
+        //allInputFiles.Add("unique-and-duplicate-mix.txt"); // 20,000 uniques, 1770 dupes: same speed
+        //allInputFiles.Add("unique-and-duplicate-mix.txt"); // 100,000 uniques, 8790 dupes: same speed
+        //allInputFiles.Add("unique-and-duplicate-mix.txt"); // 50,000 uniques, 4400 dupes: same speed
+        //allInputFiles.Add("unique-and-duplicate-mix.txt"); // 500,000 uniques, 49500 dupes: same speed
+
+        int selection = GatherMenuSelection(allInputFiles);
 		while (selection >= 0)
 		{
 			List<string> listToSort = new List<string>();
