@@ -82,50 +82,49 @@ class Program
         int selection = GatherMenuSelection(allInputFiles);
 		while (selection >= 0)
 		{
-			List<string> listToSort = new List<string>();
+			List<string> originalList = new List<string>();
 
-			// SELECTIONS
 			System.Console.WriteLine("Processing " + allInputFiles[selection - 1]);
 			inputFile = GlobalVariables.inputFolder + allInputFiles[selection - 1];
 
-			if (BuildListFromFile(ref listToSort, inputFile))
+			if (BuildListFromFile(ref originalList, inputFile))
 			{
-                WriteToFile(listToSort, "master");
-                
-				Stopwatch timeToSort = new Stopwatch();
+                Stopwatch timeToSort = new Stopwatch();
+                WriteListToFile(originalList, "master");
 
-                List<string> groupsortListToSort = listToSort.ToList<string>();
-                List<string> groupsortSortedList = listToSort.ToList<string>();
 
+                List<string> groupsortSortedList = originalList.ToList<string>();
                 Console.WriteLine("-- GroupSort --");
                 timeToSort.Restart();
                 // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-                //groupsortSortedList = GroupSort.SortStrings(groupsortListToSort.ToList<string>());
-                //groupsortSortedList = stringGroupSorter.SortStrings(groupsortListToSort.ToList<string>());
+                //groupsortSortedList = GroupSort.SortStrings(originalList.ToList<string>());
+                //groupsortSortedList = stringGroupSorter.SortStrings(originalList.ToList<string>());
                 GroupSort.Strings stringGroupSorter = new GroupSort.Strings();
                 stringGroupSorter.SortStringsNoRecursion(ref groupsortSortedList);
                 timeToSort.Stop();
-                CheckList(groupsortListToSort, groupsortSortedList);
-                WriteToFile(groupsortSortedList, "groupsort");
+
+                ValidateList(groupsortSortedList, originalList.Count);
+                WriteListToFile(groupsortSortedList, "groupsort");
                 PrintOverallTimeResult(groupsortSortedList, timeToSort);
                 Console.WriteLine("");
 
-                List<string> quicksortListToSort = listToSort.ToList<string>();
-                List<string> quicksortSortedList = new List<string>();
 
+                List<string> quicksortSortedList = new List<string>();
 				Console.WriteLine("-- QuickSort --");
 				timeToSort.Restart();
                 // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-                //quicksortSortedList = QuickSort.Strings.SortStrings(quicksortListToSort.ToList<string>());
-                //quicksortSortedList = QuickSort.Strings.SortStringsNoRecursion(quicksortListToSort.ToList<string>());
-				QuickSort.Strings stringQuickSorter = new QuickSort.Strings();
-				quicksortSortedList = stringQuickSorter.SortStringsNoRecursion(quicksortListToSort.ToList<string>());
+                //quicksortSortedList = QuickSort.Strings.SortStrings(originalList.ToList<string>());
+                //quicksortSortedList = QuickSort.Strings.SortStringsNoRecursion(originalList.ToList<string>());
+                QuickSort.Strings stringQuickSorter = new QuickSort.Strings();
+				quicksortSortedList = stringQuickSorter.SortStringsNoRecursion(originalList.ToList<string>());
                 timeToSort.Stop();
-                CheckList(quicksortListToSort, quicksortSortedList);
-                WriteToFile(quicksortSortedList, "quicksort");
+                ValidateList(quicksortSortedList, originalList.Count);
+
+                WriteListToFile(quicksortSortedList, "quicksort");
                 PrintOverallTimeResult(quicksortSortedList, timeToSort);
                 PrintQuicksortDetailTimeResult(stringQuickSorter);
                 Console.WriteLine("");
+
             }
 
             selection = GatherMenuSelection(allInputFiles);
@@ -136,9 +135,8 @@ class Program
 		System.Console.Read();
 	}
 
-	static int GatherMenuSelection(List<string> allInputFiles)
+	private static int GatherMenuSelection(List<string> allInputFiles)
 	{
-		// SELECTIONS
 		System.Console.WriteLine("-------------------------");
 		System.Console.WriteLine("Select your option:");
 		for (int fileIndex = 0; fileIndex < allInputFiles.Count; fileIndex++)
@@ -183,11 +181,11 @@ class Program
         return false;
 	}
 
-	private static void CheckList(List<string> originalList, List<string> sortedListToCheck)
+	private static void ValidateList(List<string> sortedListToCheck, int originalListItemCount)
 	{
 		int falseSortCount = 0;
 
-		if (originalList.Count == sortedListToCheck.Count)
+		if (originalListItemCount == sortedListToCheck.Count)
 		{
 			if (sortedListToCheck.Count > 1)
 			{
@@ -221,12 +219,12 @@ class Program
         }
 		else
 		{
-			Console.WriteLine("The original list count (" + originalList.Count + ") doesn't match the sorted list count (" + sortedListToCheck.Count + ")");
+			Console.WriteLine("The original list count (" + originalListItemCount + ") doesn't match the sorted list count (" + sortedListToCheck.Count + ")");
 
         }
     }
 
-	public static void WriteToFile(List<string> listToSave, string baseFileName)
+	private static void WriteListToFile(List<string> listToSave, string baseFileName)
 	{
         string fileName = GlobalVariables.outputFolder + baseFileName + ".csv";
         
