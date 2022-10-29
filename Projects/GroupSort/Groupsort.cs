@@ -13,6 +13,8 @@ namespace SortingAlgorithms
     {
         public class Strings
         {
+            public class Recursive
+            {
             private static readonly double _algorithmSwitchoverThreshold = .1;
 
             public class CharacterGroup
@@ -84,7 +86,7 @@ namespace SortingAlgorithms
                             // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                             // start resorting (this level and below) using QuickSort.
                             finalOutList.Clear();
-                            finalOutList = QuickSort.Strings.SortStrings(listToSort);
+                            finalOutList = QuickSort.Strings.Recursive.SortStrings(listToSort);
                             return finalOutList;
                         }
                     }
@@ -117,7 +119,7 @@ namespace SortingAlgorithms
                                 // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                                 // start resorting (this level and below) using QuickSort.
                                 finalOutList.Clear();
-                                finalOutList = QuickSort.Strings.SortStrings(listToSort);
+                                finalOutList = QuickSort.Strings.Recursive.SortStrings(listToSort);
                                 return finalOutList;
                             }
                         }
@@ -201,11 +203,6 @@ namespace SortingAlgorithms
                 arr.RemoveAt(pivot);
                 foreach (CharacterGroup i in arr)
                 {
-                    //if (String.Compare(i.CurrentCharacter.ToString(), pivotVal.CurrentCharacter.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) <= 0)
-                    //    loe.Add(i);
-                    //else if (String.Compare(i.CurrentCharacter.ToString(), pivotVal.CurrentCharacter.ToString(), CultureInfo.CurrentCulture, CompareOptions.Ordinal) > 0)
-                    //    gt.Add(i);
-
                     if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) <= 0)
                         loe.Add(i);
                     else if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) > 0)
@@ -226,7 +223,10 @@ namespace SortingAlgorithms
                 resultSet.AddRange(QuickSortStructures(gt));
                 return resultSet;
             }
+            }
 
+            public class NonRecursive
+            {
             public class Range
             {
                 public int StartIndex { get; set; }
@@ -283,7 +283,7 @@ namespace SortingAlgorithms
                 }
             }
 
-            public void SortStringsNoRecursion(ref List<string> stringList)
+            public void SortStrings(ref List<string> stringList)
             {
                 if (stringList.Count == 0)
                 {
@@ -316,35 +316,6 @@ namespace SortingAlgorithms
 
                 }
 
-            }
-
-            // We are sorting strings, one character at a time.
-            // Depth is used to indicate which character of the strings we are sorting.
-            // If a string is shorter than the depth, the string should be moved 
-            // to the beginning of the range and not sorted further.
-            // Also update the range to excluded the already sorted strings.
-            private void RemoveShortStringsFromRange(ref List<string> stringList, ref DepthRange sortCriteria)
-            {
-                int startIndex = sortCriteria.IndexRange.StartIndex;
-                int endIndex = sortCriteria.IndexRange.EndIndex;
-
-                int insertIndex = startIndex;
-                for (int stringListIndex = startIndex; stringListIndex <= endIndex; stringListIndex++)
-                {
-                    if (stringList[stringListIndex].Length < sortCriteria.CharDepth)
-                    {
-                        // String is too short to be sorted further, thus it is already sorted.
-                        // Move it to the beginning of the range.
-                        if (stringListIndex > insertIndex)
-                        {
-                            stringList.Insert(insertIndex, stringList[stringListIndex]);
-                            stringList.RemoveAt(stringListIndex + 1);
-                        }
-                        insertIndex++;
-                    }
-                }
-
-                sortCriteria.IndexRange.StartIndex = insertIndex;
             }
 
             // This method builds a List of CharGroup structures that represents a subset of the stringList 
@@ -565,7 +536,6 @@ namespace SortingAlgorithms
 
             }
 
-        }
 
 
         private class Structures
@@ -655,6 +625,8 @@ namespace SortingAlgorithms
                 Swap(ref charGroups, i + 1, highIndex);
                 // Returns the next sorting  element location
                 return i + 1;
+            }
+        }
             }
         }
     }

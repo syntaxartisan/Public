@@ -33,13 +33,13 @@ class Program
 		List<string> allInputFiles = new List<string>();
 		//allInputFiles.Add("test1.txt"); // QuickSort is 4x faster
 		//allInputFiles.Add("test2.txt"); // QuickSort is 2x faster
-		//allInputFiles.Add("movies.csv"); // QuickSort is 2x faster
-		//allInputFiles.Add("moviesforwards.txt"); // QuickSort is 6x faster
-		//allInputFiles.Add("moviesbackwards.txt"); // GroupSort is 250x faster
-		//allInputFiles.Add("moviesforwardssplit.txt"); // QuickSort is 3x faster
-		//allInputFiles.Add("moviesrandomsmall.csv"); // QuickSort is 8x faster
-		//allInputFiles.Add("moviesrandomlarge.csv"); // QuickSort is 45x faster
-		//allInputFiles.Add("totallyrandom.txt"); // QuickSort is 2x faster
+		allInputFiles.Add("movies.csv"); // QuickSort is 2x faster
+		allInputFiles.Add("moviesforwards.txt"); // QuickSort is 6x faster
+		allInputFiles.Add("moviesbackwards.txt"); // GroupSort is 250x faster
+		allInputFiles.Add("moviesforwardssplit.txt"); // QuickSort is 3x faster
+		allInputFiles.Add("moviesrandomsmall.csv"); // QuickSort is 8x faster
+		allInputFiles.Add("moviesrandomlarge.csv"); // QuickSort is 45x faster
+		allInputFiles.Add("totallyrandom.txt"); // QuickSort is 2x faster
 		//allInputFiles.Add("InsuranceGroups.csv"); // QuickSort is 5x faster
 
 		//allInputFiles.Add("background-checks-original-order.txt"); // about the same
@@ -51,8 +51,8 @@ class Program
 		//allInputFiles.Add("feds3-planes-original-order.txt"); // GroupSort is 433x faster
 		//allInputFiles.Add("feds3-planes-sorted-asc.txt"); // GroupSort is 587x faster
 		//allInputFiles.Add("feds3-planes-sorted-desc.txt"); // GroupSort is 578x faster
-		allInputFiles.Add("feds3-detailed-string-sorted-asc.txt"); // GroupSort is 114x faster
-		allInputFiles.Add("feds3-detailed-string-sorted-desc.txt"); // GroupSort is 114x faster
+		//allInputFiles.Add("feds3-detailed-string-sorted-asc.txt"); // GroupSort is 114x faster
+		//allInputFiles.Add("feds3-detailed-string-sorted-desc.txt"); // GroupSort is 114x faster
 
         //allInputFiles.Add("feds3-6char.txt"); // GroupSort is 3762x faster
         //allInputFiles.Add("feds3-10char.txt"); // GroupSort is 34600x faster
@@ -96,12 +96,12 @@ class Program
                 List<string> groupsortSortedList = originalList.ToList<string>();
                 Console.WriteLine("-- GroupSort --");
                 timeToSort.Restart();
-                // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-                //groupsortSortedList = GroupSort.SortStrings(originalList.ToList<string>());
-                //groupsortSortedList = stringGroupSorter.SortStrings(originalList.ToList<string>());
-                GroupSort.Strings stringGroupSorter = new GroupSort.Strings();
-                stringGroupSorter.SortStringsNoRecursion(ref groupsortSortedList);
-                timeToSort.Stop();
+				// Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
+				//GroupSort.Strings.Recursive stringGroupSorter = new GroupSort.Strings.Recursive();
+				//groupsortSortedList = stringGroupSorter.SortStrings(originalList.ToList<string>());
+				GroupSort.Strings.NonRecursive stringGroupSorter = new GroupSort.Strings.NonRecursive();
+				stringGroupSorter.SortStrings(ref groupsortSortedList);
+				timeToSort.Stop();
 
                 ValidateList(groupsortSortedList, originalList.Count);
                 WriteListToFile(groupsortSortedList, "groupsort");
@@ -112,17 +112,15 @@ class Program
                 List<string> quicksortSortedList = new List<string>();
 				Console.WriteLine("-- QuickSort --");
 				timeToSort.Restart();
-                // Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-                //quicksortSortedList = QuickSort.Strings.SortStrings(originalList.ToList<string>());
-                //quicksortSortedList = QuickSort.Strings.SortStringsNoRecursion(originalList.ToList<string>());
-                QuickSort.Strings stringQuickSorter = new QuickSort.Strings();
+				// Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
+				//quicksortSortedList = QuickSort.Strings.Recursive.SortStrings(originalList.ToList<string>());
+				QuickSort.Strings.NonRecursive stringQuickSorter = new QuickSort.Strings.NonRecursive();
 				quicksortSortedList = stringQuickSorter.SortStringsNoRecursion(originalList.ToList<string>());
-                timeToSort.Stop();
+				timeToSort.Stop();
                 ValidateList(quicksortSortedList, originalList.Count);
 
                 WriteListToFile(quicksortSortedList, "quicksort");
                 PrintOverallTimeResult(quicksortSortedList, timeToSort);
-                PrintQuicksortDetailTimeResult(stringQuickSorter);
                 Console.WriteLine("");
 
             }
@@ -242,19 +240,6 @@ class Program
 	{
         Console.WriteLine(listToPrint.Count + " items in list");
         Console.WriteLine("Time: " + ConvertTimeToString(timeToSort));
-    }
-
-    private static void PrintQuicksortDetailTimeResult(QuickSort.Strings stringSorter)
-    {
-		if (stringSorter.UseStopwatches)
-		{
-            if (stringSorter.Stopwatch1.Elapsed.TotalMilliseconds > 0)
-                Console.WriteLine(stringSorter.Stopwatch1MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch1));
-            if (stringSorter.Stopwatch2.Elapsed.TotalMilliseconds > 0)
-                Console.WriteLine(stringSorter.Stopwatch2MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch2));
-            if (stringSorter.Stopwatch3.Elapsed.TotalMilliseconds > 0)
-                Console.WriteLine(stringSorter.Stopwatch3MonitorDescription + ": " + ConvertTimeToString(stringSorter.Stopwatch3));
-        }
     }
 
     private static string ConvertTimeToString(Stopwatch timeToSort)

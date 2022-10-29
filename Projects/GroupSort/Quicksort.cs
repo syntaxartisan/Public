@@ -23,6 +23,8 @@ namespace SortingAlgorithms
 
         public class Integers
         {
+            public class Recursive
+            {
             public static List<int> SortIntegers(List<int> intList)
             {
                 List<int> loe = new List<int>(), gt = new List<int>();
@@ -52,7 +54,10 @@ namespace SortingAlgorithms
                 resultSet.AddRange(SortIntegers(gt));
                 return resultSet;
             }
+            }
 
+            public class NonRecursive
+            {
             public static List<int> SortIntegersNoRecursion(List<int> intList)
             {
                 Stack<Boundary> stack = new Stack<Boundary>();
@@ -107,40 +112,14 @@ namespace SortingAlgorithms
                 // Returns the next sorting  element location
                 return i + 1;
             }
+            }
 
         }
 
         public class Strings
         {
-            private static readonly bool _useStopwatches = false;
-
-            public bool UseStopwatches { get { return _useStopwatches; } }
-
-            public Stopwatch Stopwatch1 { get; private set; } = new Stopwatch();
-            public Stopwatch Stopwatch2 { get; private set; } = new Stopwatch();
-            public Stopwatch Stopwatch3 { get; private set; } = new Stopwatch();
-
-            public readonly string Stopwatch1MonitorDescription = "PUSHING TO STACK";
-            public readonly string Stopwatch2MonitorDescription = "SWAP()";
-            public readonly string Stopwatch3MonitorDescription = "STRING.COMPARE()";
-
-            public void StartStopwatch(Stopwatch selectedStopwatch)
+            public class Recursive
             {
-                if (_useStopwatches)
-                {
-                    selectedStopwatch.Start();
-                }
-            }
-
-            public void StopStopwatch(Stopwatch selectedStopwatch)
-            {
-                if (_useStopwatches)
-                {
-                    selectedStopwatch.Stop();
-                }
-            }
-
-
             public static List<string> SortStrings(List<string> stringList)
             {
                 List<string> loe = new List<string>(), gt = new List<string>();
@@ -171,16 +150,17 @@ namespace SortingAlgorithms
                 resultSet.AddRange(SortStrings(gt));
                 return resultSet;
             }
+            }
 
+            public class NonRecursive
+            {
             public List<string> SortStringsNoRecursion(List<string> stringList)
             {
                 Stack<Boundary> stack = new Stack<Boundary>();
                 int startIndex = 0;
                 int endIndex = stringList.Count - 1;
 
-                StartStopwatch(Stopwatch1);
                 stack.Push(new Boundary(startIndex, endIndex));
-                StopStopwatch(Stopwatch1);
 
                 while (stack.Count > 0)
                 {
@@ -190,15 +170,11 @@ namespace SortingAlgorithms
                     int pivotIndex = this.Partition(stringList, startIndex, endIndex);
                     if (pivotIndex - 1 > startIndex)
                     {
-                        StartStopwatch(Stopwatch1);
                         stack.Push(new Boundary(startIndex, pivotIndex - 1));
-                        StopStopwatch(Stopwatch1);
                     }
                     if (pivotIndex + 1 < endIndex)
                     {
-                        StartStopwatch(Stopwatch1);
                         stack.Push(new Boundary(pivotIndex + 1, endIndex));
-                        StopStopwatch(Stopwatch1);
                     }
                 }
 
@@ -227,24 +203,18 @@ namespace SortingAlgorithms
                 int i = lowIndex - 1;
                 for (int j = lowIndex; j < highIndex; ++j)
                 {
-                    StartStopwatch(Stopwatch3);
                     if (String.Compare(stringList[j], pivotValue, CultureInfo.CurrentCulture, CompareOptions.Ordinal) < 0)
                     //if (stringList[j] < pivotValue)
                     {
-                        StopStopwatch(Stopwatch3);
                         i++;
-                        StartStopwatch(Stopwatch2);
                         Swap(stringList, i, j);
-                        StopStopwatch(Stopwatch2);
                     }
-                    StopStopwatch(Stopwatch3);
                 }
                 // Set the high index value to its sorted position
-                StopStopwatch(Stopwatch2);
                 Swap(stringList, i + 1, highIndex);
-                StopStopwatch(Stopwatch2);
                 // Returns the next sorting  element location
                 return i + 1;
+            }
             }
         }
 
