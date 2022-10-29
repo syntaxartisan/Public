@@ -229,101 +229,57 @@ namespace SortingAlgorithms
 
             public class Range
             {
-                private int _startIndex;
-                public int StartIndex
-                {
-                    get { return _startIndex; }
-                    set { _startIndex = value; }
-                }
-
-                private int _endIndex;
-                public int EndIndex
-                {
-                    get { return _endIndex; }
-                    set { _endIndex = value; }
-                }
+                public int StartIndex { get; set; }
+                public int EndIndex { get; set; }
 
                 public Range(int startIndex, int endIndex)
                 {
-                    _startIndex = startIndex;
-                    _endIndex = endIndex;
+                    StartIndex = startIndex;
+                    EndIndex = endIndex;
                 }
 
                 public Range(Range range)
                 {
-                    _startIndex = range.StartIndex;
-                    _endIndex = range.EndIndex;
+                    StartIndex = range.StartIndex;
+                    EndIndex = range.EndIndex;
                 }
             }
 
             public class CharRange
             {
-                private char _currentChar;
-                public char CurrentChar
-                {
-                    get { return _currentChar; }
-                    set { _currentChar = value; }
-                }
-
-                private Range _indexRange;
-                public Range IndexRange
-                {
-                    get { return _indexRange; }
-                    set { _indexRange = value; }
-                }
+                public char CurrentChar { get; set; }
+                public Range IndexRange { get; set; }
 
                 public CharRange(char character, Range range)
                 {
-                    _currentChar = character;
-                    _indexRange = range;
+                    CurrentChar = character;
+                    IndexRange = range;
                 }
             }
 
             public class DepthRange
             {
-                // Ones-based depth location within a string.
+                // CharDepth is ones-based depth location within a string.
                 // Depth of 1 means you're analyzing the first character of the string, at location [0].
-                private int _charDepth;
-                public int CharDepth
-                {
-                    get { return _charDepth; }
-                    set { _charDepth = value; }
-                }
-
-                private Range _indexRange;
-                public Range IndexRange
-                {
-                    get { return _indexRange; }
-                    set { _indexRange = value; }
-                }
+                public int CharDepth { get; set; }
+                public Range IndexRange { get; set; }
 
                 public DepthRange(int depth, Range range)
                 {
-                    _charDepth = depth;
-                    _indexRange = range;
+                    CharDepth = depth;
+                    IndexRange = range;
                 }
             }
 
             public class CharGroup
             {
-                private char _currentChar;
-                public char CurrentChar
-                {
-                    get { return _currentChar; }
-                    set { _currentChar = value; }
-                }
-
-                private List<Range> _indexRanges;
-                public List<Range> IndexRanges
-                {
-                    get { return _indexRanges; }
-                    set { _indexRanges = value; }
-                }
+                public char CurrentChar { get; set; }
+                public List<Range> IndexRanges { get; set; }
 
                 public CharGroup(char currentChar, List<Range> ranges)
                 {
-                    _currentChar = currentChar;
-                    _indexRanges = ranges;
+                    CurrentChar = currentChar;
+                    IndexRanges = ranges;
                 }
             }
 
@@ -616,24 +572,13 @@ namespace SortingAlgorithms
         {
             private class Boundary
             {
-                private int _startIndex;
-                public int StartIndex
-                {
-                    get { return _startIndex; }
-                    set { _startIndex = value; }
-                }
-
-                private int _endIndex;
-                public int EndIndex
-                {
-                    get { return _endIndex; }
-                    set { _endIndex = value; }
-                }
+                public int StartIndex { get; set; }
+                public int EndIndex { get; set; }
 
                 public Boundary(int startIndex, int endIndex)
                 {
-                    this._startIndex = startIndex;
-                    this._endIndex = endIndex;
+                    StartIndex = startIndex;
+                    EndIndex = endIndex;
                 }
             }
 
