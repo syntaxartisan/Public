@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace SortingAlgorithms
+namespace Artisan
 {
-    public class GroupSort
+    namespace Sorting
     {
-        public class Strings
+        public class GroupSort
         {
-            public class Recursive
+            public class RecursiveSortStrings
             {
                 private static readonly double _algorithmSwitchoverThreshold = .1;
 
@@ -39,12 +39,12 @@ namespace SortingAlgorithms
                     }
                 }
 
-                public List<string> SortStrings(List<string> listToSort)
+                public List<string> Sort(List<string> listToSort)
                 {
-                    return SortStrings(listToSort, 0);
+                    return Sort(listToSort, 0);
                 }
 
-                private List<string> SortStrings(List<string> listToSort, int currentDepth)
+                private List<string> Sort(List<string> listToSort, int currentDepth)
                 {
                     if (listToSort.Count == 0)
                     {
@@ -82,7 +82,7 @@ namespace SortingAlgorithms
                                 // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                                 // start resorting (this level and below) using QuickSort.
                                 finalOutList.Clear();
-                                finalOutList = QuickSort.Strings.Recursive.SortStrings(listToSort);
+                                finalOutList = Sort(listToSort);
                                 return finalOutList;
                             }
                         }
@@ -115,7 +115,7 @@ namespace SortingAlgorithms
                                     // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                                     // start resorting (this level and below) using QuickSort.
                                     finalOutList.Clear();
-                                    finalOutList = QuickSort.Strings.Recursive.SortStrings(listToSort);
+                                    finalOutList = Sort(listToSort);
                                     return finalOutList;
                                 }
                             }
@@ -167,7 +167,7 @@ namespace SortingAlgorithms
                         else
                         {
                             // This is a new character. Sort the existing list and add it to our final list.
-                            finalOutList.AddRange(SortStrings(characterFoundList, currentDepth + 1));
+                            finalOutList.AddRange(Sort(characterFoundList, currentDepth + 1));
 
 
                             // Start a new list for the new character.
@@ -183,7 +183,7 @@ namespace SortingAlgorithms
                     if (groupIndex == charactersSorted.Count)
                     {
                         // sort last list
-                        finalOutList.AddRange(SortStrings(characterFoundList, currentDepth + 1));
+                        finalOutList.AddRange(Sort(characterFoundList, currentDepth + 1));
                     }
 
                     return finalOutList;
@@ -221,7 +221,7 @@ namespace SortingAlgorithms
                 }
             }
 
-            public class NonRecursive
+            public class SortStrings
             {
                 public class Range
                 {
@@ -279,7 +279,7 @@ namespace SortingAlgorithms
                     }
                 }
 
-                public void SortStrings(ref List<string> stringList)
+                public void Sort(ref List<string> stringList)
                 {
                     if (stringList.Count == 0)
                     {
@@ -625,5 +625,6 @@ namespace SortingAlgorithms
 
             }
         }
+
     }
 }

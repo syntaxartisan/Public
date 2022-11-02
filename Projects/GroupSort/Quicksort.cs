@@ -3,26 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace SortingAlgorithms
+namespace Artisan
 {
-    public class QuickSort
+    namespace Sorting
     {
-        private class Boundary
+        public class QuickSort
         {
-            public int startIndex;
-            public int endIndex;
-            public Boundary(int startIndex, int endIndex)
+            public class RecursiveSortIntegers
             {
-                this.startIndex = startIndex;
-                this.endIndex = endIndex;
-            }
-        }
-
-        public class Integers
-        {
-            public class Recursive
-            {
-                public static List<int> SortIntegers(List<int> intList)
+                public static List<int> Sort(List<int> intList)
                 {
                     List<int> loe = new List<int>(), gt = new List<int>();
                     if (intList.Count < 2)
@@ -39,7 +28,7 @@ namespace SortingAlgorithms
                     }
 
                     List<int> resultSet = new List<int>();
-                    resultSet.AddRange(SortIntegers(loe));
+                    resultSet.AddRange(Sort(loe));
                     if (loe.Count == 0)
                     {
                         loe.Add(pivotVal);
@@ -48,14 +37,25 @@ namespace SortingAlgorithms
                     {
                         gt.Add(pivotVal);
                     }
-                    resultSet.AddRange(SortIntegers(gt));
+                    resultSet.AddRange(Sort(gt));
                     return resultSet;
                 }
             }
 
-            public class NonRecursive
+            public class SortIntegers
             {
-                public static List<int> SortIntegersNoRecursion(List<int> intList)
+                private class Boundary
+                {
+                    public int startIndex;
+                    public int endIndex;
+                    public Boundary(int startIndex, int endIndex)
+                    {
+                        this.startIndex = startIndex;
+                        this.endIndex = endIndex;
+                    }
+                }
+
+                public static List<int> Sort(List<int> intList)
                 {
                     Stack<Boundary> stack = new Stack<Boundary>();
                     int startIndex = 0;
@@ -111,13 +111,9 @@ namespace SortingAlgorithms
                 }
             }
 
-        }
-
-        public class Strings
-        {
-            public class Recursive
+            public class RecursiveSortStrings
             {
-                public static List<string> SortStrings(List<string> stringList)
+                public static List<string> Sort(List<string> stringList)
                 {
                     List<string> loe = new List<string>(), gt = new List<string>();
                     if (stringList.Count < 2)
@@ -134,7 +130,7 @@ namespace SortingAlgorithms
                     }
 
                     List<string> resultSet = new List<string>();
-                    resultSet.AddRange(SortStrings(loe));
+                    resultSet.AddRange(Sort(loe));
                     if (loe.Count == 0)
                     {
                         resultSet.Add(pivotVal);
@@ -144,14 +140,25 @@ namespace SortingAlgorithms
                         //gt.Add(pivotVal);
                         gt.Insert(0, pivotVal);
                     }
-                    resultSet.AddRange(SortStrings(gt));
+                    resultSet.AddRange(Sort(gt));
                     return resultSet;
                 }
             }
 
-            public class NonRecursive
+            public class SortStrings
             {
-                public List<string> SortStringsNoRecursion(List<string> stringList)
+                private class Boundary
+                {
+                    public int startIndex;
+                    public int endIndex;
+                    public Boundary(int startIndex, int endIndex)
+                    {
+                        this.startIndex = startIndex;
+                        this.endIndex = endIndex;
+                    }
+                }
+
+                public List<string> Sort(List<string> stringList)
                 {
                     Stack<Boundary> stack = new Stack<Boundary>();
                     int startIndex = 0;
@@ -214,6 +221,8 @@ namespace SortingAlgorithms
                 }
 
             }
+
         }
+
     }
 }

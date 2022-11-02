@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using SortingAlgorithms;
+using Artisan.Sorting;
 
 class Program
 {
@@ -96,10 +96,10 @@ class Program
                 Console.WriteLine("-- GroupSort --");
                 timeToSort.Restart();
 				// Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-				//GroupSort.Strings.Recursive stringGroupSorter = new GroupSort.Strings.Recursive();
-				//groupsortSortedList = stringGroupSorter.SortStrings(originalList.ToList<string>());
-				GroupSort.Strings.NonRecursive stringGroupSorter = new GroupSort.Strings.NonRecursive();
-				stringGroupSorter.SortStrings(ref groupsortSortedList);
+				//GroupSort.RecursiveSortStrings stringGroupSorter = new GroupSort.RecursiveSortStrings();
+				//groupsortSortedList = stringGroupSorter.Sort(originalList.ToList<string>());
+				GroupSort.SortStrings stringGroupSorter = new GroupSort.SortStrings();
+				stringGroupSorter.Sort(ref groupsortSortedList);
 				timeToSort.Stop();
 
                 ValidateList(groupsortSortedList, originalList.Count);
@@ -112,9 +112,9 @@ class Program
 				Console.WriteLine("-- QuickSort --");
 				timeToSort.Restart();
 				// Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-				//quicksortSortedList = QuickSort.Strings.Recursive.SortStrings(originalList.ToList<string>());
-				QuickSort.Strings.NonRecursive stringQuickSorter = new QuickSort.Strings.NonRecursive();
-				quicksortSortedList = stringQuickSorter.SortStringsNoRecursion(originalList.ToList<string>());
+				//quicksortSortedList = QuickSort.RecursiveSortStrings.Sort(originalList.ToList<string>());
+				QuickSort.SortStrings stringQuickSorter = new QuickSort.SortStrings();
+				quicksortSortedList = stringQuickSorter.Sort(originalList.ToList<string>());
 				timeToSort.Stop();
                 ValidateList(quicksortSortedList, originalList.Count);
 
