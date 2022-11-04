@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 
 namespace Artisan
 {
@@ -82,7 +83,7 @@ namespace Artisan
                                 // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                                 // start resorting (this level and below) using QuickSort.
                                 finalOutList.Clear();
-                                finalOutList = Sort(listToSort);
+                                finalOutList = QuickSort.RecursiveSortStrings.Sort(listToSort.ToList<string>());
                                 return finalOutList;
                             }
                         }
@@ -115,7 +116,7 @@ namespace Artisan
                                     // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                                     // start resorting (this level and below) using QuickSort.
                                     finalOutList.Clear();
-                                    finalOutList = Sort(listToSort);
+                                    finalOutList = QuickSort.RecursiveSortStrings.Sort(listToSort.ToList<string>());
                                     return finalOutList;
                                 }
                             }
