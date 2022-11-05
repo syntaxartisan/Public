@@ -8,6 +8,7 @@ namespace Artisan
 {
     namespace Sorting
     {
+
         public class GroupSort
         {
             public class RecursiveSortStrings
@@ -27,9 +28,7 @@ namespace Artisan
                     // at offset 30 which all share the character 'c'.
 
                     public char CurrentCharacter { get; set; }
-
                     public int CountDigitsInGroup { get; set; }
-
                     public int GroupOffset { get; set; }
 
                     public CharacterGroup(char inCurrentCharacter, int inCountDigitsInGroup, int inGroupOffset)
@@ -458,12 +457,9 @@ namespace Artisan
                 private void SortList(ref List<string> stringList, CharGroup shortStringsGroup, List<CharGroup> sortedCharGroups, ref DepthRange sortCriteria)
                 {
                     List<string> sortedStrings = new List<string>();
-                    int groupIndex = 0;
-                    int rangeIndex = 0;
-                    int shortStringsCount = 0;
 
                     // Strings in shortStringsGroup are sorted and can be moved to the front of stringList.
-                    for (rangeIndex = 0; rangeIndex < shortStringsGroup.IndexRanges.Count; rangeIndex++)
+                    for (int rangeIndex = 0; rangeIndex < shortStringsGroup.IndexRanges.Count; rangeIndex++)
                     {
                         Range range = shortStringsGroup.IndexRanges[rangeIndex];
 
@@ -472,14 +468,14 @@ namespace Artisan
                             sortedStrings.Add(stringList[stringIndex]);
                         }
                     }
-                    shortStringsCount = sortedStrings.Count;
+                    int shortStringsCount = sortedStrings.Count;
 
                     // Strings in sortedCharGroups will need further sorting beyond the current iteration.
-                    for (groupIndex = 0; groupIndex < sortedCharGroups.Count; groupIndex++)
+                    for (int groupIndex = 0; groupIndex < sortedCharGroups.Count; groupIndex++)
                     {
                         CharGroup group = sortedCharGroups[groupIndex];
 
-                        for (rangeIndex = 0; rangeIndex < group.IndexRanges.Count; rangeIndex++)
+                        for (int rangeIndex = 0; rangeIndex < group.IndexRanges.Count; rangeIndex++)
                         {
                             Range range = group.IndexRanges[rangeIndex];
 

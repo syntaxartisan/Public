@@ -7,6 +7,7 @@ namespace Artisan
 {
     namespace Sorting
     {
+
         public class QuickSort
         {
             public class RecursiveSortIntegers

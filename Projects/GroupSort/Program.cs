@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Artisan.Sorting;
 
@@ -30,8 +29,8 @@ class Program
         string inputFile = String.Empty;
 
 		List<string> allInputFiles = new List<string>();
-		allInputFiles.Add("test1.txt"); // QuickSort is 4x faster
-		allInputFiles.Add("test2.txt"); // QuickSort is 2x faster
+		//allInputFiles.Add("tinytest1.txt"); // QuickSort is 4x faster
+		//allInputFiles.Add("tinytest2.txt"); // QuickSort is 2x faster
 		allInputFiles.Add("movies.csv"); // QuickSort is 2x faster
 		allInputFiles.Add("moviesforwards.txt"); // QuickSort is 6x faster
 		allInputFiles.Add("moviesbackwards.txt"); // GroupSort is 250x faster
