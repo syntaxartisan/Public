@@ -92,30 +92,31 @@ class Program
                 WriteListToFile(originalList, "master");
 
 
-                List<string> groupsortSortedList = originalList.ToList<string>();
                 Console.WriteLine("-- GroupSort --");
                 timeToSort.Restart();
-				//GroupSort.RecursiveSortStrings stringGroupSorter = new GroupSort.RecursiveSortStrings();
-				//groupsortSortedList = stringGroupSorter.Sort(originalList);
-				GroupSort.SortStrings stringGroupSorter = new GroupSort.SortStrings();
-				stringGroupSorter.Sort(ref groupsortSortedList);
-				timeToSort.Stop();
 
+				//GroupSort.RecursiveSortStrings stringGroupSorter = new GroupSort.RecursiveSortStrings();
+				//List<string> groupsortSortedList = stringGroupSorter.Sort(originalList);
+				GroupSort.SortStrings stringGroupSorter = new GroupSort.SortStrings();
+				List<string> groupsortSortedList = stringGroupSorter.Sort(originalList);
+
+				timeToSort.Stop();
                 ValidateList(groupsortSortedList, originalList.Count);
                 WriteListToFile(groupsortSortedList, "groupsort");
                 PrintOverallTimeResult(groupsortSortedList, timeToSort);
                 Console.WriteLine("");
 
 
-                List<string> quicksortSortedList = new List<string>();
 				Console.WriteLine("-- QuickSort --");
 				timeToSort.Restart();
-				//quicksortSortedList = QuickSort.RecursiveSortStrings.Sort(originalList);
+
+				//QuickSort.RecursiveSortStrings stringQuickSorter = new QuickSort.RecursiveSortStrings();
+				//List<string> quicksortSortedList = stringQuickSorter.Sort(originalList);
 				QuickSort.SortStrings stringQuickSorter = new QuickSort.SortStrings();
-				quicksortSortedList = stringQuickSorter.Sort(originalList);
+				List<string> quicksortSortedList = stringQuickSorter.Sort(originalList);
+
 				timeToSort.Stop();
                 ValidateList(quicksortSortedList, originalList.Count);
-
                 WriteListToFile(quicksortSortedList, "quicksort");
                 PrintOverallTimeResult(quicksortSortedList, timeToSort);
                 Console.WriteLine("");

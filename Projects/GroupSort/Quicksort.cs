@@ -124,7 +124,7 @@ namespace Artisan
 
             public class RecursiveSortStrings
             {
-                public static List<string> Sort(List<string> stringList)
+                public List<string> Sort(List<string> stringList)
                 {
                     List<string> loe = new List<string>(), gt = new List<string>();
                     if (stringList.Count < 2)

@@ -83,7 +83,8 @@ namespace Artisan
                                 // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                                 // start resorting (this level and below) using QuickSort.
                                 finalOutList.Clear();
-                                finalOutList = QuickSort.RecursiveSortStrings.Sort(listToSort);
+                                QuickSort.RecursiveSortStrings stringQuickSorter = new QuickSort.RecursiveSortStrings();
+                                finalOutList = stringQuickSorter.Sort(listToSort);
                                 return finalOutList;
                             }
                         }
@@ -116,7 +117,8 @@ namespace Artisan
                                     // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                                     // start resorting (this level and below) using QuickSort.
                                     finalOutList.Clear();
-                                    finalOutList = QuickSort.RecursiveSortStrings.Sort(listToSort);
+                                    QuickSort.RecursiveSortStrings stringQuickSorter = new QuickSort.RecursiveSortStrings();
+                                    finalOutList = stringQuickSorter.Sort(listToSort);
                                     return finalOutList;
                                 }
                             }
@@ -289,17 +291,18 @@ namespace Artisan
                     }
                 }
 
-                public void Sort(ref List<string> stringList)
+                public List<string> Sort(List<string> unsortedStringList)
                 {
-                    if (stringList.Count == 0)
+                    List<string> sortedStringList = unsortedStringList.ToList<string>();
+                    if (sortedStringList.Count == 0)
                     {
-                        return;
+                        return sortedStringList;
                     }
 
 
                     Stack<DepthRange> stack = new Stack<DepthRange>();
                     int startIndex = 0;
-                    int endIndex = stringList.Count - 1;
+                    int endIndex = sortedStringList.Count - 1;
 
                     // Add the first DepthRange to the stack. At the first level, the DepthRange 
                     // will contain a single range which encompasses the entire list.
@@ -313,15 +316,16 @@ namespace Artisan
                         stack.Pop();
 
                         CharGroup shortStringsGroup;
-                        List<CharGroup> charGroups = BuildCharGroups(out shortStringsGroup, stringList, sortCriteria);
+                        List<CharGroup> charGroups = BuildCharGroups(out shortStringsGroup, sortedStringList, sortCriteria);
 
                         Structures.SortGroupsNoRecursion(ref charGroups);
-                        SortList(ref stringList, shortStringsGroup, charGroups, ref sortCriteria);
+                        SortList(ref sortedStringList, shortStringsGroup, charGroups, ref sortCriteria);
 
-                        AddRangesToStack(ref stack, stringList, sortCriteria);
+                        AddRangesToStack(ref stack, sortedStringList, sortCriteria);
 
                     }
 
+                    return sortedStringList;
                 }
 
                 // This method builds a List of CharGroup structures that represents a subset of the stringList 
