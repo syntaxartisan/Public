@@ -9,7 +9,3 @@ This folder contains various Powershell scripts that I've built.
 ### Projects
 
 This folder contains various C# projects that I've built.
-
-### Binaries
-
-This folder contains compiled binaries for my projects.
