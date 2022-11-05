@@ -30,8 +30,8 @@ class Program
         string inputFile = String.Empty;
 
 		List<string> allInputFiles = new List<string>();
-		//allInputFiles.Add("test1.txt"); // QuickSort is 4x faster
-		//allInputFiles.Add("test2.txt"); // QuickSort is 2x faster
+		allInputFiles.Add("test1.txt"); // QuickSort is 4x faster
+		allInputFiles.Add("test2.txt"); // QuickSort is 2x faster
 		allInputFiles.Add("movies.csv"); // QuickSort is 2x faster
 		allInputFiles.Add("moviesforwards.txt"); // QuickSort is 6x faster
 		allInputFiles.Add("moviesbackwards.txt"); // GroupSort is 250x faster
@@ -95,9 +95,8 @@ class Program
                 List<string> groupsortSortedList = originalList.ToList<string>();
                 Console.WriteLine("-- GroupSort --");
                 timeToSort.Restart();
-				// Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
 				//GroupSort.RecursiveSortStrings stringGroupSorter = new GroupSort.RecursiveSortStrings();
-				//groupsortSortedList = stringGroupSorter.Sort(originalList.ToList<string>());
+				//groupsortSortedList = stringGroupSorter.Sort(originalList);
 				GroupSort.SortStrings stringGroupSorter = new GroupSort.SortStrings();
 				stringGroupSorter.Sort(ref groupsortSortedList);
 				timeToSort.Stop();
@@ -111,10 +110,9 @@ class Program
                 List<string> quicksortSortedList = new List<string>();
 				Console.WriteLine("-- QuickSort --");
 				timeToSort.Restart();
-				// Call the ToList() method here due to underlying call to QuickSort doing a RemoveAt() on our list reference object
-				//quicksortSortedList = QuickSort.RecursiveSortStrings.Sort(originalList.ToList<string>());
+				//quicksortSortedList = QuickSort.RecursiveSortStrings.Sort(originalList);
 				QuickSort.SortStrings stringQuickSorter = new QuickSort.SortStrings();
-				quicksortSortedList = stringQuickSorter.Sort(originalList.ToList<string>());
+				quicksortSortedList = stringQuickSorter.Sort(originalList);
 				timeToSort.Stop();
                 ValidateList(quicksortSortedList, originalList.Count);
 

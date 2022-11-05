@@ -18,24 +18,35 @@ namespace Artisan
                         return intList;
                     int pivot = intList.Count / 2;
                     int pivotVal = intList[pivot];
-                    intList.RemoveAt(pivot);
-                    foreach (int i in intList)
+
+                    for (int intIndex = 0; intIndex < pivot; intIndex++)
                     {
-                        if (i <= pivotVal)
-                            loe.Add(i);
-                        else if (i > pivotVal)
-                            gt.Add(i);
+                        int currentInt = intList[intIndex];
+
+                        if (currentInt <= pivotVal)
+                            loe.Add(currentInt);
+                        else if (currentInt > pivotVal)
+                            gt.Add(currentInt);
+                    }
+                    for (int intIndex = pivot + 1; intIndex < intList.Count; intIndex++)
+                    {
+                        int currentInt = intList[intIndex];
+
+                        if (currentInt <= pivotVal)
+                            loe.Add(currentInt);
+                        else if (currentInt > pivotVal)
+                            gt.Add(currentInt);
                     }
 
                     List<int> resultSet = new List<int>();
                     resultSet.AddRange(Sort(loe));
                     if (loe.Count == 0)
                     {
-                        loe.Add(pivotVal);
+                        resultSet.Add(pivotVal);
                     }
                     else
                     {
-                        gt.Add(pivotVal);
+                        gt.Insert(0, pivotVal);
                     }
                     resultSet.AddRange(Sort(gt));
                     return resultSet;
@@ -120,13 +131,24 @@ namespace Artisan
                         return stringList;
                     int pivot = stringList.Count / 2;
                     string pivotVal = stringList[pivot];
-                    stringList.RemoveAt(pivot);
-                    foreach (string i in stringList)
+
+                    for (int stringIndex = 0; stringIndex < pivot; stringIndex++)
                     {
-                        if (String.Compare(i, pivotVal, CultureInfo.CurrentCulture, CompareOptions.Ordinal) <= 0)
-                            loe.Add(i);
-                        else if (String.Compare(i, pivotVal, CultureInfo.CurrentCulture, CompareOptions.Ordinal) > 0)
-                            gt.Add(i);
+                        string currentString = stringList[stringIndex];
+
+                        if (String.Compare(currentString, pivotVal, CultureInfo.CurrentCulture, CompareOptions.Ordinal) <= 0)
+                            loe.Add(currentString);
+                        else if (String.Compare(currentString, pivotVal, CultureInfo.CurrentCulture, CompareOptions.Ordinal) > 0)
+                            gt.Add(currentString);
+                    }
+                    for (int stringIndex = pivot + 1; stringIndex < stringList.Count; stringIndex++)
+                    {
+                        string currentString = stringList[stringIndex];
+
+                        if (String.Compare(currentString, pivotVal, CultureInfo.CurrentCulture, CompareOptions.Ordinal) <= 0)
+                            loe.Add(currentString);
+                        else if (String.Compare(currentString, pivotVal, CultureInfo.CurrentCulture, CompareOptions.Ordinal) > 0)
+                            gt.Add(currentString);
                     }
 
                     List<string> resultSet = new List<string>();
@@ -137,7 +159,6 @@ namespace Artisan
                     }
                     else
                     {
-                        //gt.Add(pivotVal);
                         gt.Insert(0, pivotVal);
                     }
                     resultSet.AddRange(Sort(gt));

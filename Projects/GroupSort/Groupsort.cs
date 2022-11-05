@@ -83,7 +83,7 @@ namespace Artisan
                                 // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                                 // start resorting (this level and below) using QuickSort.
                                 finalOutList.Clear();
-                                finalOutList = QuickSort.RecursiveSortStrings.Sort(listToSort.ToList<string>());
+                                finalOutList = QuickSort.RecursiveSortStrings.Sort(listToSort);
                                 return finalOutList;
                             }
                         }
@@ -116,7 +116,7 @@ namespace Artisan
                                     // QuickSort instead of GroupSort to sort our list. Stop where we're at,
                                     // start resorting (this level and below) using QuickSort.
                                     finalOutList.Clear();
-                                    finalOutList = QuickSort.RecursiveSortStrings.Sort(listToSort.ToList<string>());
+                                    finalOutList = QuickSort.RecursiveSortStrings.Sort(listToSort);
                                     return finalOutList;
                                 }
                             }
@@ -197,13 +197,23 @@ namespace Artisan
                         return arr;
                     int pivot = arr.Count / 2;
                     CharacterGroup pivotVal = arr[pivot];
-                    arr.RemoveAt(pivot);
-                    foreach (CharacterGroup i in arr)
+                    for (int charIndex = 0; charIndex < pivot; charIndex++)
                     {
-                        if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) <= 0)
-                            loe.Add(i);
-                        else if (i.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) > 0)
-                            gt.Add(i);
+                        CharacterGroup currentGroup = arr[charIndex];
+
+                        if (currentGroup.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) <= 0)
+                            loe.Add(currentGroup);
+                        else if (currentGroup.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) > 0)
+                            gt.Add(currentGroup);
+                    }
+                    for (int charIndex = pivot + 1; charIndex < arr.Count; charIndex++)
+                    {
+                        CharacterGroup currentGroup = arr[charIndex];
+
+                        if (currentGroup.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) <= 0)
+                            loe.Add(currentGroup);
+                        else if (currentGroup.CurrentCharacter.CompareTo(pivotVal.CurrentCharacter) > 0)
+                            gt.Add(currentGroup);
                     }
 
                     List<CharacterGroup> resultSet = new List<CharacterGroup>();
@@ -214,7 +224,6 @@ namespace Artisan
                     }
                     else
                     {
-                        //gt.Add(pivotVal);
                         gt.Insert(0, pivotVal);
                     }
                     resultSet.AddRange(QuickSortStructures(gt));
