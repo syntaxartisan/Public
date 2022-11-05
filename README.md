@@ -4,12 +4,8 @@ Welcome to my public repository. The types of content I have hosted are listed b
 
 ### Scripts
 
-This folder contains various Powershell scripts that I've built.
+This folder contains various Powershell scripts and SQL samples that I've built.
 
 ### Projects
 
 This folder contains various C# projects that I've built.
-
-### Binaries
-
-This folder contains compiled binaries for my projects.
