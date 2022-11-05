@@ -1,6 +1,6 @@
 # Public
 
-Welcome to my public repository. The types of content I have hosted are listed below. Thanks for stopping by.
+Welcome to my public repository. The types of content I have hosted are listed below.
 
 ### Scripts
 
@@ -8,7 +8,7 @@ This folder contains various Powershell scripts that I've built.
 
 ### Projects
 
-This folder contains various C# and Python projects that I've built.
+This folder contains various C# projects that I've built.
 
 ### Binaries
 
