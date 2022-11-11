@@ -589,20 +589,9 @@ namespace Artisan
                     // Swap the array element
                     private static void Swap(List<CharGroup> charGroups, int val1Index, int val2Index)
                     {
-                        if (val1Index > val2Index)
-                        {
-                            charGroups.Insert(val2Index, charGroups[val1Index]);
-                            charGroups.Insert(val1Index + 1, charGroups[val2Index + 1]);
-                            charGroups.RemoveAt(val1Index + 2);
-                            charGroups.RemoveAt(val2Index + 1);
-                        }
-                        else if (val2Index > val1Index)
-                        {
-                            charGroups.Insert(val1Index, charGroups[val2Index]);
-                            charGroups.Insert(val2Index + 1, charGroups[val1Index + 1]);
-                            charGroups.RemoveAt(val2Index + 2);
-                            charGroups.RemoveAt(val1Index + 1);
-                        }
+                        CharGroup tempGroup = charGroups[val1Index];
+                        charGroups[val1Index] = charGroups[val2Index];
+                        charGroups[val2Index] = tempGroup;
                     }
 
                     // Provide this function a subset of the original array or List.
