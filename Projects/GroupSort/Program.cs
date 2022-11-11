@@ -247,7 +247,7 @@ class Program
 
     public static string ConvertTimeToString(Stopwatch timeToSort)
 	{
-		bool displayNanoseconds = true;
+		bool displayNanoseconds = false;
 
 		long million = 1000L * 1000L;
 		long billion = 1000L * 1000L * 1000L;
