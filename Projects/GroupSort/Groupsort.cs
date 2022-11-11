@@ -317,10 +317,10 @@ namespace Artisan
                         CharGroup shortStringsGroup;
                         List<CharGroup> charGroups = BuildCharGroups(out shortStringsGroup, sortedStringList, sortCriteria);
 
-                        Structures.SortGroupsNoRecursion(ref charGroups);
-                        SortList(ref sortedStringList, shortStringsGroup, charGroups, ref sortCriteria);
+                        Structures.SortGroupsNoRecursion(charGroups);
+                        SortList(sortedStringList, shortStringsGroup, charGroups, sortCriteria);
 
-                        AddRangesToStack(ref stack, sortedStringList, sortCriteria);
+                        AddRangesToStack(stack, sortedStringList, sortCriteria);
 
                     }
 
@@ -379,7 +379,7 @@ namespace Artisan
                             else if (!rangeOfStringsIsSorted && nextStringIsSorted)
                             {
                                 newEndIndex = stringIndex - 1;
-                                AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+                                AddCharRangeToCharGroup(charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
 
                                 newStartIndex = stringIndex;
 
@@ -390,7 +390,7 @@ namespace Artisan
                                 if (stringList[stringIndex][depthIndex] != newChar)
                                 {
                                     newEndIndex = stringIndex - 1;
-                                    AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+                                    AddCharRangeToCharGroup(charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
 
                                     newChar = stringList[stringIndex][depthIndex];
                                     newStartIndex = stringIndex;
@@ -410,7 +410,7 @@ namespace Artisan
                             }
                             else
                             {
-                                AddCharRangeToCharGroup(ref charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
+                                AddCharRangeToCharGroup(charGroups, new CharRange(newChar, new Range(newStartIndex, newEndIndex)));
                             }
                         }
                     }
@@ -432,7 +432,7 @@ namespace Artisan
                     }
                 }
 
-                private void AddCharRangeToCharGroup(ref List<CharGroup> charGroups, CharRange newCharRange)
+                private void AddCharRangeToCharGroup(List<CharGroup> charGroups, CharRange newCharRange)
                 {
                     int groupIndex = 0;
 
@@ -454,7 +454,7 @@ namespace Artisan
 
                 // Sort the string list at the current depth, for the given range, based upon the list of 
                 // sorted ranges that are supplied.
-                private void SortList(ref List<string> stringList, CharGroup shortStringsGroup, List<CharGroup> sortedCharGroups, ref DepthRange sortCriteria)
+                private void SortList(List<string> stringList, CharGroup shortStringsGroup, List<CharGroup> sortedCharGroups, DepthRange sortCriteria)
                 {
                     List<string> sortedStrings = new List<string>();
 
@@ -495,7 +495,7 @@ namespace Artisan
                 }
 
                 // This method adds future iterations of sortings to the stack for processing.
-                private void AddRangesToStack(ref Stack<DepthRange> stack, List<string> stringList, DepthRange sortCriteria)
+                private void AddRangesToStack(Stack<DepthRange> stack, List<string> stringList, DepthRange sortCriteria)
                 {
                     int depthIndex = sortCriteria.CharDepth - 1;
                     int lowIndex = sortCriteria.IndexRange.StartIndex;
@@ -557,7 +557,7 @@ namespace Artisan
                         }
                     }
 
-                    public static void SortGroupsNoRecursion(ref List<CharGroup> charGroups)
+                    public static void SortGroupsNoRecursion(List<CharGroup> charGroups)
                     {
                         Stack<Boundary> stack = new Stack<Boundary>();
                         int startIndex = 0;
@@ -572,7 +572,7 @@ namespace Artisan
                                 startIndex = stack.Peek().StartIndex;
                                 endIndex = stack.Peek().EndIndex;
                                 stack.Pop();
-                                int pivotIndex = Partition(ref charGroups, startIndex, endIndex);
+                                int pivotIndex = Partition(charGroups, startIndex, endIndex);
                                 if (pivotIndex - 1 > startIndex)
                                 {
                                     stack.Push(new Boundary(startIndex, pivotIndex - 1));
@@ -587,7 +587,7 @@ namespace Artisan
 
 
                     // Swap the array element
-                    private static void Swap(ref List<CharGroup> charGroups, int val1Index, int val2Index)
+                    private static void Swap(List<CharGroup> charGroups, int val1Index, int val2Index)
                     {
                         if (val1Index > val2Index)
                         {
@@ -610,7 +610,7 @@ namespace Artisan
                     // and larger elements are to the right (high indices).
                     // Then it returns the starting index are the larger elements.
                     // "Large" is defined by the pivot value selection, which is the last element of the subset.
-                    private static int Partition(ref List<CharGroup> charGroups, int lowIndex, int highIndex)
+                    private static int Partition(List<CharGroup> charGroups, int lowIndex, int highIndex)
                     {
                         // Set the high index element to its 
                         // proper sorted position
@@ -623,11 +623,11 @@ namespace Artisan
                             //if (charGroups[j].CurrentChar < pivotValue)
                             {
                                 i++;
-                                Swap(ref charGroups, i, j);
+                                Swap(charGroups, i, j);
                             }
                         }
                         // Set the high index value to its sorted position
-                        Swap(ref charGroups, i + 1, highIndex);
+                        Swap(charGroups, i + 1, highIndex);
                         // Returns the next sorting  element location
                         return i + 1;
                     }
