@@ -245,27 +245,29 @@ class Program
         Console.WriteLine("Time: " + ConvertTimeToString(timeToSort));
     }
 
-    private static string ConvertTimeToString(Stopwatch timeToSort)
+    public static string ConvertTimeToString(Stopwatch timeToSort)
 	{
+		bool displayNanoseconds = true;
+
 		long million = 1000L * 1000L;
 		long billion = 1000L * 1000L * 1000L;
-		string microseconds;
-		string nanoseconds;
+		long microseconds;
+		long nanoseconds;
 		try
 		{
-			microseconds = Convert.ToString((timeToSort.ElapsedTicks / (Stopwatch.Frequency / million)) % 1000);
+			microseconds = (timeToSort.ElapsedTicks / (Stopwatch.Frequency / million)) % 1000;
 		}
 		catch
 		{
-			microseconds = "*";
+			microseconds = -1;
 		}
 		try
 		{
-			nanoseconds = Convert.ToString(timeToSort.ElapsedTicks / (Stopwatch.Frequency / billion));
+			nanoseconds = (long)((((double)timeToSort.ElapsedTicks / Stopwatch.Frequency) * billion) % 1000);
 		}
-		catch
+        catch
 		{
-			nanoseconds = "*";
+			nanoseconds = -1;
 		}
 
 		string timeString = String.Empty;
@@ -285,18 +287,16 @@ class Program
 			timeString += timeToSort.Elapsed.Milliseconds + "ms";
             displayFurtherUnits = true;
         }
-        if (displayFurtherUnits || (microseconds != "*"))
+        if (displayFurtherUnits || (microseconds > 0) || !displayNanoseconds)
         {
 			timeString += microseconds + "us";
 			displayFurtherUnits = true;
 		}
-/*
-		if (displayFurtherUnits || (nanoseconds != "*"))
+		if (displayNanoseconds && (displayFurtherUnits || (nanoseconds > 0)))
 		{
 			timeString += nanoseconds + "ns";
 			displayFurtherUnits = true;
 		}
-*/
 		
 		return timeString;
 
