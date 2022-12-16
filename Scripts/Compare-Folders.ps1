@@ -4,7 +4,30 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
+0.2		12/16/2022	Add parameter descriptions
 0.1		12/16/2022	Initial version by Bob Hansen (not all features working yet)
+
+.PARAMETER Folder1
+The first folder who's contents we want to compare
+
+.PARAMETER Folder2
+The second folder who's contents we want to compare
+
+.PARAMETER CompareType
+How to compare the two folders. Either find files that are 
+unique to one of the two folders, or find files that are 
+shared by both folders.
+
+.PARAMETER CompareFields
+What fields to compare. The selected fields much match exactly 
+in order to determine that the files from both folders are the same.
+NameOnly: File names
+NameAndFileSize: File names and file sizes
+NameAndHash: File names and file hashes
+
+.PARAMETER RecurseSubfolders
+When building a list of files from each folder to compare, 
+select whether you want to recursively check subfolders (Yes) or not (No).
 
 To-Do:
 -Do we care about comparing file size or file hash?
