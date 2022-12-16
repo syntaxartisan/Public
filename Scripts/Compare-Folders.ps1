@@ -4,7 +4,8 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
-0.4		12/16/2022	Comparison results now include file details
+0.5		12/16/2022	Add DisplayDebug switch
+0.4		12/16/2022	Comparison results now include file detailsComparison results now include file details
 0.3		12/16/2022	Comparisons are working (and quickly) but the results don't allow for file copies
 0.2		12/16/2022	Add parameter descriptions
 0.1		12/16/2022	Initial version by Bob Hansen (not all features working yet)
@@ -31,6 +32,9 @@ NameAndHash: File names and file hashes
 When building a list of files from each folder to compare, 
 select whether you want to recursively check subfolders (Yes) or not (No).
 
+.PARAMETER DisplayDebug
+Trigger this switch to display debugging data to the console window.
+
 To-Do:
 -Do we care about comparing file size or file hash?
 -Copy results files to another folder
@@ -41,7 +45,8 @@ param(
 	[parameter(position=1,mandatory=$true)][string]$Folder2="",
 	[parameter(position=2,mandatory=$false)][ValidateSet("UniqueToFolder1","UniqueToFolder2","Intersection")][string]$CompareType="UniqueToFolder1",
 	[parameter(position=3,mandatory=$false)][ValidateSet("NameOnly","NameAndFileSize","NameAndHash")][string]$CompareFields="NameOnly",
-	[parameter(position=4,mandatory=$false)][ValidateSet("No","Yes")][string]$RecurseSubfolders="Yes"
+	[parameter(position=4,mandatory=$false)][ValidateSet("No","Yes")][string]$RecurseSubfolders="Yes",
+	[parameter(position=5,mandatory=$false)][switch]$DisplayDebug=$false
 )
 
 if ($CompareType -eq "UniqueToFolder1")
@@ -83,8 +88,17 @@ else
 	$filesFromFolder2 = Get-ChildItem -Path $Folder2 | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,Directory,FullName
 }
 
-Write-Host "Folder1 count $($filesFromFolder1.Count)"
-Write-Host "Folder2 count $($filesFromFolder2.Count)"
+if ($DisplayDebug)
+{
+	Write-Host "Folder1 item count $($filesFromFolder1.Count)"
+	Write-Host "Items:"
+	$filesFromFolder1
+	Write-Host ""
+	Write-Host "Folder2 item count $($filesFromFolder2.Count)"
+	Write-Host "Items:"
+	$filesFromFolder2
+	Write-Host ""
+}
 
 
 if ($CompareFields -eq "NameOnly")
@@ -112,5 +126,11 @@ elseif ($CompareType -eq "Intersection")
 	$finalResults = @($compareResults | Where-Object {$_.SideIndicator -eq "=="})
 }
 
-Write-Host "results count $($finalResults.Count)"
-$finalResults
+if ($DisplayDebug)
+{
+	Write-Host "Final results item count $($finalResults.Count)"
+	Write-Host "Items:"
+	$finalResults
+	Write-Host ""
+}
+
