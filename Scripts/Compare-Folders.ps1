@@ -4,6 +4,7 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
+0.3		12/16/2022	Comparisons are working (and quickly) but the results don't allow for file copies
 0.2		12/16/2022	Add parameter descriptions
 0.1		12/16/2022	Initial version by Bob Hansen (not all features working yet)
 
@@ -83,11 +84,25 @@ else
 Write-Host "Folder1 count $($filesFromFolder1.Count)"
 Write-Host "Folder2 count $($filesFromFolder2.Count)"
 
+if ($CompareFields -eq "NameOnly")
+{
+	$folder1Condensed = $filesFromFolder1 | ForEach-Object {$_.Name}
+	$folder2Condensed = $filesFromFolder2 | ForEach-Object {$_.Name}
+}
+elseif ($CompareFields -eq "NameAndFileSize")
+{
+	$folder1Condensed = $filesFromFolder1 | ForEach-Object {$_.Name + " " + $_.Length}
+	$folder2Condensed = $filesFromFolder2 | ForEach-Object {$_.Name + " " + $_.Length}
+}
+elseif ($CompareFields -eq "NameAndHash")
+{
+}
+
+
 if ($CompareType -eq "UniqueToFolder1")
 {
 	if ($CompareFields -eq "NameOnly")
 	{
-		$results = $filesFromFolder1.Name | ?{$filesFromFolder2.Name -notcontains $_}
 	}
 	elseif ($CompareFields -eq "NameAndFileSize")
 	{
@@ -95,12 +110,13 @@ if ($CompareType -eq "UniqueToFolder1")
 	elseif ($CompareFields -eq "NameAndHash")
 	{
 	}
+
+	$results = $folder1Condensed | ?{$folder2Condensed -notcontains $_}
 }
 elseif ($CompareType -eq "UniqueToFolder2")
 {
 	if ($CompareFields -eq "NameOnly")
 	{
-		$results = $filesFromFolder2.Name | ?{$filesFromFolder1.Name -notcontains $_}
 	}
 	elseif ($CompareFields -eq "NameAndFileSize")
 	{
@@ -108,20 +124,22 @@ elseif ($CompareType -eq "UniqueToFolder2")
 	elseif ($CompareFields -eq "NameAndHash")
 	{
 	}
+
+	$results = $folder2Condensed | ?{$folder1Condensed -notcontains $_}
 }
 elseif ($CompareType -eq "Intersection")
 {
 	if ($CompareFields -eq "NameOnly")
 	{
-		$results = $filesFromFolder1.Name | ?{$filesFromFolder2.Name -contains $_}
-}
+	}
 	elseif ($CompareFields -eq "NameAndFileSize")
 	{
 	}
 	elseif ($CompareFields -eq "NameAndHash")
 	{
 	}
+
+	$results = $folder1Condensed | ?{$folder2Condensed -contains $_}
 }
 
 Write-Host "results count $($results.Count)"
-
