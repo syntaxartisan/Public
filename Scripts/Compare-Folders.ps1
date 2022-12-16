@@ -4,6 +4,7 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
+0.4		12/16/2022	Comparison results now include file details
 0.3		12/16/2022	Comparisons are working (and quickly) but the results don't allow for file copies
 0.2		12/16/2022	Add parameter descriptions
 0.1		12/16/2022	Initial version by Bob Hansen (not all features working yet)
@@ -32,6 +33,7 @@ select whether you want to recursively check subfolders (Yes) or not (No).
 
 To-Do:
 -Do we care about comparing file size or file hash?
+-Copy results files to another folder
 #>
 
 param(
@@ -72,74 +74,43 @@ Write-Host ""
 
 if ($RecurseSubfolders -eq "Yes")
 {
-	$filesFromFolder1 = Get-ChildItem -Path $Folder1 -Recurse | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,FullName
-	$filesFromFolder2 = Get-ChildItem -Path $Folder2 -Recurse | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,FullName
+	$filesFromFolder1 = Get-ChildItem -Path $Folder1 -Recurse | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,Directory,FullName
+	$filesFromFolder2 = Get-ChildItem -Path $Folder2 -Recurse | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,Directory,FullName
 }
 else
 {
-	$filesFromFolder1 = Get-ChildItem -Path $Folder1 | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,FullName
-	$filesFromFolder2 = Get-ChildItem -Path $Folder2 | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,FullName
+	$filesFromFolder1 = Get-ChildItem -Path $Folder1 | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,Directory,FullName
+	$filesFromFolder2 = Get-ChildItem -Path $Folder2 | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,Directory,FullName
 }
 
 Write-Host "Folder1 count $($filesFromFolder1.Count)"
 Write-Host "Folder2 count $($filesFromFolder2.Count)"
 
+
 if ($CompareFields -eq "NameOnly")
 {
-	$folder1Condensed = $filesFromFolder1 | ForEach-Object {$_.Name}
-	$folder2Condensed = $filesFromFolder2 | ForEach-Object {$_.Name}
+	$compareResults = Compare-Object -ReferenceObject $filesFromFolder1 -DifferenceObject $filesFromFolder2 -Property Name -IncludeEqual -PassThru
 }
 elseif ($CompareFields -eq "NameAndFileSize")
 {
-	$folder1Condensed = $filesFromFolder1 | ForEach-Object {$_.Name + " " + $_.Length}
-	$folder2Condensed = $filesFromFolder2 | ForEach-Object {$_.Name + " " + $_.Length}
+	$compareResults = Compare-Object -ReferenceObject $filesFromFolder1 -DifferenceObject $filesFromFolder2 -Property Name,Length -IncludeEqual -PassThru
 }
 elseif ($CompareFields -eq "NameAndHash")
 {
 }
 
-
 if ($CompareType -eq "UniqueToFolder1")
 {
-	if ($CompareFields -eq "NameOnly")
-	{
-	}
-	elseif ($CompareFields -eq "NameAndFileSize")
-	{
-	}
-	elseif ($CompareFields -eq "NameAndHash")
-	{
-	}
-
-	$results = $folder1Condensed | ?{$folder2Condensed -notcontains $_}
+	$finalResults = @($compareResults | Where-Object {$_.SideIndicator -eq "<="})
 }
 elseif ($CompareType -eq "UniqueToFolder2")
 {
-	if ($CompareFields -eq "NameOnly")
-	{
-	}
-	elseif ($CompareFields -eq "NameAndFileSize")
-	{
-	}
-	elseif ($CompareFields -eq "NameAndHash")
-	{
-	}
-
-	$results = $folder2Condensed | ?{$folder1Condensed -notcontains $_}
+	$finalResults = @($compareResults | Where-Object {$_.SideIndicator -eq "=>"})
 }
 elseif ($CompareType -eq "Intersection")
 {
-	if ($CompareFields -eq "NameOnly")
-	{
-	}
-	elseif ($CompareFields -eq "NameAndFileSize")
-	{
-	}
-	elseif ($CompareFields -eq "NameAndHash")
-	{
-	}
-
-	$results = $folder1Condensed | ?{$folder2Condensed -contains $_}
+	$finalResults = @($compareResults | Where-Object {$_.SideIndicator -eq "=="})
 }
 
-Write-Host "results count $($results.Count)"
+Write-Host "results count $($finalResults.Count)"
+$finalResults
