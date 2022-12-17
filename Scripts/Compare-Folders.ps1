@@ -6,6 +6,7 @@ subset of files to copy to another folder. The script doesn't display much
 to the screen unless you utilize DebugMode.
 
 .DESCRIPTION
+1.4		12/16/2022	Moved start time display message earlier in the console display
 1.3		12/16/2022	Fixed verbiage
 1.2.1	12/16/2022	Updated comments, no functional change
 1.2		12/16/2022	Fixed verbiage
@@ -79,9 +80,6 @@ if ($OutputPath.Length -gt 0)
 	}
 }
 
-$startTime = Get-Date
-$timeString = Get-Date -Date $startTime -Format "MM/dd/yyyy HH:mm:ss"
-Write-Host "Started at $timeString"
 
 if ($RecurseSubfolders -eq "Yes")
 {
@@ -117,6 +115,12 @@ elseif ($CompareFields -eq "NameAndHash")
 {
 	Write-Host "Comparing on file names and file hashes" -ForegroundColor Yellow
 }
+
+
+Write-Host ""
+$startTime = Get-Date
+$timeString = Get-Date -Date $startTime -Format "MM/dd/yyyy HH:mm:ss"
+Write-Host "Started at $timeString"
 
 
 if ($RecurseSubfolders -eq "Yes")
