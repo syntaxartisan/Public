@@ -4,6 +4,7 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
+0.8		12/16/2022	Add OutputPath parameter
 0.7		12/16/2022	Improve formatting of console output
 0.6		12/16/2022	Add file hash comparison option
 0.5		12/16/2022	Add DisplayDebug switch
@@ -34,6 +35,10 @@ NameAndHash: File names and file hashes
 When building a list of files from each folder to compare, 
 select whether you want to recursively check subfolders (Yes) or not (No).
 
+.PARAMETER OutputPath
+Populate OutputPath with a directory if you want to copy the results 
+to another folder. OutputPath must be an empty directory.
+
 .PARAMETER DisplayDebug
 Trigger this switch to display debugging data to the console window.
 
@@ -47,8 +52,25 @@ param(
 	[parameter(position=2,mandatory=$false)][ValidateSet("NameOnly","NameAndFileSize","NameAndHash")][string]$CompareFields="NameAndFileSize",
 	[parameter(position=3,mandatory=$false)][ValidateSet("UniqueToFolder1","UniqueToFolder2","Intersection")][string]$CompareType="UniqueToFolder1",
 	[parameter(position=4,mandatory=$false)][ValidateSet("No","Yes")][string]$RecurseSubfolders="Yes",
-	[parameter(position=5,mandatory=$false)][switch]$DisplayDebug=$false
+	[parameter(position=5,mandatory=$false)][string]$OutputPath="",
+	[parameter(position=6,mandatory=$false)][switch]$DisplayDebug=$false
 )
+
+if ($OutputPath.Length -gt 0)
+{
+	if (-not(Test-Path -Path $OutputPath))
+	{
+		Write-Host "The output path $OutputPath doesn't exist. Please create the path manually. This is intentional out of abundance of caution." -ForegroundColor Red -BackgroundColor Black
+		exit
+	}
+
+	$itemCount = @(Get-ChildItem -Path $OutputPath).Count # count of both files and folders
+	if ($itemCount -gt 0)
+	{
+		Write-Host "The output path $OutputPath contains files and/or folders. Please select an empty directory for copying files. This is intentional out of abundance of caution." -ForegroundColor Red -BackgroundColor Black
+		exit
+	}
+}
 
 if ($RecurseSubfolders -eq "Yes")
 {
