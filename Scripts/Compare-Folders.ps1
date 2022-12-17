@@ -4,6 +4,7 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
+1.1		12/16/2022	Added time stamps to console
 1.0		12/16/2022	Copy files if OutputPath is provided; Rename DisplayDebug to DebugMode; First working version
 0.8		12/16/2022	Add OutputPath parameter
 0.7		12/16/2022	Improve formatting of console output
@@ -72,6 +73,10 @@ if ($OutputPath.Length -gt 0)
 		exit
 	}
 }
+
+$startTime = Get-Date
+$timeString = Get-Date -Date $startTime -Format "MM/dd/yyyy HH:mm:ss"
+Write-Host "Started at $timeString"
 
 if ($RecurseSubfolders -eq "Yes")
 {
@@ -202,3 +207,11 @@ if ($OutputPath.Length -gt 0)
 	Write-Host ""
 	Write-Host "File copy has completed"
 }
+
+$endTime = Get-Date
+$timeString = Get-Date -Date $endTime -Format "MM/dd/yyyy HH:mm:ss"
+$timeElapsed = "$(($endTime - $startTime).Minutes.ToString("0"))m$(($endTime - $startTime).Seconds.ToString("00"))s"
+
+Write-Host ""
+Write-Host "Ended at $timeString"
+Write-Host "Scan completed in $timeElapsed"
