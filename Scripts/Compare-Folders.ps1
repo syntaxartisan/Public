@@ -4,6 +4,7 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
+1.2		12/16/2022	Fixed verbiage
 1.1		12/16/2022	Added time stamps to console
 1.0		12/16/2022	Copy files if OutputPath is provided; Rename DisplayDebug to DebugMode; First working version
 0.8		12/16/2022	Add OutputPath parameter
@@ -214,4 +215,4 @@ $timeElapsed = "$(($endTime - $startTime).Minutes.ToString("0"))m$(($endTime - $
 
 Write-Host ""
 Write-Host "Ended at $timeString"
-Write-Host "Scan completed in $timeElapsed"
+Write-Host "Transfer completed in $timeElapsed"
