@@ -6,6 +6,7 @@ subset of files to copy to another folder. The script doesn't display much
 to the screen unless you utilize DebugMode.
 
 .DESCRIPTION
+1.3		12/16/2022	Fixed verbiage
 1.2.1	12/16/2022	Updated comments, no functional change
 1.2		12/16/2022	Fixed verbiage
 1.1		12/16/2022	Added time stamps to console
@@ -218,4 +219,4 @@ $timeElapsed = "$(($endTime - $startTime).Minutes.ToString("0"))m$(($endTime - $
 
 Write-Host ""
 Write-Host "Ended at $timeString"
-Write-Host "Transfer completed in $timeElapsed"
+Write-Host "Process completed in $timeElapsed"
