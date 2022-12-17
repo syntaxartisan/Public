@@ -1,9 +1,12 @@
 <#
 .SYNOPSIS
-This script compares two folders. It compares the files contained 
-in each folder and looks for differences.
+This script compares two folders and looks for differences 
+between the files within each folder. The user can select a 
+subset of files to copy to another folder. The script doesn't display much 
+to the screen unless you utilize DebugMode.
 
 .DESCRIPTION
+1.2.1	12/16/2022	Updated comments, no functional change
 1.2		12/16/2022	Fixed verbiage
 1.1		12/16/2022	Added time stamps to console
 1.0		12/16/2022	Copy files if OutputPath is provided; Rename DisplayDebug to DebugMode; First working version
