@@ -4,6 +4,7 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
+0.7		12/16/2022	Improve formatting of console output
 0.6		12/16/2022	Add file hash comparison option
 0.5		12/16/2022	Add DisplayDebug switch
 0.4		12/16/2022	Comparison results now include file detailsComparison results now include file details
@@ -43,36 +44,45 @@ To-Do:
 param(
 	[parameter(position=0,mandatory=$true)][string]$Folder1="",
 	[parameter(position=1,mandatory=$true)][string]$Folder2="",
-	[parameter(position=2,mandatory=$false)][ValidateSet("UniqueToFolder1","UniqueToFolder2","Intersection")][string]$CompareType="UniqueToFolder1",
-	[parameter(position=3,mandatory=$false)][ValidateSet("NameOnly","NameAndFileSize","NameAndHash")][string]$CompareFields="NameOnly",
+	[parameter(position=2,mandatory=$false)][ValidateSet("NameOnly","NameAndFileSize","NameAndHash")][string]$CompareFields="NameAndFileSize",
+	[parameter(position=3,mandatory=$false)][ValidateSet("UniqueToFolder1","UniqueToFolder2","Intersection")][string]$CompareType="UniqueToFolder1",
 	[parameter(position=4,mandatory=$false)][ValidateSet("No","Yes")][string]$RecurseSubfolders="Yes",
 	[parameter(position=5,mandatory=$false)][switch]$DisplayDebug=$false
 )
 
+if ($RecurseSubfolders -eq "Yes")
+{
+	$recurseString = " (recursively)"
+}
+else
+{
+	$recurseString = ""
+}
+
 if ($CompareType -eq "UniqueToFolder1")
 {
-	Write-Host "Finding objects that are unique to (Folder1) $Folder1"
+	Write-Host "Finding objects$recurseString that are unique to (Folder1) $Folder1" -ForegroundColor Yellow
 }
 elseif ($CompareType -eq "UniqueToFolder2")
 {
-	Write-Host "Finding objects that are unique to (Folder2) $Folder2"
+	Write-Host "Finding objects$recurseString that are unique to (Folder2) $Folder2" -ForegroundColor Yellow
 }
 elseif ($CompareType -eq "Intersection")
 {
-	Write-Host "Finding objects that are shared by both folders (intersect)"
+	Write-Host "Finding objects$recurseString that are shared by both folders (intersect)" -ForegroundColor Yellow
 }
 
 if ($CompareFields -eq "NameOnly")
 {
-	Write-Host "Comparing on file names only"
+	Write-Host "Comparing on file names only" -ForegroundColor Yellow
 }
 elseif ($CompareFields -eq "NameAndFileSize")
 {
-	Write-Host "Comparing on file names and sizes"
+	Write-Host "Comparing on file names and sizes" -ForegroundColor Yellow
 }
 elseif ($CompareFields -eq "NameAndHash")
 {
-	Write-Host "Comparing on file names and file hashes"
+	Write-Host "Comparing on file names and file hashes" -ForegroundColor Yellow
 }
 Write-Host ""
 
@@ -90,12 +100,10 @@ else
 
 if ($DisplayDebug)
 {
-	Write-Host "Folder1 item count $($filesFromFolder1.Count)"
-	Write-Host "Items:"
+	Write-Host "Folder1 items: (count $($filesFromFolder1.Count))"
 	$filesFromFolder1
 	Write-Host ""
-	Write-Host "Folder2 item count $($filesFromFolder2.Count)"
-	Write-Host "Items:"
+	Write-Host "Folder2 items: (count $($filesFromFolder2.Count))"
 	$filesFromFolder2
 	Write-Host ""
 }
@@ -132,9 +140,12 @@ elseif ($CompareType -eq "Intersection")
 	$finalResults = @($compareResults | Where-Object {$_.SideIndicator -eq "=="})
 }
 
+Write-Host "Final results: (count $($finalResults.Count))"
 if ($DisplayDebug)
 {
-	Write-Host "Final results item count $($finalResults.Count)"
-	Write-Host "Items:"
 	$finalResults
+}
+else
+{
+	$finalResults.Name
 }
