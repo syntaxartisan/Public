@@ -4,6 +4,7 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
+0.6		12/16/2022	Add file hash comparison option
 0.5		12/16/2022	Add DisplayDebug switch
 0.4		12/16/2022	Comparison results now include file detailsComparison results now include file details
 0.3		12/16/2022	Comparisons are working (and quickly) but the results don't allow for file copies
@@ -36,7 +37,6 @@ select whether you want to recursively check subfolders (Yes) or not (No).
 Trigger this switch to display debugging data to the console window.
 
 To-Do:
--Do we care about comparing file size or file hash?
 -Copy results files to another folder
 #>
 
@@ -111,6 +111,12 @@ elseif ($CompareFields -eq "NameAndFileSize")
 }
 elseif ($CompareFields -eq "NameAndHash")
 {
+	$filesFromFolder1 | Add-Member -NotePropertyName "FileHash" -NotePropertyValue ""
+	$filesFromFolder1 | ForEach-Object {$_.FileHash = (Get-FileHash -Path $_.FullName -Algorithm MD5).Hash}
+	$filesFromFolder2 | Add-Member -NotePropertyName "FileHash" -NotePropertyValue ""
+	$filesFromFolder2 | ForEach-Object {$_.FileHash = (Get-FileHash -Path $_.FullName -Algorithm MD5).Hash}
+
+	$compareResults = Compare-Object -ReferenceObject $filesFromFolder1 -DifferenceObject $filesFromFolder2 -Property Name,FileHash -IncludeEqual -PassThru
 }
 
 if ($CompareType -eq "UniqueToFolder1")
@@ -131,6 +137,4 @@ if ($DisplayDebug)
 	Write-Host "Final results item count $($finalResults.Count)"
 	Write-Host "Items:"
 	$finalResults
-	Write-Host ""
 }
-
