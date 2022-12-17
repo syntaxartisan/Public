@@ -4,6 +4,7 @@ This script compares two folders. It compares the files contained
 in each folder and looks for differences.
 
 .DESCRIPTION
+1.0		12/16/2022	Copy files if OutputPath is provided; Rename DisplayDebug to DebugMode; First working version
 0.8		12/16/2022	Add OutputPath parameter
 0.7		12/16/2022	Improve formatting of console output
 0.6		12/16/2022	Add file hash comparison option
@@ -39,8 +40,8 @@ select whether you want to recursively check subfolders (Yes) or not (No).
 Populate OutputPath with a directory if you want to copy the results 
 to another folder. OutputPath must be an empty directory.
 
-.PARAMETER DisplayDebug
-Trigger this switch to display debugging data to the console window.
+.PARAMETER DebugMode
+Display debugging data to the console window in different formats of verbosity.
 
 To-Do:
 -Copy results files to another folder
@@ -53,7 +54,7 @@ param(
 	[parameter(position=3,mandatory=$false)][ValidateSet("UniqueToFolder1","UniqueToFolder2","Intersection")][string]$CompareType="UniqueToFolder1",
 	[parameter(position=4,mandatory=$false)][ValidateSet("No","Yes")][string]$RecurseSubfolders="Yes",
 	[parameter(position=5,mandatory=$false)][string]$OutputPath="",
-	[parameter(position=6,mandatory=$false)][switch]$DisplayDebug=$false
+	[parameter(position=6,mandatory=$false)][ValidateSet("Off","Basic","Detailed")]$DebugMode="Off"
 )
 
 if ($OutputPath.Length -gt 0)
@@ -106,7 +107,6 @@ elseif ($CompareFields -eq "NameAndHash")
 {
 	Write-Host "Comparing on file names and file hashes" -ForegroundColor Yellow
 }
-Write-Host ""
 
 
 if ($RecurseSubfolders -eq "Yes")
@@ -120,14 +120,20 @@ else
 	$filesFromFolder2 = Get-ChildItem -Path $Folder2 | Where-Object {$_.PSIsContainer -eq $false} | Select-Object Name,Length,Directory,FullName
 }
 
-if ($DisplayDebug)
+if ($DebugMode -eq "Detailed")
 {
+	Write-Host ""
 	Write-Host "Folder1 items: (count $($filesFromFolder1.Count))"
 	$filesFromFolder1
 	Write-Host ""
 	Write-Host "Folder2 items: (count $($filesFromFolder2.Count))"
 	$filesFromFolder2
+}
+elseif ($DebugMode -eq "Basic")
+{
 	Write-Host ""
+	Write-Host "Folder1 items: (count $($filesFromFolder1.Count))"
+	Write-Host "Folder2 items: (count $($filesFromFolder2.Count))"
 }
 
 
@@ -152,22 +158,47 @@ elseif ($CompareFields -eq "NameAndHash")
 if ($CompareType -eq "UniqueToFolder1")
 {
 	$finalResults = @($compareResults | Where-Object {$_.SideIndicator -eq "<="})
+	$sourceFolder = $Folder1
 }
 elseif ($CompareType -eq "UniqueToFolder2")
 {
 	$finalResults = @($compareResults | Where-Object {$_.SideIndicator -eq "=>"})
+	$sourceFolder = $Folder2
 }
 elseif ($CompareType -eq "Intersection")
 {
 	$finalResults = @($compareResults | Where-Object {$_.SideIndicator -eq "=="})
+	$sourceFolder = $Folder1
 }
 
-Write-Host "Final results: (count $($finalResults.Count))"
-if ($DisplayDebug)
+if ($DebugMode -eq "Detailed")
 {
-	$finalResults
-}
-else
-{
+	Write-Host ""
+	Write-Host "Final results: (count $($finalResults.Count))"
+#	$finalResults
 	$finalResults.Name
+}
+elseif ($DebugMode -eq "Basic")
+{
+	Write-Host ""
+	Write-Host "Final results: (count $($finalResults.Count))"
+}
+
+
+if ($OutputPath.Length -gt 0)
+{
+	Write-Host ""
+	Write-Host "Copying final results from $sourceFolder to $OutputPath" -ForegroundColor Yellow
+	Write-Host "Progress..."
+	for ($index = 0; $index -lt $finalResults.Length; $index++)
+	{
+		if (($index + 1) %100 -eq 0)
+		{
+			Write-Host "Copying file $($index + 1)"
+		}
+		Copy-Item -Path $finalResults[$index].FullName -Destination $OutputPath
+	}
+
+	Write-Host ""
+	Write-Host "File copy has completed"
 }
