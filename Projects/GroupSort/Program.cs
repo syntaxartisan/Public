@@ -20,11 +20,11 @@ class Program
 	*/
     static class GlobalVariables
 	{
-        public const string inputFolder = @"D:\(A) Professional\Code\Public\Projects\input\";
-        public const string outputFolder = @"D:\(A) Professional\Code\Public\Projects\GroupSort\output\";
+        public const string inputFolder = @"D:\Professional\Code\Public\Projects\input\";
+        public const string outputFolder = @"D:\Professional\Code\Public\Projects\GroupSort\output\";
     }
 
-    static void Main(string[] args)
+    static void Main()
 	{
         string inputFile = String.Empty;
 
@@ -83,7 +83,11 @@ class Program
 		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 50,000 uniques, 4400 dupes: same speed
 		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 500,000 uniques, 49500 dupes: same speed
 
-		int selection = GatherMenuSelection(allInputFiles);
+
+		LogFile results = new LogFile("benchmark_results.log");
+
+
+        int selection = GatherMenuSelection(allInputFiles);
 		while (selection >= 0)
 		{
 			List<string> originalList = new List<string>();
@@ -93,39 +97,41 @@ class Program
 
 			if (BuildListFromFile(ref originalList, inputFile))
 			{
-                Stopwatch timeToSort = new Stopwatch();
+                Stopwatch timeToGroupSort = new Stopwatch();
+                Stopwatch timeToQuickSort = new Stopwatch();
                 WriteListToFile(originalList, "master");
 
 
                 Console.WriteLine("-- GroupSort --");
-                timeToSort.Restart();
+                timeToGroupSort.Restart();
 
 				//GroupSort.RecursiveSortStrings stringGroupSorter = new GroupSort.RecursiveSortStrings();
 				//List<string> groupsortSortedList = stringGroupSorter.Sort(originalList);
 				GroupSort.SortStrings stringGroupSorter = new GroupSort.SortStrings();
 				List<string> groupsortSortedList = stringGroupSorter.Sort(originalList);
 
-				timeToSort.Stop();
+				timeToGroupSort.Stop();
                 ValidateList(groupsortSortedList, originalList.Count);
                 WriteListToFile(groupsortSortedList, "groupsort");
-                PrintOverallTimeResult(groupsortSortedList, timeToSort);
+                PrintOverallTimeResult(groupsortSortedList, timeToGroupSort);
                 Console.WriteLine("");
 
 
 				Console.WriteLine("-- QuickSort --");
-				timeToSort.Restart();
+				timeToQuickSort.Restart();
 
 				//QuickSort.RecursiveSortStrings stringQuickSorter = new QuickSort.RecursiveSortStrings();
 				//List<string> quicksortSortedList = stringQuickSorter.Sort(originalList);
 				QuickSort.SortStrings stringQuickSorter = new QuickSort.SortStrings();
 				List<string> quicksortSortedList = stringQuickSorter.Sort(originalList);
 
-				timeToSort.Stop();
+				timeToQuickSort.Stop();
                 ValidateList(quicksortSortedList, originalList.Count);
                 WriteListToFile(quicksortSortedList, "quicksort");
-                PrintOverallTimeResult(quicksortSortedList, timeToSort);
+                PrintOverallTimeResult(quicksortSortedList, timeToQuickSort);
                 Console.WriteLine("");
 
+                results.SaveEntry(allInputFiles[selection - 1], timeToGroupSort, timeToQuickSort);
             }
 
             selection = GatherMenuSelection(allInputFiles);
@@ -227,9 +233,9 @@ class Program
 
 	private static void WriteListToFile(List<string> listToSave, string baseFileName)
 	{
-        string fileName = GlobalVariables.outputFolder + baseFileName + ".csv";
-        
-		try
+        string fileName = Path.Combine(GlobalVariables.outputFolder, baseFileName + ".csv");
+
+        try
         {
             File.WriteAllLines(fileName, listToSave);
         }
@@ -301,5 +307,50 @@ class Program
 		return timeString;
 
     }
+
+	private class LogFile
+	{
+		public string Filename { get; private set; }
+		private readonly string _delim = "\t";
+
+		public LogFile(string filename)
+        {
+            Filename = filename;
+			MakeSureLogExists();
+        }
+
+		private void MakeSureLogExists()
+		{
+            string fileName = Path.Combine(GlobalVariables.outputFolder, Filename);
+
+			if(!File.Exists(fileName))
+			{
+                try
+                {
+                    File.WriteAllText(fileName, "DateTime" + _delim + "FileName" + _delim + "GroupSortTime" + _delim + "QuickSortTime" + Environment.NewLine);
+                }
+                catch
+                {
+                    Console.WriteLine("Unable to save file " + fileName);
+                }
+            }
+        }
+
+		// Entry: DateTime, input filename, GroupSort time, QuickSort time
+        public void SaveEntry(string inputFile, Stopwatch groupSortTime, Stopwatch quickSortTime)
+		{
+            string fileName = Path.Combine(GlobalVariables.outputFolder, Filename);
+			string dateTime = DateTime.Now.ToString("yyyy-MM-dd h:mm:ss,fff tt");
+
+            try
+            {
+                File.AppendAllText(fileName, dateTime + _delim + inputFile + _delim + ConvertTimeToString(groupSortTime) + _delim + ConvertTimeToString(quickSortTime) + Environment.NewLine);
+            }
+            catch
+            {
+                Console.WriteLine("Unable to save file " + fileName);
+            }
+        }
+    } // class LogFile
 
 }
