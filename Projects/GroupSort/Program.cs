@@ -43,66 +43,11 @@ class Program
 
     static void Main()
 	{
-		List<string> allInputFiles = new List<string>();
-		//allInputFiles.Add("tinytest1.txt"); // QuickSort is 4x faster
-		//allInputFiles.Add("tinytest2.txt"); // QuickSort is 2x faster
-		//allInputFiles.Add("movies.csv"); // QuickSort is 2x faster
-		//allInputFiles.Add("moviesforwards.txt"); // QuickSort is 6x faster
-		//allInputFiles.Add("moviesbackwards.txt"); // GroupSort is 250x faster
-		//allInputFiles.Add("moviesforwardssplit.txt"); // QuickSort is 3x faster
-		//allInputFiles.Add("moviesrandomsmall.csv"); // QuickSort is 8x faster
-		//allInputFiles.Add("moviesrandomlarge.csv"); // QuickSort is 45x faster
-		//allInputFiles.Add("totallyrandom.txt"); // QuickSort is 2x faster
-		//allInputFiles.Add("InsuranceGroups.csv"); // QuickSort is 5x faster
-
-		//allInputFiles.Add("background-checks-original-order.txt"); // about the same
-		//allInputFiles.Add("background-checks-combo1-sorted-asc.txt"); // GroupSort is 233x faster
-		//allInputFiles.Add("background-checks-combo1-sorted-desc.txt"); // GroupSort is 167x faster
-		//allInputFiles.Add("background-checks-combo1-sort-permit-asc.txt"); // QuickSort is 57% faster
-		//allInputFiles.Add("background-checks-combo1-sort-permit-desc.txt"); // GroupSort is 10x faster
-
-		//allInputFiles.Add("feds3-planes-original-order.txt"); // GroupSort is 433x faster
-		//allInputFiles.Add("feds3-planes-sorted-asc.txt"); // GroupSort is 587x faster
-		//allInputFiles.Add("feds3-planes-sorted-desc.txt"); // GroupSort is 578x faster
-		//allInputFiles.Add("feds3-detailed-string-sorted-asc.txt"); // GroupSort is 114x faster
-		//allInputFiles.Add("feds3-detailed-string-sorted-desc.txt"); // GroupSort is 114x faster
-
-		//allInputFiles.Add("feds3-6char.txt"); // GroupSort is 3762x faster
-		//allInputFiles.Add("feds3-10char.txt"); // GroupSort is 34600x faster
-		//allInputFiles.Add("feds3-14char.txt"); // GroupSort is 26556x faster
-
-		//allInputFiles.Add("feds3-5k-unique.txt"); // QuickSort is 2.5x faster
-		//allInputFiles.Add("DOB_Job-10k-unique.txt"); // QuickSort is 1.6x faster
-		allInputFiles.Add("DOB_Job-50k-unique.txt"); // QuickSort is 7x faster
-		allInputFiles.Add("DOB_Job-50k-unique-asc.txt"); // GroupSort is 120x faster
-		allInputFiles.Add("DOB_Job-50k-unique-desc.txt"); // GroupSort is 93x faster
-		allInputFiles.Add("DOB_Job-100k-unique.txt"); // QuickSort is 9x faster
-		allInputFiles.Add("DOB_Job-100k-unique-asc.txt"); // GroupSort is 130x faster
-		allInputFiles.Add("DOB_Job-100k-unique-desc.txt"); // GroupSort is 114x faster
-		allInputFiles.Add("DOB_Job-500k-unique.txt"); // QuickSort is 41x(60x) faster
-		allInputFiles.Add("DOB_Job-500k-unique-asc.txt"); // GroupSort is 50x faster
-		allInputFiles.Add("DOB_Job-500k-unique-desc.txt"); // GroupSort is 27x faster
-		//allInputFiles.Add("DOB_Job-800k-unique.txt"); // QuickSort is 64x faster
-		//allInputFiles.Add("the-same-17char-string-repeated.txt"); // 1k records: GroupSort is 23x faster
-		//allInputFiles.Add("the-same-17char-string-repeated.txt"); // 5k records: GroupSort is 110x faster
-		//allInputFiles.Add("the-same-17char-string-repeated.txt"); // 10k records: GroupSort is 160x faster
-		//allInputFiles.Add("the-same-17char-string-repeated.txt"); // 50k records: GroupSort is 982x faster
-		//allInputFiles.Add("the-same-17char-string-repeated.txt"); // 100k records: GroupSort is 2155x faster
-		//allInputFiles.Add("200k-unique-and-duplicate.txt"); // GroupSort is 45x faster
-		//allInputFiles.Add("20k-unique-and-duplicate.txt"); // GroupSort is 29x faster
-		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 100 uniques, 90 dupes: same speed
-		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 1,000 uniques, 220 dupes: same speed
-		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 10,000 uniques, 865 dupes: same speed
-		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 20,000 uniques, 1770 dupes: same speed
-		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 100,000 uniques, 8790 dupes: same speed
-		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 50,000 uniques, 4400 dupes: same speed
-		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 500,000 uniques, 49500 dupes: same speed
-
-
 		LogFile results = new LogFile("benchmark_results.tab");
 		List<string> filesToBenchmark = new List<string>();
 
 
+        // -- DISPLAY MENUS --
         int selection = SelectAllOrSingleFileMenu();
 		if (selection == (int)MenuSelectIndividualOrAllFiles.AllFiles)
 		{
@@ -120,7 +65,7 @@ class Program
 		{
 			List<string> originalList = new List<string>();
 
-			System.Console.WriteLine("Processing " + file);
+			Console.WriteLine("Processing " + file);
 
 			if (BuildListFromFile(ref originalList, file))
 			{
@@ -171,20 +116,20 @@ class Program
             }
         }
 
-        System.Console.WriteLine("");
-		System.Console.WriteLine("Press any key to exit...");
-		System.Console.Read();
+        Console.WriteLine("");
+		Console.WriteLine("Press any key to exit...");
+		Console.Read();
 	}
 
 	private static int SelectAllOrSingleFileMenu()
 	{
-        System.Console.WriteLine("-------------------------");
-        System.Console.WriteLine("Do you want to benchmark a single file or all files?");
-		System.Console.WriteLine((int)MenuSelectIndividualOrAllFiles.IndividualFile + " - Benchmark individual file");
-        System.Console.WriteLine((int)MenuSelectIndividualOrAllFiles.AllFiles + " - Benchmark all files");
-        System.Console.WriteLine("-------------------------");
+        Console.WriteLine("-------------------------");
+        Console.WriteLine("Do you want to benchmark a single file or all files?");
+		Console.WriteLine((int)MenuSelectIndividualOrAllFiles.IndividualFile + " - Benchmark individual file");
+        Console.WriteLine((int)MenuSelectIndividualOrAllFiles.AllFiles + " - Benchmark all files");
+        Console.WriteLine("-------------------------");
 
-        string inputString = System.Console.ReadLine();
+        string inputString = Console.ReadLine();
 		int minSelection = 1;
         int maxSelection = 2;
         int selection = -1;
@@ -198,7 +143,7 @@ class Program
         }
         catch
         {
-            System.Console.WriteLine("Invalid input " + inputString);
+            Console.WriteLine("Invalid input " + inputString);
 			Environment.Exit(-1);
         }
 
@@ -207,19 +152,19 @@ class Program
 
     private static int SelectIndividualFileSorting()
 	{
-        System.Console.WriteLine("-------------------------");
-        System.Console.WriteLine("Benchmarking a single file.");
-        System.Console.WriteLine("We will display all files and you will select which one you want to benchmark.");
-        System.Console.WriteLine("How would you like to sort the files?");
-        System.Console.WriteLine((int)MenuSelectIndividualSortOption.NameAsc + " - Name (ascending)");
-        System.Console.WriteLine((int)MenuSelectIndividualSortOption.NameDesc + " - Name (descending)");
-        System.Console.WriteLine((int)MenuSelectIndividualSortOption.SizeAsc + " - Size (ascending)");
-        System.Console.WriteLine((int)MenuSelectIndividualSortOption.SizeDesc + " - Size (descending)");
-        System.Console.WriteLine((int)MenuSelectIndividualSortOption.ModifiedDateAsc + " - Modified Date (ascending)");
-        System.Console.WriteLine((int)MenuSelectIndividualSortOption.ModifiedDateDesc + " - Modified Date (descending)");
-        System.Console.WriteLine("-------------------------");
+        Console.WriteLine("-------------------------");
+        Console.WriteLine("Benchmarking a single file.");
+        Console.WriteLine("We will display all files and you will select which one you want to benchmark.");
+        Console.WriteLine("How would you like to sort the files?");
+        Console.WriteLine((int)MenuSelectIndividualSortOption.NameAsc + " - Name (ascending)");
+        Console.WriteLine((int)MenuSelectIndividualSortOption.NameDesc + " - Name (descending)");
+        Console.WriteLine((int)MenuSelectIndividualSortOption.SizeAsc + " - Size (ascending)");
+        Console.WriteLine((int)MenuSelectIndividualSortOption.SizeDesc + " - Size (descending)");
+        Console.WriteLine((int)MenuSelectIndividualSortOption.ModifiedDateAsc + " - Modified Date (ascending)");
+        Console.WriteLine((int)MenuSelectIndividualSortOption.ModifiedDateDesc + " - Modified Date (descending)");
+        Console.WriteLine("-------------------------");
 
-        string inputString = System.Console.ReadLine();
+        string inputString = Console.ReadLine();
         int minSelection = 1;
         int maxSelection = 6;
         int selection = -1;
@@ -233,7 +178,7 @@ class Program
         }
         catch
         {
-            System.Console.WriteLine("Invalid input " + inputString);
+            Console.WriteLine("Invalid input " + inputString);
             Environment.Exit(-1);
         }
 
@@ -245,39 +190,39 @@ class Program
 		List<string> filesToBenchmark = new List<string>();
 		int offset = 1;
 
-        System.Console.WriteLine("-------------------------");
+        Console.WriteLine("-------------------------");
 		switch (sortSelection)
 		{
 			case (int)MenuSelectIndividualSortOption.NameAsc:
-				System.Console.WriteLine("Sorting by Name (ascending).");
+				Console.WriteLine("Sorting by Name (ascending).");
 				break;
             case (int)MenuSelectIndividualSortOption.NameDesc:
-                System.Console.WriteLine("Sorting by Name (descending).");
+                Console.WriteLine("Sorting by Name (descending).");
                 break;
             case (int)MenuSelectIndividualSortOption.SizeAsc:
-                System.Console.WriteLine("Sorting by Size (ascending).");
+                Console.WriteLine("Sorting by Size (ascending).");
                 break;
             case (int)MenuSelectIndividualSortOption.SizeDesc:
-                System.Console.WriteLine("Sorting by Size (descending).");
+                Console.WriteLine("Sorting by Size (descending).");
                 break;
             case (int)MenuSelectIndividualSortOption.ModifiedDateAsc:
-                System.Console.WriteLine("Sorting by Modified Date (ascending).");
+                Console.WriteLine("Sorting by Modified Date (ascending).");
                 break;
             case (int)MenuSelectIndividualSortOption.ModifiedDateDesc:
-                System.Console.WriteLine("Sorting by Modified Date (descending).");
+                Console.WriteLine("Sorting by Modified Date (descending).");
                 break;
         }
-        System.Console.WriteLine("Select a file to benchmark:");
+        Console.WriteLine("Select a file to benchmark:");
 		for (int fileIndex = 0; fileIndex < sortedFileSelection.Count; fileIndex++)
 		{
 			int fileNumber = fileIndex + offset;
 			int slashIndex = sortedFileSelection[fileIndex].LastIndexOf("\\");
 			string fileName = sortedFileSelection[fileIndex].Substring(slashIndex + 1);
-			System.Console.WriteLine(fileNumber + " - " + fileName);
+			Console.WriteLine(fileNumber + " - " + fileName);
 		}
-		System.Console.WriteLine("-------------------------");
+		Console.WriteLine("-------------------------");
 
-		string inputString = System.Console.ReadLine();
+		string inputString = Console.ReadLine();
         int minSelection = 1;
         int maxSelection = sortedFileSelection.Count;
 		try
@@ -291,7 +236,7 @@ class Program
 		}
 		catch
 		{
-			System.Console.WriteLine("Invalid input " + inputString);
+			Console.WriteLine("Invalid input " + inputString);
             Environment.Exit(-1);
         }
 
@@ -349,7 +294,7 @@ class Program
         return sortedFileSelection;
     }
 
-    private static Boolean BuildListFromFile(ref List<string> listToBuild, string inputFile)
+    private static bool BuildListFromFile(ref List<string> listToBuild, string inputFile)
 	{
 		try
 		{
