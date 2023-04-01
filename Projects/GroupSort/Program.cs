@@ -52,23 +52,39 @@ class Program
 		if (selection == (int)MenuSelectIndividualOrAllFiles.AllFiles)
 		{
             filesToBenchmark = SelectAllFilesForBenchmarking();
+            BenchmarkFilesAgainstSorters(filesToBenchmark, results);
         }
-		else if (selection == (int)MenuSelectIndividualOrAllFiles.IndividualFile)
+        else if (selection == (int)MenuSelectIndividualOrAllFiles.IndividualFile)
 		{
-            int sortSelection = SelectIndividualFileSorting();
+            int sortSelection = SelectIndividualFileSortingMenu();
 			List<string> sortedFileSelection = SortFilesForUserSelection(sortSelection);
             filesToBenchmark = SelectIndividualFileForBenchmarkingMenu(sortSelection, sortedFileSelection);
+
+            while (sortSelection > 0 && filesToBenchmark.Count > 0)
+            {
+                BenchmarkFilesAgainstSorters(filesToBenchmark, results);
+
+                sortSelection = SelectIndividualFileSortingMenu();
+                sortedFileSelection = SortFilesForUserSelection(sortSelection);
+                filesToBenchmark = SelectIndividualFileForBenchmarkingMenu(sortSelection, sortedFileSelection);
+            }
         }
 
+        Console.WriteLine("");
+		Console.WriteLine("Press any key to exit...");
+		Console.Read();
+	}
 
+    private static void BenchmarkFilesAgainstSorters(List<string> filesToBenchmark, LogFile results)
+    {
         foreach (string file in filesToBenchmark)
-		{
-			List<string> originalList = new List<string>();
+        {
+            List<string> originalList = new List<string>();
 
-			Console.WriteLine("Processing " + file);
+            Console.WriteLine("Processing " + file);
 
-			if (BuildListFromFile(ref originalList, file))
-			{
+            if (BuildListFromFile(ref originalList, file))
+            {
                 Stopwatch timeToGroupSort = new Stopwatch();
                 Stopwatch timeToQuickSort = new Stopwatch();
                 WriteListToFile(originalList, "master");
@@ -77,27 +93,27 @@ class Program
                 Console.WriteLine("-- GroupSort --");
                 timeToGroupSort.Restart();
 
-				//GroupSort.RecursiveSortStrings stringGroupSorter = new GroupSort.RecursiveSortStrings();
-				//List<string> groupsortSortedList = stringGroupSorter.Sort(originalList);
-				GroupSort.SortStrings stringGroupSorter = new GroupSort.SortStrings();
-				List<string> groupsortSortedList = stringGroupSorter.Sort(originalList);
+                //GroupSort.RecursiveSortStrings stringGroupSorter = new GroupSort.RecursiveSortStrings();
+                //List<string> groupsortSortedList = stringGroupSorter.Sort(originalList);
+                GroupSort.SortStrings stringGroupSorter = new GroupSort.SortStrings();
+                List<string> groupsortSortedList = stringGroupSorter.Sort(originalList);
 
-				timeToGroupSort.Stop();
+                timeToGroupSort.Stop();
                 ValidateList(groupsortSortedList, originalList.Count);
                 WriteListToFile(groupsortSortedList, "groupsort");
                 PrintOverallTimeResult(groupsortSortedList, timeToGroupSort);
                 Console.WriteLine("");
 
 
-				Console.WriteLine("-- QuickSort --");
-				timeToQuickSort.Restart();
+                Console.WriteLine("-- QuickSort --");
+                timeToQuickSort.Restart();
 
-				//QuickSort.RecursiveSortStrings stringQuickSorter = new QuickSort.RecursiveSortStrings();
-				//List<string> quicksortSortedList = stringQuickSorter.Sort(originalList);
-				QuickSort.SortStrings stringQuickSorter = new QuickSort.SortStrings();
-				List<string> quicksortSortedList = stringQuickSorter.Sort(originalList);
+                //QuickSort.RecursiveSortStrings stringQuickSorter = new QuickSort.RecursiveSortStrings();
+                //List<string> quicksortSortedList = stringQuickSorter.Sort(originalList);
+                QuickSort.SortStrings stringQuickSorter = new QuickSort.SortStrings();
+                List<string> quicksortSortedList = stringQuickSorter.Sort(originalList);
 
-				timeToQuickSort.Stop();
+                timeToQuickSort.Stop();
                 ValidateList(quicksortSortedList, originalList.Count);
                 WriteListToFile(quicksortSortedList, "quicksort");
                 PrintOverallTimeResult(quicksortSortedList, timeToQuickSort);
@@ -108,20 +124,11 @@ class Program
                 results.SaveEntry(file, timeToGroupSort, timeToQuickSort, outputListsMatch);
             }
 
-			if (selection == (int)MenuSelectIndividualOrAllFiles.IndividualFile)
-			{
-                int sortSelection = SelectIndividualFileSorting();
-                List<string> sortedFileSelection = SortFilesForUserSelection(sortSelection);
-                filesToBenchmark = SelectIndividualFileForBenchmarkingMenu(sortSelection, sortedFileSelection);
-            }
         }
+    }
 
-        Console.WriteLine("");
-		Console.WriteLine("Press any key to exit...");
-		Console.Read();
-	}
 
-	private static int SelectAllOrSingleFileMenu()
+    private static int SelectAllOrSingleFileMenu()
 	{
         Console.WriteLine("-------------------------");
         Console.WriteLine("Do you want to benchmark a single file or all files?");
@@ -129,28 +136,35 @@ class Program
         Console.WriteLine((int)MenuSelectIndividualOrAllFiles.AllFiles + " - Benchmark all files");
         Console.WriteLine("-------------------------");
 
-        string inputString = Console.ReadLine();
-		int minSelection = 1;
-        int maxSelection = 2;
         int selection = -1;
-        try
+        while (selection < 0)
         {
-            int inputInt = Convert.ToInt16(inputString);
-            if ((inputInt >= minSelection) && (inputInt <= maxSelection))
+            string inputString = Console.ReadLine();
+            int minSelection = 1;
+            int maxSelection = 2;
+            try
             {
-                selection = inputInt;
+                int inputInt = Convert.ToInt16(inputString);
+                if ((inputInt >= minSelection) && (inputInt <= maxSelection))
+                {
+                    selection = inputInt;
+                }
+                else
+                {
+                    Console.WriteLine("Try again.");
+                }
             }
-        }
-        catch
-        {
-            Console.WriteLine("Invalid input " + inputString);
-			Environment.Exit(-1);
+            catch
+            {
+                Console.WriteLine("Invalid input " + inputString);
+                Environment.Exit(-1);
+            }
         }
 
         return selection;
     } // SelectAllOrSingleFileMenu
 
-    private static int SelectIndividualFileSorting()
+    private static int SelectIndividualFileSortingMenu()
 	{
         Console.WriteLine("-------------------------");
         Console.WriteLine("Benchmarking a single file.");
@@ -164,26 +178,33 @@ class Program
         Console.WriteLine((int)MenuSelectIndividualSortOption.ModifiedDateDesc + " - Modified Date (descending)");
         Console.WriteLine("-------------------------");
 
-        string inputString = Console.ReadLine();
-        int minSelection = 1;
-        int maxSelection = 6;
         int selection = -1;
-        try
+        while (selection < 0)
         {
-            int inputInt = Convert.ToInt16(inputString);
-            if ((inputInt >= minSelection) && (inputInt <= maxSelection))
+            string inputString = Console.ReadLine();
+            int minSelection = 1;
+            int maxSelection = 6;
+            try
             {
-                selection = inputInt;
+                int inputInt = Convert.ToInt16(inputString);
+                if ((inputInt >= minSelection) && (inputInt <= maxSelection))
+                {
+                    selection = inputInt;
+                }
+                else
+                {
+                    Console.WriteLine("Try again.");
+                }
             }
-        }
-        catch
-        {
-            Console.WriteLine("Invalid input " + inputString);
-            Environment.Exit(-1);
+            catch
+            {
+                Console.WriteLine("Invalid input " + inputString);
+                Environment.Exit(-1);
+            }
         }
 
         return selection;
-    } // SelectIndividualFileSorting
+    } // SelectIndividualFileSortingMenu
 
     private static List<string> SelectIndividualFileForBenchmarkingMenu(int sortSelection, List<string> sortedFileSelection)
 	{
@@ -222,22 +243,29 @@ class Program
 		}
 		Console.WriteLine("-------------------------");
 
-		string inputString = Console.ReadLine();
-        int minSelection = 1;
-        int maxSelection = sortedFileSelection.Count;
-		try
-		{
-			int inputInt = Convert.ToInt16(inputString);
-			if ((inputInt >= minSelection) && (inputInt <= maxSelection))
-			{
-				filesToBenchmark.Add(sortedFileSelection[inputInt - offset]);
+        while (filesToBenchmark.Count == 0)
+        {
+            string inputString = Console.ReadLine();
+            int minSelection = 1;
+            int maxSelection = sortedFileSelection.Count;
+            try
+            {
+                int inputInt = Convert.ToInt16(inputString);
+                if ((inputInt >= minSelection) && (inputInt <= maxSelection))
+                {
+                    filesToBenchmark.Add(sortedFileSelection[inputInt - offset]);
 
+                }
+                else
+                {
+                    Console.WriteLine("Try again.");
+                }
             }
-		}
-		catch
-		{
-			Console.WriteLine("Invalid input " + inputString);
-            Environment.Exit(-1);
+            catch
+            {
+                Console.WriteLine("Invalid input " + inputString);
+                Environment.Exit(-1);
+            }
         }
 
         return filesToBenchmark;
