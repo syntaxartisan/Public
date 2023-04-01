@@ -103,7 +103,9 @@ class Program
                 PrintOverallTimeResult(quicksortSortedList, timeToQuickSort);
                 Console.WriteLine("");
 
-                results.SaveEntry(file, timeToGroupSort, timeToQuickSort);
+                bool outputListsMatch = OutputFilesAreEqual("groupsort", "quicksort");
+
+                results.SaveEntry(file, timeToGroupSort, timeToQuickSort, outputListsMatch);
             }
 
 			if (selection == (int)MenuSelectIndividualOrAllFiles.IndividualFile)
@@ -366,7 +368,43 @@ class Program
         }
     }
 
-	private static void PrintOverallTimeResult(List<string> listToPrint, Stopwatch timeToSort)
+    private static bool OutputFilesAreEqual(string sorter1, string sorter2)
+    {
+        const int BYTES_TO_READ = sizeof(Int64);
+        string fileNamePath1 = Path.Combine(GlobalVariables.outputFolder, sorter1 + ".csv");
+        string fileNamePath2 = Path.Combine(GlobalVariables.outputFolder, sorter2 + ".csv");
+
+        FileInfo file1 = new FileInfo(fileNamePath1);
+        FileInfo file2 = new FileInfo(fileNamePath2);
+
+        if (file1.Length != file2.Length)
+            return false;
+
+        if (string.Equals(file1.FullName, file2.FullName, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        int iterations = (int)Math.Ceiling((double)file1.Length / BYTES_TO_READ);
+
+        using (FileStream fs1 = file1.OpenRead())
+        using (FileStream fs2 = file2.OpenRead())
+        {
+            byte[] one = new byte[BYTES_TO_READ];
+            byte[] two = new byte[BYTES_TO_READ];
+
+            for (int i = 0; i < iterations; i++)
+            {
+                fs1.Read(one, 0, BYTES_TO_READ);
+                fs2.Read(two, 0, BYTES_TO_READ);
+
+                if (BitConverter.ToInt64(one, 0) != BitConverter.ToInt64(two, 0))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static void PrintOverallTimeResult(List<string> listToPrint, Stopwatch timeToSort)
 	{
         Console.WriteLine(listToPrint.Count + " items in list");
         Console.WriteLine("Time: " + ConvertTimeToString(timeToSort));
@@ -448,7 +486,10 @@ class Program
 			{
                 try
                 {
-                    string text = "DateTime" + _delim + "FileName" + _delim + "GroupSortTime" + _delim + "QuickSortTime" + _delim + "GroupSortTimesFaster" + _delim + "FileSizeBytes" + _delim + "ModifiedDate";
+                    string text = "DateTime" + _delim + "FileName" + _delim 
+                        + "GroupSortTime" + _delim + "QuickSortTime" + _delim 
+                        + "GroupSortTimesFaster" + _delim + "FileSizeBytes" + _delim 
+                        + "ModifiedDate" + _delim + "OutputListsMatch";
                     File.WriteAllText(fileName, text + Environment.NewLine);
                 }
                 catch
@@ -459,7 +500,7 @@ class Program
         }
 
 		// Entry: DateTime, input filename, GroupSort time, QuickSort time
-        public void SaveEntry(string fileNameAndPath, Stopwatch groupSortTime, Stopwatch quickSortTime)
+        public void SaveEntry(string fileNameAndPath, Stopwatch groupSortTime, Stopwatch quickSortTime, bool outputListsMatch)
 		{
             int slashIndex = fileNameAndPath.LastIndexOf("\\");
             string fileName = fileNameAndPath.Substring(slashIndex + 1);
@@ -477,10 +518,14 @@ class Program
             }
             long filesizeBytes = new FileInfo(fileNameAndPath).Length;
             string modDate = new FileInfo(fileNameAndPath).LastWriteTime.ToString();
+            string listsMatch = outputListsMatch ? "YES" : "NO";
 
             try
             {
-                string text = dateTime + _delim + fileName + _delim + ConvertTimeToString(groupSortTime) + _delim + ConvertTimeToString(quickSortTime) + _delim + gsTimesFaster + _delim + filesizeBytes + _delim + modDate;
+                string text = dateTime + _delim + fileName + _delim 
+                    + ConvertTimeToString(groupSortTime) + _delim + ConvertTimeToString(quickSortTime) + _delim 
+                    + gsTimesFaster + _delim + filesizeBytes + _delim 
+                    + modDate + _delim + listsMatch;
                 File.AppendAllText(logFile, text + Environment.NewLine);
             }
             catch
