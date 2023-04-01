@@ -239,7 +239,8 @@ class Program
 			int fileNumber = fileIndex + offset;
 			int slashIndex = sortedFileSelection[fileIndex].LastIndexOf("\\");
 			string fileName = sortedFileSelection[fileIndex].Substring(slashIndex + 1);
-			Console.WriteLine(fileNumber + " - " + fileName);
+            string extraAttribute = ObtainFileAttribute(sortSelection, sortedFileSelection[fileIndex]);
+            Console.WriteLine(fileNumber + " - " + fileName + "  " + extraAttribute);
 		}
 		Console.WriteLine("-------------------------");
 
@@ -320,6 +321,24 @@ class Program
 
 
         return sortedFileSelection;
+    }
+
+    private static string ObtainFileAttribute(int sortSelection, string fileNameAndPath)
+    {
+        switch (sortSelection)
+        {
+            case (int)MenuSelectIndividualSortOption.NameAsc:
+            case (int)MenuSelectIndividualSortOption.NameDesc:
+                break;
+            case (int)MenuSelectIndividualSortOption.SizeAsc:
+            case (int)MenuSelectIndividualSortOption.SizeDesc:
+                return new FileInfo(fileNameAndPath).Length.ToString() + "B";
+            case (int)MenuSelectIndividualSortOption.ModifiedDateAsc:
+            case (int)MenuSelectIndividualSortOption.ModifiedDateDesc:
+                return new FileInfo(fileNameAndPath).LastWriteTime.ToString();
+        }
+
+        return String.Empty;
     }
 
     private static bool BuildListFromFile(ref List<string> listToBuild, string inputFile)
