@@ -99,7 +99,7 @@ class Program
 		//allInputFiles.Add("unique-and-duplicate-mix.txt"); // 500,000 uniques, 49500 dupes: same speed
 
 
-		LogFile results = new LogFile("benchmark_results.log");
+		LogFile results = new LogFile("benchmark_results.tab");
 		List<string> filesToBenchmark = new List<string>();
 
 
@@ -158,7 +158,9 @@ class Program
                 PrintOverallTimeResult(quicksortSortedList, timeToQuickSort);
                 Console.WriteLine("");
 
-                results.SaveEntry(file, timeToGroupSort, timeToQuickSort);
+                int slashIndex = file.LastIndexOf("\\");
+                string fileName = file.Substring(slashIndex + 1);
+                results.SaveEntry(fileName, timeToGroupSort, timeToQuickSort);
             }
 
 			if (selection == (int)MenuSelectIndividualOrAllFiles.IndividualFile)
@@ -201,9 +203,9 @@ class Program
         }
 
         return selection;
-    }
+    } // SelectAllOrSingleFileMenu
 
-	private static int SelectIndividualFileSorting()
+    private static int SelectIndividualFileSorting()
 	{
         System.Console.WriteLine("-------------------------");
         System.Console.WriteLine("Benchmarking a single file.");
@@ -236,7 +238,7 @@ class Program
         }
 
         return selection;
-    }
+    } // SelectIndividualFileSorting
 
     private static List<string> SelectIndividualFileForBenchmarkingMenu(int sortSelection, List<string> sortedFileSelection)
 	{
@@ -269,7 +271,9 @@ class Program
 		for (int fileIndex = 0; fileIndex < sortedFileSelection.Count; fileIndex++)
 		{
 			int fileNumber = fileIndex + offset;
-			System.Console.WriteLine(fileNumber + " - " + sortedFileSelection[fileIndex]);
+			int slashIndex = sortedFileSelection[fileIndex].LastIndexOf("\\");
+			string fileName = sortedFileSelection[fileIndex].Substring(slashIndex + 1);
+			System.Console.WriteLine(fileNumber + " - " + fileName);
 		}
 		System.Console.WriteLine("-------------------------");
 
@@ -292,9 +296,9 @@ class Program
         }
 
         return filesToBenchmark;
-	}
+    } // SelectIndividualFileForBenchmarkingMenu
 
-	private static List<string> SelectAllFilesForBenchmarking()
+    private static List<string> SelectAllFilesForBenchmarking()
 	{
         List<string> filesToBenchmark = Directory.EnumerateFiles
 			(GlobalVariables.inputFolder, "*", SearchOption.TopDirectoryOnly)
@@ -511,18 +515,18 @@ class Program
         }
 
 		// Entry: DateTime, input filename, GroupSort time, QuickSort time
-        public void SaveEntry(string inputFile, Stopwatch groupSortTime, Stopwatch quickSortTime)
+        public void SaveEntry(string fileName, Stopwatch groupSortTime, Stopwatch quickSortTime)
 		{
-            string fileName = Path.Combine(GlobalVariables.outputFolder, Filename);
+            string logFile = Path.Combine(GlobalVariables.outputFolder, Filename);
 			string dateTime = DateTime.Now.ToString("yyyy-MM-dd h:mm:ss,fff tt");
 
             try
             {
-                File.AppendAllText(fileName, dateTime + _delim + inputFile + _delim + ConvertTimeToString(groupSortTime) + _delim + ConvertTimeToString(quickSortTime) + Environment.NewLine);
+                File.AppendAllText(logFile, dateTime + _delim + fileName + _delim + ConvertTimeToString(groupSortTime) + _delim + ConvertTimeToString(quickSortTime) + Environment.NewLine);
             }
             catch
             {
-                Console.WriteLine("Unable to save file " + fileName);
+                Console.WriteLine("Unable to save file " + logFile);
             }
         }
     } // class LogFile
