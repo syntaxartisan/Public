@@ -103,9 +103,7 @@ class Program
                 PrintOverallTimeResult(quicksortSortedList, timeToQuickSort);
                 Console.WriteLine("");
 
-                int slashIndex = file.LastIndexOf("\\");
-                string fileName = file.Substring(slashIndex + 1);
-                results.SaveEntry(fileName, timeToGroupSort, timeToQuickSort);
+                results.SaveEntry(file, timeToGroupSort, timeToQuickSort);
             }
 
 			if (selection == (int)MenuSelectIndividualOrAllFiles.IndividualFile)
@@ -450,7 +448,8 @@ class Program
 			{
                 try
                 {
-                    File.WriteAllText(fileName, "DateTime" + _delim + "FileName" + _delim + "GroupSortTime" + _delim + "QuickSortTime" + Environment.NewLine);
+                    string text = "DateTime" + _delim + "FileName" + _delim + "GroupSortTime" + _delim + "QuickSortTime" + _delim + "GroupSortTimesFaster" + _delim + "FileSizeBytes" + _delim + "ModifiedDate";
+                    File.WriteAllText(fileName, text + Environment.NewLine);
                 }
                 catch
                 {
@@ -460,14 +459,29 @@ class Program
         }
 
 		// Entry: DateTime, input filename, GroupSort time, QuickSort time
-        public void SaveEntry(string fileName, Stopwatch groupSortTime, Stopwatch quickSortTime)
+        public void SaveEntry(string fileNameAndPath, Stopwatch groupSortTime, Stopwatch quickSortTime)
 		{
+            int slashIndex = fileNameAndPath.LastIndexOf("\\");
+            string fileName = fileNameAndPath.Substring(slashIndex + 1);
+
             string logFile = Path.Combine(GlobalVariables.outputFolder, Filename);
 			string dateTime = DateTime.Now.ToString("yyyy-MM-dd h:mm:ss,fff tt");
+            double gsTimesFaster = 1;
+            if (groupSortTime.Elapsed.TotalMilliseconds < quickSortTime.Elapsed.TotalMilliseconds)
+            {
+                gsTimesFaster = quickSortTime.Elapsed.TotalMilliseconds / groupSortTime.Elapsed.TotalMilliseconds;
+            }
+            else if (quickSortTime.Elapsed.TotalMilliseconds < groupSortTime.Elapsed.TotalMilliseconds)
+            {
+                gsTimesFaster = -(groupSortTime.Elapsed.TotalMilliseconds / quickSortTime.Elapsed.TotalMilliseconds);
+            }
+            long filesizeBytes = new FileInfo(fileNameAndPath).Length;
+            string modDate = new FileInfo(fileNameAndPath).LastWriteTime.ToString();
 
             try
             {
-                File.AppendAllText(logFile, dateTime + _delim + fileName + _delim + ConvertTimeToString(groupSortTime) + _delim + ConvertTimeToString(quickSortTime) + Environment.NewLine);
+                string text = dateTime + _delim + fileName + _delim + ConvertTimeToString(groupSortTime) + _delim + ConvertTimeToString(quickSortTime) + _delim + gsTimesFaster + _delim + filesizeBytes + _delim + modDate;
+                File.AppendAllText(logFile, text + Environment.NewLine);
             }
             catch
             {
