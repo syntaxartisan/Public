@@ -15,7 +15,7 @@ namespace Artisan
             {
                 private static readonly double _algorithmSwitchoverThreshold = .1;
 
-                public class CharacterGroup
+                private class CharacterGroup
                 {
                     // A CharacterGroup represents a subset of elements of a List<string>.
                     // The subset is specified by the location in the List<string> where the elements are located, 
@@ -230,11 +230,11 @@ namespace Artisan
                     resultSet.AddRange(QuickSortStructures(gt));
                     return resultSet;
                 }
-            }
+            } // class RecursiveSortStrings
 
             public class SortStrings
             {
-                public class Range
+                private class Range
                 {
                     public int StartIndex { get; set; }
                     public int EndIndex { get; set; }
@@ -252,7 +252,7 @@ namespace Artisan
                     }
                 }
 
-                public class CharRange
+                private class CharRange
                 {
                     public char CurrentChar { get; set; }
                     public Range IndexRange { get; set; }
@@ -264,7 +264,7 @@ namespace Artisan
                     }
                 }
 
-                public class DepthRange
+                private class DepthRange
                 {
                     // CharDepth is ones-based depth location within a string.
                     // Depth of 1 means you're analyzing the first character of the string, at location [0].
@@ -278,7 +278,7 @@ namespace Artisan
                     }
                 }
 
-                public class CharGroup
+                private class CharGroup
                 {
                     public char CurrentChar { get; set; }
                     public List<Range> IndexRanges { get; set; }
@@ -622,8 +622,8 @@ namespace Artisan
                     }
                 }
 
-            }
-        }
+            } // class SortStrings
+        } // class GroupSort
 
     }
 }

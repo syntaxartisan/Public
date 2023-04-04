@@ -52,7 +52,7 @@ namespace Artisan
                     resultSet.AddRange(Sort(gt));
                     return resultSet;
                 }
-            }
+            } // class RecursiveSortIntegers
 
             public class SortIntegers
             {
@@ -121,7 +121,7 @@ namespace Artisan
                     // Returns the next sorting  element location
                     return i + 1;
                 }
-            }
+            } // class SortIntegers
 
             public class RecursiveSortStrings
             {
@@ -165,7 +165,7 @@ namespace Artisan
                     resultSet.AddRange(Sort(gt));
                     return resultSet;
                 }
-            }
+            } // class RecursiveSortStrings
 
             public class SortStrings
             {
@@ -242,9 +242,9 @@ namespace Artisan
                     return i + 1;
                 }
 
-            }
+            } // class SortStrings
 
-        }
+        } // class QuickSort
 
     }
 }
