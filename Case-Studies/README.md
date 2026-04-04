@@ -4,8 +4,6 @@ This folder contains tools that I've built that have solved problems in my envir
 
 ## Microsoft Office Installer
 
-This Powershell script installs Microsoft Office. When run, the script displays a GUI with user options. When the user clicks Start, the installer will install Office.
-
 ### Overview
 
 This project is a PowerShell-based GUI application that simplifies the deployment of Microsoft Office using the Office Deployment Tool (ODT). It abstracts a complex, multi-step deployment process into a simple user interface, allowing non-technical users to install Office with the correct configuration, adapting to compliance restrictions, and supporting seamless software updates.
