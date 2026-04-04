@@ -51,5 +51,54 @@ I built a PowerShell GUI wrapper around the Office Deployment Tool that:
 
 ## MSI Baler
 
-This Powershell script packages user-provided files into an MSI installer file. When run, the script displas a GUI with user options. When the user clickes Start, 
-the MSI installer will be built. From there, the user can run the MSI to install their files in the standard location (Program Files and Windows registry).
+### Overview
+MSI Baler is a PowerShell-based GUI tool that converts arbitrary application files (typically portable executables) into standardized MSI installers using the WiX Toolset. It was designed to bridge the gap between unmanaged portable software and enterprise compliance requirements, enabling consistent tracking, deployment, and lifecycle management.
+
+### Problem
+In enterprise environments, software inventory is often tracked via:
+- Windows Registry entries
+- Installed application metadata (MSI-based installs) stored in Windows registry
+
+However, portable applications introduce several issues:
+- No registry footprint means software is not discoverable by automated tools
+- Manual tracking is error-prone and inconsistent
+- No standardized installation process
+- Compliance gaps in software reporting
+
+This creates ongoing friction between:
+- System owners (who need flexibility)
+- Compliance teams (who need visibility and control)
+
+### Solution
+MSI Baler packages arbitrary file sets into valid MSI installers, allowing portable applications to behave like fully installed software.
+
+The tool:
+- Wraps files into an MSI package
+- Registers the application in the Windows registry
+- Enables automated discovery by existing infrastructure tools
+
+### How It Works
+1. User Interaction Layer (GUI)
+   - A minimal interface is presented
+   - User specifies input and output directories
+   - User specifies application name and version (to store in Windows registry)
+   - User specifies CPU architecture (auto-detected or manually specified)
+   - The UI is structured to ensure only valid, compliant installers are created.
+2. Configuration Generation
+   - Based on user input, the script dynamically builds an XML definition file (.wxs)
+   - Architecture and application selections are added to the XML
+   - Input files are mapped to WiX components in a tree structure
+   - Behavior of the MSI installer is standardized
+3. WiX Build Pipeline
+   - The .wxs file is compiled to a .wixobj file (using candle.exe)
+   - The .wixobj file is linked to create the final .msi file (using light.exe)
+4. MSI Output
+   - The resulting MSI nstalls files into Program Files
+   - Writes application metadata to the Windows registry
+   - Applications are now discoverable by enterprise inventory systems
+
+### Impact
+- Eliminated manual tracking of portable applications
+- Enabled full visibility in enterprise software inventory systems
+- Reduced compliance gaps and audit overhead
+- Standardized how software is packaged and deployed internally
