@@ -1,0 +1,6 @@
+@OperationsKnowledge_HostAddress = http://localhost:5072
+
+GET {{OperationsKnowledge_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
