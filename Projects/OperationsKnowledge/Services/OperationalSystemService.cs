@@ -4,6 +4,7 @@ namespace OperationsKnowledge.Services;
 
 public class OperationalSystemService : IOperationalSystemService
 {
+    private int _nextId = 3;
     private readonly List<OperationalSystem> _systems =
         [
             new()
@@ -30,5 +31,12 @@ public class OperationalSystemService : IOperationalSystemService
     public OperationalSystem? GetById(int id)
     {
         return _systems.FirstOrDefault(s => s.Id == id);
+    }
+
+    public OperationalSystem? Create(OperationalSystem system)
+    {
+        system.Id = _nextId++;
+        _systems.Add(system);
+        return system;
     }
 }

@@ -8,4 +8,5 @@ public class OperationalSystem
     public string Status { get; set; } = "";
 
     public string Description { get; set; } = "";
+    public string Owner { get; set; } = "";
 }

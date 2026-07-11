@@ -6,4 +6,5 @@ public interface IOperationalSystemService
 {
     IEnumerable<OperationalSystem> GetAll();
     OperationalSystem? GetById(int id);
+    OperationalSystem? Create(OperationalSystem system);
 }
