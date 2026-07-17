@@ -34,4 +34,19 @@ public class OperationalSystemsController : ControllerBase
             new { id = created.Id },
             created);
     }
+    [HttpPut]
+    public ActionResult<OperationalSystem> UpdateOperationalSystem(int id, OperationalSystem system)
+    {
+        if (id != system.Id) { return BadRequest(); }
+        var updated = _service.Update(system);
+        if (updated == null) { return NotFound(); }
+        return Ok(updated);
+    }
+    [HttpDelete]
+    public ActionResult DeleteOperationalSystem(int id)
+    {
+        bool deleted = _service.Delete(id);
+        if (!deleted) { return NotFound(); }
+        return NoContent();
+    }
 }

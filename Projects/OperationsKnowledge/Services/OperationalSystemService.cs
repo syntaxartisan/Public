@@ -39,4 +39,23 @@ public class OperationalSystemService : IOperationalSystemService
         _systems.Add(system);
         return system;
     }
+
+    public OperationalSystem? Update(OperationalSystem system)
+    {
+        var existing = _systems.FirstOrDefault(s => s.Id == system.Id);
+        if (existing == null) { return null; }
+        existing.Name = system.Name;
+        existing.Status = system.Status;
+        existing.Description = system.Description;
+        existing.Owner = system.Owner;
+        return system;
+    }
+
+    public bool Delete(int id)
+    {
+        int index = _systems.FindIndex(s => s.Id == id);
+        if (index == -1) { return false; }
+        _systems.RemoveAt(index);
+        return true;
+    }
 }
