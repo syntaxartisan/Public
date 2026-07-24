@@ -1,4 +1,5 @@
 ﻿using OperationsKnowledge.Models;
+using OperationsKnowledge.Data;
 
 namespace OperationsKnowledge.Services;
 
@@ -22,7 +23,13 @@ public class OperationalSystemService : IOperationalSystemService
                 Description = "Infrastructure monitoring."
             }
         ];
-    
+    private readonly OperationalSystemContext _context;
+
+    public OperationalSystemService(OperationalSystemContext context)
+    {
+        _context = context;
+    }
+
     public IEnumerable<OperationalSystem> GetAll()
     {
         return _systems;
