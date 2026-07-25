@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OperationsKnowledge.Models;
 using OperationsKnowledge.Services;
+using OperationsKnowledge.Dtos;
 
 namespace OperationsKnowledge.Controllers;
 
@@ -26,8 +27,15 @@ public class OperationalSystemsController : ControllerBase
         return system;
     }
     [HttpPost]
-    public ActionResult<OperationalSystem> CreateOperationalSystem(OperationalSystem system)
+    public ActionResult<OperationalSystem> CreateOperationalSystem(CreateOperationalSystemRequest request)
     {
+        var system = new OperationalSystem
+        {
+            Name = request.Name,
+            Status = request.Status,
+            Description = request.Description,
+            Owner = request.Owner
+        };
         var created = _service.Create(system);
         return CreatedAtAction(
             nameof(GetOperationalSystem),
@@ -35,9 +43,16 @@ public class OperationalSystemsController : ControllerBase
             created);
     }
     [HttpPut]
-    public ActionResult<OperationalSystem> UpdateOperationalSystem(int id, OperationalSystem system)
+    public ActionResult<OperationalSystem> UpdateOperationalSystem(int id, UpdateOperationalSystemRequest request)
     {
-        if (id != system.Id) { return BadRequest(); }
+        var system = new OperationalSystem
+        {
+            Id = id,
+            Name = request.Name,
+            Status = request.Status,
+            Description = request.Description,
+            Owner = request.Owner
+        };
         var updated = _service.Update(system);
         if (updated == null) { return NotFound(); }
         return Ok(updated);

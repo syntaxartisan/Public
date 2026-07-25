@@ -5,24 +5,6 @@ namespace OperationsKnowledge.Services;
 
 public class OperationalSystemService : IOperationalSystemService
 {
-    private int _nextId = 3;
-    private readonly List<OperationalSystem> _systems =
-        [
-            new()
-            {
-                Id = 1,
-                Name = "Payroll",
-                Status = "Active",
-                Description = "Processes employee payroll."
-            },
-            new()
-            {
-                Id = 2,
-                Name = "Monitoring",
-                Status = "Active",
-                Description = "Infrastructure monitoring."
-            }
-        ];
     private readonly OperationalSystemContext _context;
 
     public OperationalSystemService(OperationalSystemContext context)
@@ -32,37 +14,39 @@ public class OperationalSystemService : IOperationalSystemService
 
     public IEnumerable<OperationalSystem> GetAll()
     {
-        return _systems;
+        return _context.OperationalSystems.ToList();
     }
 
     public OperationalSystem? GetById(int id)
     {
-        return _systems.FirstOrDefault(s => s.Id == id);
+        return _context.OperationalSystems.Find(id);
     }
 
     public OperationalSystem? Create(OperationalSystem system)
     {
-        system.Id = _nextId++;
-        _systems.Add(system);
+        _context.OperationalSystems.Add(system);
+        _context.SaveChanges();
         return system;
     }
 
     public OperationalSystem? Update(OperationalSystem system)
     {
-        var existing = _systems.FirstOrDefault(s => s.Id == system.Id);
+        var existing = GetById(system.Id);
         if (existing == null) { return null; }
         existing.Name = system.Name;
         existing.Status = system.Status;
         existing.Description = system.Description;
         existing.Owner = system.Owner;
-        return system;
+        _context.SaveChanges();
+        return existing;
     }
 
     public bool Delete(int id)
     {
-        int index = _systems.FindIndex(s => s.Id == id);
-        if (index == -1) { return false; }
-        _systems.RemoveAt(index);
+        var system = GetById(id);
+        if (system == null) { return false; }
+        _context.OperationalSystems.Remove(system);
+        _context.SaveChanges();
         return true;
     }
 }

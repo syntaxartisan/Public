@@ -13,8 +13,3 @@ public class OperationalSystemContext : DbContext
     {
     }
 }
-
-/* q's
- * What calls the default constructor?
- * How does it know what to pass to it (DbContextOptions).
- * */
