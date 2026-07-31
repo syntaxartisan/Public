@@ -4,9 +4,9 @@ namespace OperationsKnowledge.Services;
 
 public interface IOperationalSystemService
 {
-    IEnumerable<OperationalSystem> GetAll();
-    OperationalSystem? GetById(int id);
-    OperationalSystem? Create(OperationalSystem system);
-    OperationalSystem? Update(OperationalSystem system);
-    bool Delete(int id);
+    Task<IReadOnlyList<OperationalSystem>> GetAllAsync();
+    Task<OperationalSystem?> GetByIdAsync(int id);
+    Task CreateAsync(OperationalSystem system);
+    Task<bool> UpdateAsync(OperationalSystem system);
+    Task<bool> DeleteAsync(int id);
 }

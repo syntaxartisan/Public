@@ -1,5 +1,6 @@
 ﻿using OperationsKnowledge.Models;
 using OperationsKnowledge.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace OperationsKnowledge.Services;
 
@@ -12,40 +13,39 @@ public class OperationalSystemService : IOperationalSystemService
         _context = context;
     }
 
-    public IEnumerable<OperationalSystem> GetAll()
+    public async Task<IReadOnlyList<OperationalSystem>> GetAllAsync()
     {
-        return _context.OperationalSystems.ToList();
+        return await _context.OperationalSystems.ToListAsync();
     }
 
-    public OperationalSystem? GetById(int id)
+    public async Task<OperationalSystem?> GetByIdAsync(int id)
     {
-        return _context.OperationalSystems.Find(id);
+        return await _context.OperationalSystems.FindAsync(id);
     }
 
-    public OperationalSystem? Create(OperationalSystem system)
+    public async Task CreateAsync(OperationalSystem system)
     {
-        _context.OperationalSystems.Add(system);
+        await _context.OperationalSystems.AddAsync(system);
         _context.SaveChanges();
-        return system;
     }
 
-    public OperationalSystem? Update(OperationalSystem system)
+    public async Task<bool> UpdateAsync(OperationalSystem system)
     {
-        var existing = GetById(system.Id);
-        if (existing == null) { return null; }
+        var existing = await GetByIdAsync(system.Id);
+        if (existing == null) { return false; }
         existing.Name = system.Name;
         existing.Status = system.Status;
         existing.Description = system.Description;
         existing.Owner = system.Owner;
         _context.SaveChanges();
-        return existing;
+        return true;
     }
 
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        var system = GetById(id);
-        if (system == null) { return false; }
-        _context.OperationalSystems.Remove(system);
+        var existing = await GetByIdAsync(id);
+        if (existing == null) { return false; }
+        _context.OperationalSystems.Remove(existing);
         _context.SaveChanges();
         return true;
     }

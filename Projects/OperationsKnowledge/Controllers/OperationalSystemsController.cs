@@ -16,21 +16,22 @@ public class OperationalSystemsController : ControllerBase
     {  _service = service; }
 
     [HttpGet]
-    public IEnumerable<OperationalSystemResponse> GetOperationalSystems()
+    public async Task<IEnumerable<OperationalSystemResponse>> GetOperationalSystemsAsync()
     {
-        return _service.GetAll().Select(ToResponse);
+        var systems = await _service.GetAllAsync();
+        return systems.Select(ToResponse);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<OperationalSystemResponse> GetOperationalSystem(int id)
+    public async Task<ActionResult<OperationalSystemResponse>> GetOperationalSystemAsync(int id)
     {
-        var system = _service.GetById(id);
+        var system = await _service.GetByIdAsync(id);
         if (system == null) { return NotFound(); }
         return Ok(ToResponse(system));
     }
 
     [HttpPost]
-    public ActionResult<OperationalSystem> CreateOperationalSystem(CreateOperationalSystemRequest request)
+    public async Task<ActionResult<OperationalSystem>> CreateOperationalSystemAsync(CreateOperationalSystemRequest request)
     {
         var system = new OperationalSystem
         {
@@ -39,15 +40,15 @@ public class OperationalSystemsController : ControllerBase
             Description = request.Description,
             Owner = request.Owner
         };
-        var created = _service.Create(system);
+        await _service.CreateAsync(system);
         return CreatedAtAction(
-            nameof(GetOperationalSystem),
-            new { id = created.Id },
-            created);
+            nameof(GetOperationalSystemAsync),
+            new { id = system.Id },
+            system);
     }
 
     [HttpPut]
-    public ActionResult<OperationalSystem> UpdateOperationalSystem(int id, UpdateOperationalSystemRequest request)
+    public async Task<ActionResult<OperationalSystem>> UpdateOperationalSystemAsync(int id, UpdateOperationalSystemRequest request)
     {
         var system = new OperationalSystem
         {
@@ -57,15 +58,15 @@ public class OperationalSystemsController : ControllerBase
             Description = request.Description,
             Owner = request.Owner
         };
-        var updated = _service.Update(system);
-        if (updated == null) { return NotFound(); }
+        bool updated = await _service.UpdateAsync(system);
+        if (!updated) { return NotFound(); }
         return Ok(updated);
     }
 
     [HttpDelete]
-    public ActionResult DeleteOperationalSystem(int id)
+    public async Task<ActionResult> DeleteOperationalSystemAsync(int id)
     {
-        bool deleted = _service.Delete(id);
+        bool deleted = await _service.DeleteAsync(id);
         if (!deleted) { return NotFound(); }
         return NoContent();
     }
