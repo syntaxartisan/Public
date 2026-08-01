@@ -36,6 +36,7 @@ public class OperationalSystemService : IOperationalSystemService
         existing.Name = system.Name;
         existing.Status = system.Status;
         existing.Description = system.Description;
+        existing.OwnerId = system.OwnerId;
         existing.Owner = system.Owner;
         _context.SaveChanges();
         return true;

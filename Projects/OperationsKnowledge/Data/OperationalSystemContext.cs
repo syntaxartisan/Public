@@ -6,6 +6,7 @@ namespace OperationsKnowledge.Data;
 public class OperationalSystemContext : DbContext
 {
     public DbSet<OperationalSystem> OperationalSystems { get; set; } = null!;
+    public DbSet<Person> People { get; set; } = null!;
 
     public OperationalSystemContext(
         DbContextOptions<OperationalSystemContext> options)

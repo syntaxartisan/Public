@@ -38,6 +38,7 @@ public class OperationalSystemsController : ControllerBase
             Name = request.Name,
             Status = request.Status,
             Description = request.Description,
+            OwnerId = request.OwnerId,
             Owner = request.Owner
         };
         await _service.CreateAsync(system);
@@ -56,6 +57,7 @@ public class OperationalSystemsController : ControllerBase
             Name = request.Name,
             Status = request.Status,
             Description = request.Description,
+            OwnerId = request.OwnerId,
             Owner = request.Owner
         };
         bool updated = await _service.UpdateAsync(system);
@@ -79,6 +81,7 @@ public class OperationalSystemsController : ControllerBase
             Name = system.Name,
             Status = system.Status,
             Description = system.Description,
+            OwnerId = system.OwnerId,
             Owner = system.Owner
         };
     }

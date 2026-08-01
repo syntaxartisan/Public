@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OperationsKnowledge.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace OperationsKnowledge.Dtos;
 
@@ -15,6 +16,7 @@ public class UpdateOperationalSystemRequest
     [StringLength(1000, ErrorMessage = "Length limit of 1000 characters.")]
     public string Description { get; set; } = "";
 
-    [StringLength(150, ErrorMessage = "Length limit of 150 characters.")]
-    public string Owner { get; set; } = "";
+    public int? OwnerId { get; set; }
+
+    public Person? Owner { get; set; }
 }
