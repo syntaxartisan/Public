@@ -20,7 +20,7 @@ public class OperationalSystemService : IOperationalSystemService
 
     public async Task<OperationalSystem?> GetByIdAsync(int id)
     {
-        return await _context.OperationalSystems.FindAsync(id);
+        return await _context.OperationalSystems.Include(s => s.Owner).FirstOrDefaultAsync(s => s.Id == id);
     }
 
     public async Task CreateAsync(OperationalSystem system)
