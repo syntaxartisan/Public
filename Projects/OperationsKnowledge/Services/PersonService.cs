@@ -46,7 +46,15 @@ public class PersonService : IPersonService
     {
         var existing = await GetByIdAsync(id);
         if (existing == null) { return false; }
+
+        var systems = await _context.OperationalSystems.Where(s => s.OwnerId == id).ToListAsync();
+        foreach (var s in systems)
+        {
+            s.OwnerId = null;
+        }
+
         _context.People.Remove(existing);
+
         _context.SaveChanges();
         return true;
     }
