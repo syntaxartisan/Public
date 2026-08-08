@@ -26,7 +26,7 @@ public class OperationalSystemService : IOperationalSystemService
     public async Task CreateAsync(OperationalSystem system)
     {
         await _context.OperationalSystems.AddAsync(system);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public async Task<bool> UpdateAsync(OperationalSystem system)
@@ -38,7 +38,7 @@ public class OperationalSystemService : IOperationalSystemService
         existing.Description = system.Description;
         existing.OwnerId = system.OwnerId;
         existing.Owner = system.Owner;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return true;
     }
 
@@ -47,7 +47,7 @@ public class OperationalSystemService : IOperationalSystemService
         var existing = await GetByIdAsync(id);
         if (existing == null) { return false; }
         _context.OperationalSystems.Remove(existing);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return true;
     }
 }

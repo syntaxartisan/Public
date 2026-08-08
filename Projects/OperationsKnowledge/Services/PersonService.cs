@@ -27,7 +27,7 @@ public class PersonService : IPersonService
     public async Task CreateAsync(Person p)
     {
         await _context.People.AddAsync(p);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public async Task<bool> UpdateAsync(Person p)
@@ -38,7 +38,7 @@ public class PersonService : IPersonService
         existing.Department = p.Department;
         existing.Email = p.Email;
         existing.PhoneNumber = p.PhoneNumber;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return true;
     }
 
@@ -55,7 +55,7 @@ public class PersonService : IPersonService
 
         _context.People.Remove(existing);
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return true;
     }
 }
