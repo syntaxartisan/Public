@@ -23,7 +23,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<PersonResponse>> GetPersonAsync(int id)
+    public async Task<ActionResult<PersonResponse>> GetPerson(int id)
     {
         var system = await _service.GetByIdAsync(id);
         if (system == null) { return NotFound(); }
@@ -42,9 +42,9 @@ public class PeopleController : ControllerBase
         };
         await _service.CreateAsync(system);
         return CreatedAtAction(
-            nameof(GetPersonAsync),
+            nameof(GetPerson), // throws "No route matches the supplied values." when using name "GetPersonAsync"
             new { id = system.Id },
-            system);
+            ToResponse(system));
     }
 
     [HttpPut]
