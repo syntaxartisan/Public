@@ -45,7 +45,7 @@ public class OperationalSystemsController : ControllerBase
         return CreatedAtAction(
             nameof(GetOperationalSystemAsync),
             new { id = system.Id },
-            system);
+            ToResponse(system));
     }
 
     [HttpPut]
