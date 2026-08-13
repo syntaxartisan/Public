@@ -14,5 +14,5 @@ public class OperationalSystemResponse
 
     public int? OwnerId { get; set; }
 
-    public Person? Owner { get; set; }
+    public string? OwnerName { get; set; }
 }

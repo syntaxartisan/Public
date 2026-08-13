@@ -82,7 +82,7 @@ public class OperationalSystemsController : ControllerBase
             Status = system.Status,
             Description = system.Description,
             OwnerId = system.OwnerId,
-            Owner = system.Owner
+            OwnerName = system.Owner?.Name
         };
     }
 }

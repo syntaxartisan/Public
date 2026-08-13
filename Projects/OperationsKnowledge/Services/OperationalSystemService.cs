@@ -15,7 +15,7 @@ public class OperationalSystemService : IOperationalSystemService
 
     public async Task<IReadOnlyList<OperationalSystem>> GetAllAsync()
     {
-        return await _context.OperationalSystems.ToListAsync();
+        return await _context.OperationalSystems.Include(s => s.Owner).ToListAsync();
     }
 
     public async Task<OperationalSystem?> GetByIdAsync(int id)
