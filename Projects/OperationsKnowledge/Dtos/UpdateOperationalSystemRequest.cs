@@ -17,6 +17,4 @@ public class UpdateOperationalSystemRequest
     public string Description { get; set; } = "";
 
     public int? OwnerId { get; set; }
-
-    public Person? Owner { get; set; }
 }

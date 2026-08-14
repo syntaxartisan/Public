@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using OperationsKnowledge.Dtos;
+using OperationsKnowledge.Mappings;
 using OperationsKnowledge.Models;
 using OperationsKnowledge.Services;
 
@@ -19,7 +20,7 @@ public class OperationalSystemsController : ControllerBase
     public async Task<IEnumerable<OperationalSystemResponse>> GetOperationalSystemsAsync()
     {
         var systems = await _service.GetAllAsync();
-        return systems.Select(ToResponse);
+        return systems.Select(OperationalSystemMapper.ToResponse);
     }
 
     [HttpGet("{id}")]
@@ -27,7 +28,7 @@ public class OperationalSystemsController : ControllerBase
     {
         var system = await _service.GetByIdAsync(id);
         if (system == null) { return NotFound(); }
-        return Ok(ToResponse(system));
+        return Ok(OperationalSystemMapper.ToResponse(system));
     }
 
     [HttpPost]
@@ -45,7 +46,7 @@ public class OperationalSystemsController : ControllerBase
         return CreatedAtAction(
             nameof(GetOperationalSystemAsync),
             new { id = system.Id },
-            ToResponse(system));
+            OperationalSystemMapper.ToResponse(system));
     }
 
     [HttpPut]
@@ -58,7 +59,7 @@ public class OperationalSystemsController : ControllerBase
             Status = request.Status,
             Description = request.Description,
             OwnerId = request.OwnerId,
-            Owner = request.Owner
+            Owner = null
         };
         bool updated = await _service.UpdateAsync(system);
         if (!updated) { return NotFound(); }
@@ -71,18 +72,5 @@ public class OperationalSystemsController : ControllerBase
         bool deleted = await _service.DeleteAsync(id);
         if (!deleted) { return NotFound(); }
         return NoContent();
-    }
-
-    private static OperationalSystemResponse ToResponse(OperationalSystem system)
-    {
-        return new OperationalSystemResponse
-        {
-            Id = system.Id,
-            Name = system.Name,
-            Status = system.Status,
-            Description = system.Description,
-            OwnerId = system.OwnerId,
-            OwnerName = system.Owner?.Name
-        };
     }
 }

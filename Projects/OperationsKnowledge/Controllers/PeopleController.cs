@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 using OperationsKnowledge.Dtos;
+using OperationsKnowledge.Mappings;
 using OperationsKnowledge.Models;
 using OperationsKnowledge.Services;
 
@@ -18,8 +19,8 @@ public class PeopleController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<PersonResponse>> PeopleAsync()
     {
-        var systems = await _service.GetAllAsync();
-        return systems.Select(ToResponse);
+        var people = await _service.GetAllAsync();
+        return people.Select(ToResponse);
     }
 
     [HttpGet("{id}")]
@@ -30,27 +31,34 @@ public class PeopleController : ControllerBase
         return Ok(ToResponse(system));
     }
 
+    [HttpGet("{id}/OwnedSystems")]
+    public async Task<ActionResult<IEnumerable<OperationalSystemResponse>>> OwnedSystemsAsync(int id)
+    {
+        var systems = await _service.GetOwnedSystemsAsync(id);
+        return Ok(systems.Select(OperationalSystemMapper.ToResponse));
+    }
+
     [HttpPost]
     public async Task<ActionResult<Person>> CreatePersonAsync(CreatePersonRequest request)
     {
-        var system = new Person
+        var person = new Person
         {
             Name = request.Name,
             Department = request.Department,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber
         };
-        await _service.CreateAsync(system);
+        await _service.CreateAsync(person);
         return CreatedAtAction(
             nameof(GetPerson), // throws "No route matches the supplied values." when using name "GetPersonAsync"
-            new { id = system.Id },
-            ToResponse(system));
+            new { id = person.Id },
+            ToResponse(person));
     }
 
     [HttpPut]
     public async Task<ActionResult<Person>> UpdatePersonAsync(int id, UpdatePersonRequest request)
     {
-        var system = new Person
+        var person = new Person
         {
             Id = id,
             Name = request.Name,
@@ -58,7 +66,7 @@ public class PeopleController : ControllerBase
             Email = request.Email,
             PhoneNumber = request.PhoneNumber
         };
-        bool updated = await _service.UpdateAsync(system);
+        bool updated = await _service.UpdateAsync(person);
         if (!updated) { return NotFound(); }
         return Ok(updated);
     }

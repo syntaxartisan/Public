@@ -24,6 +24,11 @@ public class PersonService : IPersonService
         return await _context.People.FirstOrDefaultAsync(s => s.Id == id);
     }
 
+    public async Task<IReadOnlyList<OperationalSystem>> GetOwnedSystemsAsync(int id)
+    {
+        return await _context.OperationalSystems.Include(s => s.Owner).Where(s => s.OwnerId == id).ToListAsync();
+    }
+
     public async Task CreateAsync(Person p)
     {
         await _context.People.AddAsync(p);
