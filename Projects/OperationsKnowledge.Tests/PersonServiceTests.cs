@@ -10,6 +10,49 @@ namespace OperationsKnowledge.Tests;
 public class PersonServiceTests
 {
     [Fact]
+    public async Task GetPerson_ReturnsPerson_WhenPersonExists()
+    {
+        // Arrange
+        using var database = new TestDatabase();
+        var context = database.Context;
+
+        var susan = new Person
+        {
+            Name = "Susan",
+            Department = "IT",
+            Email = "susan@organization.org"
+        };
+        context.People.Add(susan);
+        await context.SaveChangesAsync();
+
+        var service = new PersonService(context);
+
+        // Act
+        var result = await service.GetByIdAsync(susan.Id);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(susan.Id, result.Id);
+        Assert.Equal(susan.Name, result.Name);
+    }
+
+    [Fact]
+    public async Task GetPerson_ReturnsNull_WhenPersonDoesNotExist()
+    {
+        // Arrange
+        using var database = new TestDatabase();
+        var context = database.Context;
+
+        var service = new PersonService(context);
+
+        // Act
+        var result = await service.GetByIdAsync(999);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
     public async Task DeletePerson_UnassignsOwnedSystem()
     {
         // Arrange
