@@ -17,6 +17,7 @@ public class PeopleController : ControllerBase
     { _service = service; }
 
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<PersonResponse>), StatusCodes.Status200OK)]
     public async Task<IEnumerable<PersonResponse>> PeopleAsync()
     {
         var people = await _service.GetAllAsync();
@@ -24,6 +25,8 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(PersonResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PersonResponse>> GetPerson(int id)
     {
         var person = await _service.GetByIdAsync(id);
@@ -32,6 +35,8 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("{id}/owned-systems")]
+    [ProducesResponseType(typeof(IEnumerable<OperationalSystemResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<OperationalSystemResponse>>> OwnedSystemsAsync(int id)
     {
         var person = await _service.GetByIdAsync(id);
@@ -41,6 +46,8 @@ public class PeopleController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(Person), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Person>> CreatePersonAsync(CreatePersonRequest request)
     {
         var person = new Person
@@ -58,6 +65,9 @@ public class PeopleController : ControllerBase
     }
 
     [HttpPut]
+    [ProducesResponseType(typeof(Person), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Person>> UpdatePersonAsync(int id, UpdatePersonRequest request)
     {
         var person = new Person
@@ -74,6 +84,8 @@ public class PeopleController : ControllerBase
     }
 
     [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeletePersonAsync(int id)
     {
         bool deleted = await _service.DeleteAsync(id);
