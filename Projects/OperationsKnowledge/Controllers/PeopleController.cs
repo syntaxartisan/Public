@@ -8,7 +8,7 @@ using OperationsKnowledge.Services;
 namespace OperationsKnowledge.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("people")]
 public class PeopleController : ControllerBase
 {
     private readonly IPersonService _service;
@@ -26,14 +26,16 @@ public class PeopleController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<PersonResponse>> GetPerson(int id)
     {
-        var system = await _service.GetByIdAsync(id);
-        if (system == null) { return NotFound(); }
-        return Ok(ToResponse(system));
+        var person = await _service.GetByIdAsync(id);
+        if (person == null) { return NotFound(); }
+        return Ok(ToResponse(person));
     }
 
-    [HttpGet("{id}/OwnedSystems")]
+    [HttpGet("{id}/owned-systems")]
     public async Task<ActionResult<IEnumerable<OperationalSystemResponse>>> OwnedSystemsAsync(int id)
     {
+        var person = await _service.GetByIdAsync(id);
+        if (person == null) { return NotFound(); }
         var systems = await _service.GetOwnedSystemsAsync(id);
         return Ok(systems.Select(OperationalSystemMapper.ToResponse));
     }

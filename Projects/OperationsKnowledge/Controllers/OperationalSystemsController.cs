@@ -8,7 +8,7 @@ using OperationsKnowledge.Services;
 namespace OperationsKnowledge.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("operational-systems")]
 public class OperationalSystemsController : ControllerBase
 {
     private readonly IOperationalSystemService _service;
@@ -24,7 +24,7 @@ public class OperationalSystemsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<OperationalSystemResponse>> GetOperationalSystemAsync(int id)
+    public async Task<ActionResult<OperationalSystemResponse>> GetOperationalSystem(int id)
     {
         var system = await _service.GetByIdAsync(id);
         if (system == null) { return NotFound(); }
@@ -32,19 +32,18 @@ public class OperationalSystemsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<OperationalSystem>> CreateOperationalSystemAsync(CreateOperationalSystemRequest request)
+    public async Task<ActionResult<OperationalSystemResponse>> CreateOperationalSystemAsync(CreateOperationalSystemRequest request)
     {
         var system = new OperationalSystem
         {
             Name = request.Name,
             Status = request.Status,
             Description = request.Description,
-            OwnerId = request.OwnerId,
-            Owner = request.Owner
+            OwnerId = request.OwnerId
         };
         await _service.CreateAsync(system);
         return CreatedAtAction(
-            nameof(GetOperationalSystemAsync),
+            nameof(GetOperationalSystem), // throws "No route matches the supplied values." when using name "GetOperationalSystemAsync"
             new { id = system.Id },
             OperationalSystemMapper.ToResponse(system));
     }
