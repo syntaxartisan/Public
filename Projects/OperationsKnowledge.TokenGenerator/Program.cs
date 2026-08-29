@@ -4,6 +4,22 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
+var users = new[]
+{
+    new
+    {
+        Id = "1",
+        Name = "Bob",
+        Role = "Administrator"
+    },
+    new
+    {
+        Id = "2",
+        Name = "Susan",
+        Role = "Users"
+    }
+};
+
 var configuration = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
@@ -19,10 +35,25 @@ Console.WriteLine($"API key hash: {Convert.ToHexString(
     System.Security.Cryptography.SHA256.HashData(
         Encoding.UTF8.GetBytes(key)))}");
 
+if (args.Length == 0)
+{
+    Console.WriteLine("Specify a user as a command line argument");
+    return;
+}
+
+var user = users.FirstOrDefault(u => string.Equals(u.Name, args[0], StringComparison.OrdinalIgnoreCase));
+if (user == null)
+{
+    Console.WriteLine("Unknown user: {0}", args[0]);
+    return;
+}
+Console.WriteLine("Generating token for {0} ({1})", user.Name, user.Role);
+
 var claims = new[]
 {
-    new Claim(JwtRegisteredClaimNames.Sub, "1"),
-    new Claim(JwtRegisteredClaimNames.Name, "Susan")
+    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+    new Claim(JwtRegisteredClaimNames.Name, user.Name),
+    new Claim(ClaimTypes.Role, user.Role),
 };
 
 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
