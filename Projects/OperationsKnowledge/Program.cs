@@ -43,6 +43,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     //    }
     //};
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdministratorsOnly", policy =>
+    {
+        policy.RequireRole("Administrator");
+    });
+});
 builder.Services.AddControllers();
 builder.Services.AddScoped<IOperationalSystemService, OperationalSystemService>();
 builder.Services.AddScoped<IPersonService, PersonService>();

@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OperationsKnowledge.Dtos;
 using OperationsKnowledge.Mappings;
@@ -25,6 +26,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     [ProducesResponseType(typeof(PersonResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PersonResponse>> GetPerson(int id)
@@ -46,6 +48,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(Person), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Person>> CreatePersonAsync(CreatePersonRequest request)
@@ -65,6 +68,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize]
     [ProducesResponseType(typeof(Person), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -84,6 +88,7 @@ public class PeopleController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Policy = "AdministratorOnly")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeletePersonAsync(int id)

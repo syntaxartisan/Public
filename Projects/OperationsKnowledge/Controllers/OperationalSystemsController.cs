@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OperationsKnowledge.Dtos;
 using OperationsKnowledge.Mappings;
@@ -35,6 +36,7 @@ public class OperationalSystemsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(OperationalSystemResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<OperationalSystemResponse>> CreateOperationalSystemAsync(CreateOperationalSystemRequest request)
@@ -54,6 +56,7 @@ public class OperationalSystemsController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize]
     [ProducesResponseType(typeof(OperationalSystem), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -74,6 +77,7 @@ public class OperationalSystemsController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Policy = "AdministratorOnly")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeleteOperationalSystemAsync(int id)
