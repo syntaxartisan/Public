@@ -35,39 +35,31 @@ Console.WriteLine($"API key hash: {Convert.ToHexString(
     System.Security.Cryptography.SHA256.HashData(
         Encoding.UTF8.GetBytes(key)))}");
 
-if (args.Length == 0)
+foreach (var user in users)
 {
-    Console.WriteLine("Specify a user as a command line argument");
-    return;
+    Console.WriteLine();
+    Console.WriteLine("Generating token for {0} ({1})", user.Name, user.Role);
+
+    var claims = new[]
+    {
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+        new Claim(JwtRegisteredClaimNames.Name, user.Name),
+        new Claim(ClaimTypes.Role, user.Role),
+    };
+
+    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+    {
+        KeyId = "OperationsKnowledgeDev"
+    };
+    var credentials = new SigningCredentials(
+        securityKey,
+        SecurityAlgorithms.HmacSha256);
+    var token = new JwtSecurityToken(
+        issuer: issuer,
+        audience: audience,
+        claims: claims,
+        expires: DateTime.UtcNow.AddHours(1),
+        signingCredentials: credentials);
+    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+    Console.WriteLine(tokenString);
 }
-
-var user = users.FirstOrDefault(u => string.Equals(u.Name, args[0], StringComparison.OrdinalIgnoreCase));
-if (user == null)
-{
-    Console.WriteLine("Unknown user: {0}", args[0]);
-    return;
-}
-Console.WriteLine("Generating token for {0} ({1})", user.Name, user.Role);
-
-var claims = new[]
-{
-    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-    new Claim(JwtRegisteredClaimNames.Name, user.Name),
-    new Claim(ClaimTypes.Role, user.Role),
-};
-
-var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-{
-    KeyId = "OperationsKnowledgeDev"
-};
-var credentials = new SigningCredentials(
-    securityKey,
-    SecurityAlgorithms.HmacSha256);
-var token = new JwtSecurityToken(
-    issuer: issuer,
-    audience: audience,
-    claims: claims,
-    expires: DateTime.UtcNow.AddHours(1),
-    signingCredentials: credentials);
-var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-Console.WriteLine(tokenString);
