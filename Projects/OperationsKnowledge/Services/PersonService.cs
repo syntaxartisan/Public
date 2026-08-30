@@ -1,5 +1,6 @@
 ﻿using OperationsKnowledge.Models;
 using OperationsKnowledge.Data;
+using OperationsKnowledge.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace OperationsKnowledge.Services;
@@ -35,16 +36,16 @@ public class PersonService : IPersonService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> UpdateAsync(Person p)
+    public async Task<OperationResult> UpdateAsync(Person p)
     {
         var existing = await GetByIdAsync(p.Id);
-        if (existing == null) { return false; }
+        if (existing == null) { return new OperationResult(OperationResultStatus.NotFound); }
         existing.Name = p.Name;
         existing.Department = p.Department;
         existing.Email = p.Email;
         existing.PhoneNumber = p.PhoneNumber;
         await _context.SaveChangesAsync();
-        return true;
+        return new OperationResult(OperationResultStatus.Success);
     }
 
     public async Task<bool> DeleteAsync(int id)

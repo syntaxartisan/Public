@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using OperationsKnowledge.Common;
 using OperationsKnowledge.Data;
 using OperationsKnowledge.Models;
 using OperationsKnowledge.Services;
@@ -169,20 +170,20 @@ public class PersonServiceTests
             Email = "Email_field",
             PhoneNumber = "PhoneNumber_field"
         };
-        var result = await service.UpdateAsync(updatedSusan);
+        OperationResult result = await service.UpdateAsync(updatedSusan);
 
         // Assert
-        Assert.True(result);
+        Assert.Equal(OperationResultStatus.Success, result.Status);
         var existing = await service.GetByIdAsync(susan.Id);
         Assert.NotNull(existing);
-        Assert.Equal("Name_field", existing.Name);
-        Assert.Equal("Department_field", existing.Department);
-        Assert.Equal("Email_field", existing.Email);
-        Assert.Equal("PhoneNumber_field", existing.PhoneNumber);
+        Assert.Equal(updatedSusan.Name, existing.Name);
+        Assert.Equal(updatedSusan.Department, existing.Department);
+        Assert.Equal(updatedSusan.Email, existing.Email);
+        Assert.Equal(updatedSusan.PhoneNumber, existing.PhoneNumber);
     }
 
     [Fact]
-    public async Task UpdatePerson_ReturnsFalse_WhenPersonDoesNotExist()
+    public async Task UpdatePerson_NotFound_WhenPersonDoesNotExist()
     {
         // Arrange
         using var database = new TestDatabase();
@@ -199,9 +200,9 @@ public class PersonServiceTests
         };
 
         // Act
-        var result = await service.UpdateAsync(susan);
+        OperationResult result = await service.UpdateAsync(susan);
 
-        Assert.False(result);
+        Assert.Equal(OperationResultStatus.NotFound, result.Status);
     }
 
     [Fact]

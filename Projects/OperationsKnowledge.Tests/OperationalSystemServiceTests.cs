@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using OperationsKnowledge.Common;
 using OperationsKnowledge.Data;
 using OperationsKnowledge.Models;
 using OperationsKnowledge.Services;
@@ -68,13 +69,93 @@ public class OperationalSystemServiceTests
             Status = "Operational",
             Description = "This system houses a software library",
         };
-        await service.CreateAsync(system);
+        OperationResult result = await service.CreateAsync(system);
 
         // Assert
+        Assert.Equal(OperationResultStatus.Success, result.Status);
         var newSystem = await service.GetByIdAsync(system.Id);
         Assert.NotNull(newSystem);
-        Assert.Equal(newSystem.Id, system.Id);
-        Assert.Equal(newSystem.Name, system.Name);
+        Assert.Equal(system.Id, newSystem.Id);
+        Assert.Equal(system.Name, newSystem.Name);
+    }
+
+    [Fact]
+    public async Task CreateWithoutOwner_Success()
+    {
+        // Arrange
+        using var database = new TestDatabase();
+        var context = database.Context;
+
+        var service = new OperationalSystemService(context);
+
+        // Act
+        var system = new OperationalSystem()
+        {
+            Name = "Software Library",
+            Status = "Operational",
+            Description = "This system houses a software library",
+        };
+        OperationResult result = await service.CreateAsync(system);
+
+        // Assert
+        Assert.Equal(OperationResultStatus.Success, result.Status);
+    }
+
+    [Fact]
+    public async Task CreateWithOwner_Success()
+    {
+        // Arrange
+        using var database = new TestDatabase();
+        var context = database.Context;
+
+        var service = new OperationalSystemService(context);
+
+        // Act
+        var person = new Person()
+        {
+            Name = "Susan",
+            Department = "Software Librarian",
+            Email = "susan@organization.org",
+            PhoneNumber = "555-555-1234"
+        };
+        context.People.Add(person);
+        await context.SaveChangesAsync();
+
+        var systemWithOwner = new OperationalSystem()
+        {
+            Name = "Software Library",
+            Status = "Operational",
+            Description = "This system houses a software library",
+            OwnerId = person.Id,
+            Owner = person
+        };
+        OperationResult result = await service.CreateAsync(systemWithOwner);
+
+        // Assert
+        Assert.Equal(OperationResultStatus.Success, result.Status);
+    }
+
+    [Fact]
+    public async Task CreateWithNonexistentOwner_InvalidOwner()
+    {
+        // Arrange
+        using var database = new TestDatabase();
+        var context = database.Context;
+
+        var service = new OperationalSystemService(context);
+
+        // Act
+        var systemWithOwner = new OperationalSystem()
+        {
+            Name = "Software Library",
+            Status = "Operational",
+            Description = "This system houses a software library",
+            OwnerId = 999
+        };
+        OperationResult result = await service.CreateAsync(systemWithOwner);
+
+        // Assert
+        Assert.Equal(OperationResultStatus.InvalidOwner, result.Status);
     }
 
     [Fact]
@@ -103,20 +184,20 @@ public class OperationalSystemServiceTests
             Status = "Not Operational",
             Description = "This system DOES NOT house a software library",
         };
-        var result = await service.UpdateAsync(updateSystem);
+        OperationResult result = await service.UpdateAsync(updateSystem);
 
         // Assert
-        Assert.True(result);
+        Assert.Equal(OperationResultStatus.Success, result.Status);
         var afterUpdate = await service.GetByIdAsync(updateSystem.Id);
         Assert.NotNull(afterUpdate);
-        Assert.Equal(afterUpdate.Id, updateSystem.Id);
-        Assert.Equal(afterUpdate.Name, updateSystem.Name);
-        Assert.Equal(afterUpdate.Status, updateSystem.Status);
-        Assert.Equal(afterUpdate.Description, updateSystem.Description);
+        Assert.Equal(updateSystem.Id, afterUpdate.Id);
+        Assert.Equal(updateSystem.Name, afterUpdate.Name);
+        Assert.Equal(updateSystem.Status, afterUpdate.Status);
+        Assert.Equal(updateSystem.Description, afterUpdate.Description);
     }
 
     [Fact]
-    public async Task Update_ReturnsFalse_WhenSystemDoesNotExist()
+    public async Task Update_NotFound_WhenSystemDoesNotExist()
     {
         // Arrange
         using var database = new TestDatabase();
@@ -132,10 +213,141 @@ public class OperationalSystemServiceTests
             Status = "Not Operational",
             Description = "This system DOES NOT house a software library",
         };
-        var result = await service.UpdateAsync(updateSystem);
+        OperationResult result = await service.UpdateAsync(updateSystem);
 
         // Assert
-        Assert.False(result);
+        Assert.Equal(OperationResultStatus.NotFound, result.Status);
+    }
+
+    [Fact]
+    public async Task UpdateWithoutOwner_Success()
+    {
+        // Arrange
+        using var database = new TestDatabase();
+        var context = database.Context;
+
+        var system = new OperationalSystem()
+        {
+            Name = "Software Library",
+            Status = "Operational",
+            Description = "This system houses a software library",
+        };
+        context.OperationalSystems.Add(system);
+        await context.SaveChangesAsync();
+
+        var service = new OperationalSystemService(context);
+
+        // Act
+        var updateSystem = new OperationalSystem()
+        {
+            Id = system.Id,
+            Name = "Not Software Library",
+            Status = "Not Operational",
+            Description = "This system DOES NOT house a software library",
+        };
+        OperationResult result = await service.UpdateAsync(updateSystem);
+
+        // Assert
+        Assert.Equal(OperationResultStatus.Success, result.Status);
+    }
+
+    [Fact]
+    public async Task UpdateWithOwner_Success()
+    {
+        // Arrange
+        using var database = new TestDatabase();
+        var context = database.Context;
+
+        var person = new Person()
+        {
+            Name = "Susan",
+            Department = "Software Librarian",
+            Email = "susan@organization.org",
+            PhoneNumber = "555-555-1234"
+        };
+        context.People.Add(person);
+        await context.SaveChangesAsync();
+
+        var system = new OperationalSystem()
+        {
+            Name = "Software Library",
+            Status = "Operational",
+            Description = "This system houses a software library"
+        };
+        context.OperationalSystems.Add(system);
+        await context.SaveChangesAsync();
+
+        var service = new OperationalSystemService(context);
+
+        // Act
+        var updateSystem = new OperationalSystem()
+        {
+            Id = system.Id,
+            Name = "Not Software Library",
+            Status = "Not Operational",
+            Description = "This system DOES NOT house a software library",
+            OwnerId = person.Id
+        };
+        OperationResult result = await service.UpdateAsync(updateSystem);
+
+        // Assert
+        Assert.Equal(OperationResultStatus.Success, result.Status);
+    }
+
+    [Fact]
+    public async Task UpdateWithNonexistentOwner_InvalidOwner()
+    {
+        // Arrange
+        using var database = new TestDatabase();
+        var context = database.Context;
+
+        var system = new OperationalSystem()
+        {
+            Name = "Software Library",
+            Status = "Operational",
+            Description = "This system houses a software library"
+        };
+        context.OperationalSystems.Add(system);
+        await context.SaveChangesAsync();
+
+        var service = new OperationalSystemService(context);
+
+        // Act
+        var updateSystem = new OperationalSystem()
+        {
+            Id = system.Id,
+            Name = "Not Software Library",
+            Status = "Not Operational",
+            Description = "This system DOES NOT house a software library",
+            OwnerId = 999
+        };
+        OperationResult result = await service.UpdateAsync(updateSystem);
+
+        // Assert
+        Assert.Equal(OperationResultStatus.InvalidOwner, result.Status);
+    }
+
+    [Fact]
+    public async Task UpdateNonexistentSystem_NotFound()
+    {
+        // Arrange
+        using var database = new TestDatabase();
+        var context = database.Context;
+
+        var service = new OperationalSystemService(context);
+
+        // Act
+        var updateSystem = new OperationalSystem()
+        {
+            Id = 999,
+            Name = "Not Software Library",
+            Status = "Not Operational",
+            Description = "This system DOES NOT house a software library"
+        };
+        OperationResult result = await service.UpdateAsync(updateSystem);
+
+        // Assert
+        Assert.Equal(OperationResultStatus.NotFound, result.Status);
     }
 
     [Fact]

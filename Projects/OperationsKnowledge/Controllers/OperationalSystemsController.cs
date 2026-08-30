@@ -1,10 +1,12 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OperationsKnowledge.Common;
 using OperationsKnowledge.Dtos;
 using OperationsKnowledge.Mappings;
 using OperationsKnowledge.Models;
 using OperationsKnowledge.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OperationsKnowledge.Controllers;
 
@@ -48,16 +50,21 @@ public class OperationalSystemsController : ControllerBase
             Description = request.Description,
             OwnerId = request.OwnerId
         };
-        await _service.CreateAsync(system);
-        return CreatedAtAction(
-            nameof(GetOperationalSystem), // throws "No route matches the supplied values." when using name "GetOperationalSystemAsync"
-            new { id = system.Id },
-            OperationalSystemMapper.ToResponse(system));
+        var result = await _service.CreateAsync(system);
+        return result.Status switch
+        {
+            OperationResultStatus.Success => CreatedAtAction(
+                nameof(GetOperationalSystem), // throws "No route matches the supplied values." when using name "GetOperationalSystemAsync"
+                new { id = system.Id },
+                OperationalSystemMapper.ToResponse(system)),
+            OperationResultStatus.InvalidOwner => BadRequest("The specified owner does not exist."),
+            _ => StatusCode(500)
+        };
     }
 
     [HttpPut]
     [Authorize]
-    [ProducesResponseType(typeof(OperationalSystem), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(OperationalSystem), StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<OperationalSystem>> UpdateOperationalSystemAsync(int id, UpdateOperationalSystemRequest request)
@@ -68,12 +75,16 @@ public class OperationalSystemsController : ControllerBase
             Name = request.Name,
             Status = request.Status,
             Description = request.Description,
-            OwnerId = request.OwnerId,
-            Owner = null
+            OwnerId = request.OwnerId
         };
-        bool updated = await _service.UpdateAsync(system);
-        if (!updated) { return NotFound(); }
-        return Ok(updated);
+        var result = await _service.UpdateAsync(system);
+        return result.Status switch
+        {
+            OperationResultStatus.Success => NoContent(),
+            OperationResultStatus.NotFound => NotFound(),
+            OperationResultStatus.InvalidOwner => BadRequest("The specified owner does not exist."),
+            _ => StatusCode(500)
+        };
     }
 
     [HttpDelete]

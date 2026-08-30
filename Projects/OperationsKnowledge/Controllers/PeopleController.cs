@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OperationsKnowledge.Common;
 using OperationsKnowledge.Dtos;
 using OperationsKnowledge.Mappings;
 using OperationsKnowledge.Models;
@@ -82,9 +83,9 @@ public class PeopleController : ControllerBase
             Email = request.Email,
             PhoneNumber = request.PhoneNumber
         };
-        bool updated = await _service.UpdateAsync(person);
-        if (!updated) { return NotFound(); }
-        return Ok(updated);
+        OperationResult result = await _service.UpdateAsync(person);
+        if (result.Status == OperationResultStatus.NotFound) { return NotFound(); }
+        return Ok(person);
     }
 
     [HttpDelete]

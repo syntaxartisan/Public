@@ -1,5 +1,6 @@
 ﻿using OperationsKnowledge.Models;
 using OperationsKnowledge.Data;
+using OperationsKnowledge.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace OperationsKnowledge.Services;
@@ -23,23 +24,33 @@ public class OperationalSystemService : IOperationalSystemService
         return await _context.OperationalSystems.Include(s => s.Owner).FirstOrDefaultAsync(s => s.Id == id);
     }
 
-    public async Task CreateAsync(OperationalSystem system)
+    public async Task<OperationResult> CreateAsync(OperationalSystem system)
     {
+        if (system.OwnerId.HasValue)
+        {
+            bool ownerExists = await _context.People.AnyAsync(p => p.Id == system.OwnerId);
+            if (!ownerExists) { return new OperationResult(OperationResultStatus.InvalidOwner); }
+        }
         await _context.OperationalSystems.AddAsync(system);
         await _context.SaveChangesAsync();
+        return new OperationResult(OperationResultStatus.Success);
     }
 
-    public async Task<bool> UpdateAsync(OperationalSystem system)
+    public async Task<OperationResult> UpdateAsync(OperationalSystem system)
     {
         var existing = await GetByIdAsync(system.Id);
-        if (existing == null) { return false; }
+        if (existing == null) { return new OperationResult(OperationResultStatus.NotFound); }
+        if (system.OwnerId.HasValue)
+        {
+            bool ownerExists = await _context.People.AnyAsync(p => p.Id == system.OwnerId);
+            if (!ownerExists) { return new OperationResult(OperationResultStatus.InvalidOwner); }
+        }
         existing.Name = system.Name;
         existing.Status = system.Status;
         existing.Description = system.Description;
         existing.OwnerId = system.OwnerId;
-        existing.Owner = system.Owner;
         await _context.SaveChangesAsync();
-        return true;
+        return new OperationResult(OperationResultStatus.Success);
     }
 
     public async Task<bool> DeleteAsync(int id)
