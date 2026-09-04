@@ -197,7 +197,7 @@ public class OperationalSystemServiceTests
     }
 
     [Fact]
-    public async Task Update_NotFound_WhenSystemDoesNotExist()
+    public async Task Update_ReturnsNotFound_WhenSystemDoesNotExist()
     {
         // Arrange
         using var database = new TestDatabase();
@@ -328,7 +328,7 @@ public class OperationalSystemServiceTests
     }
 
     [Fact]
-    public async Task UpdateNonexistentSystem_NotFound()
+    public async Task UpdateNonexistentSystem_ReturnsNotFound()
     {
         // Arrange
         using var database = new TestDatabase();

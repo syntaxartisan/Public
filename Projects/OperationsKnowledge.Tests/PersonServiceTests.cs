@@ -183,7 +183,7 @@ public class PersonServiceTests
     }
 
     [Fact]
-    public async Task UpdatePerson_NotFound_WhenPersonDoesNotExist()
+    public async Task UpdatePerson_ReturnsNotFound_WhenPersonDoesNotExist()
     {
         // Arrange
         using var database = new TestDatabase();
