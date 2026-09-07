@@ -18,31 +18,6 @@ namespace OperationsKnowledge.Tests;
 
 public class PeopleControllerTests
 {
-    //[Fact]
-    //public async Task GetPerson_ReturnsOk_WhenPersonExists_fake()
-    //{
-    //    // Arrange
-    //    var service = new FakePersonService();
-    //    service.PersonToReturn = new Person
-    //    {
-    //        Id = 1,
-    //        Name = "Susan",
-    //        Department = "IT",
-    //        Email = "susan@organization.org"
-    //    };
-    //    var controller = new PeopleController(service);
-
-    //    // Act
-    //    var result = await controller.GetPerson(1);
-
-    //    // Assert
-    //    var okResult = Assert.IsType<OkObjectResult>(result.Result);
-    //    var response = Assert.IsType<PersonResponse>(okResult.Value);
-    //    Assert.Equal(service.PersonToReturn.Id, response.Id);
-    //    Assert.Equal(service.PersonToReturn.Name, response.Name);
-    //    Assert.Equal(service.PersonToReturn.Department, response.Department);
-    //}
-
     [Fact]
     public async Task GetPerson_ReturnsOk_WhenPersonExists()
     {
@@ -69,21 +44,6 @@ public class PeopleControllerTests
         Assert.Equal(person.Department, response.Department);
     }
 
-    //[Fact]
-    //public async Task GetPerson_ReturnsNotFound_WhenPersonDoesNotExist_fake()
-    //{
-    //    // Arrange
-    //    var service = new FakePersonService();
-    //    service.PersonToReturn = null;
-    //    var controller = new PeopleController(service);
-
-    //    // Act
-    //    var result = await controller.GetPerson(1);
-
-    //    // Assert
-    //    Assert.IsType<NotFoundResult>(result.Result);
-    //}
-
     [Fact]
     public async Task GetPerson_ReturnsNotFound_WhenPersonDoesNotExist()
     {
@@ -98,43 +58,6 @@ public class PeopleControllerTests
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
-
-/* Incomplete
-    [Fact]
-    public async Task People_ReturnsPeople_fake()
-    {
-        // Arrange
-        var service = new FakePersonService();
-        service.PeopleToReturn =
-        [
-            new Person
-            {
-                Id = 1,
-                Name = "Susan",
-                Department = "IT",
-                Email = "susan@organization.org"
-            },
-            new Person
-            {
-                Id = 2,
-                Name = "Bob",
-                Department = "Engineering",
-                Email = "bob@organization.org"
-            }
-        ];
-        var controller = new PeopleController(service);
-
-        // Act
-        var result = await controller.PeopleAsync();
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var response = Assert.IsType<PersonResponse>(okResult.Value);
-        Assert.Equal(service.PersonToReturn.Id, response.Id);
-        Assert.Equal(service.PersonToReturn.Name, response.Name);
-        Assert.Equal(service.PersonToReturn.Department, response.Department);
-    }
-*/
 
     [Fact]
     public async Task People_ReturnsPeople()
