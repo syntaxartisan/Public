@@ -18,55 +18,45 @@ namespace OperationsKnowledge.Tests;
 
 public class PeopleControllerTests
 {
-    private class FakePersonService : IPersonService
-    {
-        public Person? PersonToReturn { get; set; }
-        public IReadOnlyList<Person> PeopleToReturn { get; set; } = [];
+    //[Fact]
+    //public async Task GetPerson_ReturnsOk_WhenPersonExists_fake()
+    //{
+    //    // Arrange
+    //    var service = new FakePersonService();
+    //    service.PersonToReturn = new Person
+    //    {
+    //        Id = 1,
+    //        Name = "Susan",
+    //        Department = "IT",
+    //        Email = "susan@organization.org"
+    //    };
+    //    var controller = new PeopleController(service);
 
-        public Task<IReadOnlyList<Person>> GetAllAsync()
-        {
-            return Task.FromResult(PeopleToReturn);
-        }
+    //    // Act
+    //    var result = await controller.GetPerson(1);
 
-        public Task<Person> GetByIdAsync(int id)
-        {
-            return Task.FromResult(PersonToReturn);
-        }
-
-        public Task<IReadOnlyList<OperationalSystem>> GetOwnedSystemsAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task CreateAsync(Person p)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<OperationResult> UpdateAsync(Person p)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    //    // Assert
+    //    var okResult = Assert.IsType<OkObjectResult>(result.Result);
+    //    var response = Assert.IsType<PersonResponse>(okResult.Value);
+    //    Assert.Equal(service.PersonToReturn.Id, response.Id);
+    //    Assert.Equal(service.PersonToReturn.Name, response.Name);
+    //    Assert.Equal(service.PersonToReturn.Department, response.Department);
+    //}
 
     [Fact]
     public async Task GetPerson_ReturnsOk_WhenPersonExists()
     {
         // Arrange
-        var service = new FakePersonService();
-        service.PersonToReturn = new Person
+        var person = new Person
         {
             Id = 1,
             Name = "Susan",
             Department = "IT",
             Email = "susan@organization.org"
         };
-        var controller = new PeopleController(service);
+        var service = new Mock<IPersonService>();
+        service.Setup(s => s.GetByIdAsync(person.Id)).ReturnsAsync(person);
+        var controller = new PeopleController(service.Object);
 
         // Act
         var result = await controller.GetPerson(1);
@@ -74,18 +64,33 @@ public class PeopleControllerTests
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var response = Assert.IsType<PersonResponse>(okResult.Value);
-        Assert.Equal(service.PersonToReturn.Id, response.Id);
-        Assert.Equal(service.PersonToReturn.Name, response.Name);
-        Assert.Equal(service.PersonToReturn.Department, response.Department);
+        Assert.Equal(person.Id, response.Id);
+        Assert.Equal(person.Name, response.Name);
+        Assert.Equal(person.Department, response.Department);
     }
+
+    //[Fact]
+    //public async Task GetPerson_ReturnsNotFound_WhenPersonDoesNotExist_fake()
+    //{
+    //    // Arrange
+    //    var service = new FakePersonService();
+    //    service.PersonToReturn = null;
+    //    var controller = new PeopleController(service);
+
+    //    // Act
+    //    var result = await controller.GetPerson(1);
+
+    //    // Assert
+    //    Assert.IsType<NotFoundResult>(result.Result);
+    //}
 
     [Fact]
     public async Task GetPerson_ReturnsNotFound_WhenPersonDoesNotExist()
     {
         // Arrange
-        var service = new FakePersonService();
-        service.PersonToReturn = null;
-        var controller = new PeopleController(service);
+        var service = new Mock<IPersonService>();
+        service.Setup(s => s.GetByIdAsync(999)).ReturnsAsync((Person?)null);
+        var controller = new PeopleController(service.Object);
 
         // Act
         var result = await controller.GetPerson(1);
@@ -96,7 +101,7 @@ public class PeopleControllerTests
 
 /* Incomplete
     [Fact]
-    public async Task People_ReturnsPeople()
+    public async Task People_ReturnsPeople_fake()
     {
         // Arrange
         var service = new FakePersonService();
