@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -191,5 +192,70 @@ public class PeopleControllerTests
                 p.Email == request.Email &&
                 p.PhoneNumber == request.PhoneNumber)),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdatePerson_ReturnsOk_WhenPersonIsUpdated()
+    {
+        // Arrange
+        var service = new Mock<IPersonService>();
+        service.Setup(s => s.UpdateAsync(It.IsAny<Person>()))
+            .ReturnsAsync(new OperationResult(OperationResultStatus.Success));
+        var controller = new PeopleController(service.Object);
+
+        // Act
+        var result = await controller.UpdatePersonAsync(999, new UpdatePersonRequest());
+
+        // Assert
+        var updatedResult = Assert.IsType<OkObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status200OK, updatedResult.StatusCode);
+        var person = Assert.IsType<Person>(updatedResult.Value);
+        Assert.Equal(999, person.Id);
+    }
+
+    [Fact]
+    public async Task UpdatePerson_ReturnsNotFound_WhenPersonDoesNotExist()
+    {
+        // Arrange
+        var service = new Mock<IPersonService>();
+        service.Setup(s => s.UpdateAsync(It.IsAny<Person>()))
+            .ReturnsAsync(new OperationResult(OperationResultStatus.NotFound));
+        var controller = new PeopleController(service.Object);
+
+        // Act
+        var result = await controller.UpdatePersonAsync(999, new UpdatePersonRequest());
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task DeletePerson_ReturnsNoContent_WhenPersonIsDeleted()
+    {
+        // Arrange
+        var service = new Mock<IPersonService>();
+        service.Setup(s => s.DeleteAsync(999)).ReturnsAsync(true);
+        var controller = new PeopleController(service.Object);
+
+        // Act
+        var result = await controller.DeletePersonAsync(999);
+
+        // Assert
+        Assert.IsType<NoContentResult>(result);
+    }
+
+    [Fact]
+    public async Task DeletePerson_ReturnsNotFound_WhenPersonDoesNotExist()
+    {
+        // Arrange
+        var service = new Mock<IPersonService>();
+        service.Setup(s => s.DeleteAsync(999)).ReturnsAsync(false);
+        var controller = new PeopleController(service.Object);
+
+        // Act
+        var result = await controller.DeletePersonAsync(999);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result);
     }
 }
