@@ -230,4 +230,38 @@ public class PeopleControllerTests
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
+
+    [Fact]
+    public async Task CreatePerson_ReturnsCreated_WhenPersonIsCreated()
+    {
+        // Arrange
+        var request = new CreatePersonRequest
+        {
+            Name = "Susan",
+            Department = "IT",
+            Email = "susan@organization.org",
+            PhoneNumber = "555-555-1234"
+        };
+        var service = new Mock<IPersonService>();
+        var controller = new PeopleController(service.Object);
+
+        // Act
+        var result = await controller.CreatePersonAsync(request);
+
+        // Assert
+        var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+        Assert.Equal(StatusCodes.Status201Created, createdResult.StatusCode);
+        var response = Assert.IsType<PersonResponse>(createdResult.Value);
+        Assert.Equal(request.Name, response.Name);
+        Assert.Equal(request.Department, response.Department);
+        Assert.Equal(request.Email, response.Email);
+        Assert.Equal(request.PhoneNumber, response.PhoneNumber);
+        service.Verify(
+            s => s.CreateAsync(It.Is<Person>(p =>
+                p.Name == request.Name &&
+                p.Department == request.Department &&
+                p.Email == request.Email &&
+                p.PhoneNumber == request.PhoneNumber)),
+            Times.Once);
+    }
 }
