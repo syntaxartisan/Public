@@ -28,7 +28,6 @@ public class PeopleAuthorizationTests
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
-    // Failing test: Returning NotFound because there's no data
     [Fact]
     public async Task GetPerson_ReturnsOk_WhenAuthenticated()
     {
