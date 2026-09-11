@@ -56,7 +56,7 @@ public class PeopleAuthorizationTests
         var client = factory.CreateClient();
 
         // Act
-        var response = await client.DeleteAsync("/people?id=1");
+        var response = await client.DeleteAsync("/people/1");
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
