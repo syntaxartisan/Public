@@ -44,4 +44,21 @@ public class PeopleAuthorizationTests
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
+
+    [Fact]
+    public async Task DeletePerson_ReturnsUnauthorized_WhenNoTokenIsProvided()
+    {
+        // Arrange
+        var factory = new CustomWebApplicationFactory()
+        {
+            User = TestUser.Anonymous
+        };
+        var client = factory.CreateClient();
+
+        // Act
+        var response = await client.DeleteAsync("/people?id=1");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
 }
