@@ -25,16 +25,11 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureServices(services =>
         {
-            //services.AddAuthentication("Test")
-            //.AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
-            //    "Test", options => { });
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = "Test";
                 options.DefaultChallengeScheme = "Test";
             })
-            //.AddScheme<TestAuthenticationOptions, TestAuthenticationHandler>(
-            //    "Test", options => { });
             .AddScheme<TestAuthenticationOptions, TestAuthenticationHandler>(
                 "Test", 
                 options =>
