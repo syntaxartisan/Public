@@ -62,7 +62,7 @@ public class OperationalSystemsController : ControllerBase
         };
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     [Authorize]
     [ProducesResponseType(typeof(OperationalSystem), StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -87,7 +87,7 @@ public class OperationalSystemsController : ControllerBase
         };
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     [Authorize(Policy = "AdministratorOnly")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

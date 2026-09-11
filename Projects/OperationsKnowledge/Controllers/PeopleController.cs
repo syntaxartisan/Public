@@ -68,7 +68,7 @@ public class PeopleController : ControllerBase
             ToResponse(person));
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     [Authorize]
     [ProducesResponseType(typeof(Person), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -88,7 +88,7 @@ public class PeopleController : ControllerBase
         return Ok(person);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     [Authorize(Policy = "AdministratorOnly")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
