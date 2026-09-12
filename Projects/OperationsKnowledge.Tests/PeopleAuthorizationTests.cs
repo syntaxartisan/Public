@@ -61,4 +61,38 @@ public class PeopleAuthorizationTests
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
+
+    [Fact]
+    public async Task DeletePerson_ReturnsForbidden_WhenUserIsNotAdministrator()
+    {
+        // Arrange
+        var factory = new CustomWebApplicationFactory()
+        {
+            User = TestUser.User
+        };
+        var client = factory.CreateClient();
+
+        // Act
+        var response = await client.DeleteAsync("/people/1");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeletePerson_ReturnsNoContent_WhenAdministratorDeletesPerson()
+    {
+        // Arrange
+        var factory = new CustomWebApplicationFactory()
+        {
+            User = TestUser.Administrator
+        };
+        var client = factory.CreateClient();
+
+        // Act
+        var response = await client.DeleteAsync("/people/1");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+    }
 }
