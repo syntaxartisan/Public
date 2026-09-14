@@ -57,7 +57,12 @@ public class OperationalSystemsController : ControllerBase
                 nameof(GetOperationalSystem), // throws "No route matches the supplied values." when using name "GetOperationalSystemAsync"
                 new { id = system.Id },
                 OperationalSystemMapper.ToResponse(system)),
-            OperationResultStatus.InvalidOwner => BadRequest("The specified owner does not exist."),
+            OperationResultStatus.InvalidOwner => BadRequest(new ProblemDetails
+            {
+                Title = "Invalid owner",
+                Detail = "The specified owner does not exist.",
+                Status = StatusCodes.Status400BadRequest
+            }),
             _ => StatusCode(500)
         };
     }
