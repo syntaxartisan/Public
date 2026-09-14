@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Collections.Generic;
@@ -127,5 +128,35 @@ public class PeopleAuthorizationTests
         Assert.Equal(400, problem.Status);
         Assert.Contains("Name", problem.Errors.Keys);
         Assert.Contains("Person must have a Name", problem.Errors["Name"]);
+    }
+
+    [Fact]
+    public async Task CreateOperationalSystem_ReturnsBadRequest_WhenOwnerDoesNotExist()
+    {
+        // Arrange
+        var factory = new CustomWebApplicationFactory()
+        {
+            User = TestUser.User
+        };
+        var client = factory.CreateClient();
+
+        var request = new
+        {
+            Name = "Test Name",
+            Status = "Active",
+            Description = "Test Description",
+            OwnerId = 999
+        };
+
+        // Act
+        var response = await client.PostAsJsonAsync("/operational-systems", request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        Assert.NotNull(problem);
+        Assert.Equal(StatusCodes.Status400BadRequest, problem.Status);
+        Assert.Equal("Invalid owner", problem.Title);
+        Assert.Equal("The specified owner does not exist.", problem.Detail);
     }
 }
