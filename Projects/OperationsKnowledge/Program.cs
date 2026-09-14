@@ -50,6 +50,7 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Administrator");
     });
 });
+builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IOperationalSystemService, OperationalSystemService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
