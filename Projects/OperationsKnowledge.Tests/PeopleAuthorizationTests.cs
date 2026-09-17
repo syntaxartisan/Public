@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
+using OperationsKnowledge.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,5 +159,36 @@ public class PeopleAuthorizationTests
         Assert.Equal(StatusCodes.Status400BadRequest, problem.Status);
         Assert.Equal("Invalid owner", problem.Title);
         Assert.Equal("The specified owner does not exist.", problem.Detail);
+    }
+
+    [Fact]
+    public async Task CreateOperationalSystem_ReturnsCreated_WhenRequestIsValid()
+    {
+        // Arrange
+        var factory = new CustomWebApplicationFactory()
+        {
+            User = TestUser.User
+        };
+        var client = factory.CreateClient();
+
+        var request = new
+        {
+            Name = "Test Name",
+            Status = "Active",
+            Description = "Test Description",
+            OwnerId = 1
+        };
+
+        // Act
+        var response = await client.PostAsJsonAsync("/operational-systems", request);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var system = await response.Content.ReadFromJsonAsync<OperationalSystemResponse>();
+        Assert.NotNull(system);
+        Assert.Equal(request.Name, system.Name);
+        Assert.Equal(request.Status, system.Status);
+        Assert.Equal(request.Description, system.Description);
+        Assert.Equal(request.OwnerId, system.OwnerId);
     }
 }
