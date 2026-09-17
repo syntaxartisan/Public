@@ -50,9 +50,9 @@ public class PeopleController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    [ProducesResponseType(typeof(Person), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(PersonResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Person>> CreatePersonAsync(CreatePersonRequest request)
+    public async Task<ActionResult<PersonResponse>> CreatePersonAsync(CreatePersonRequest request)
     {
         var person = new Person
         {
@@ -70,10 +70,10 @@ public class PeopleController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    [ProducesResponseType(typeof(Person), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PersonResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Person>> UpdatePersonAsync(int id, UpdatePersonRequest request)
+    public async Task<ActionResult<PersonResponse>> UpdatePersonAsync(int id, UpdatePersonRequest request)
     {
         var person = new Person
         {
@@ -85,7 +85,7 @@ public class PeopleController : ControllerBase
         };
         OperationResult result = await _service.UpdateAsync(person);
         if (result.Status == OperationResultStatus.NotFound) { return NotFound(); }
-        return Ok(person);
+        return Ok(ToResponse(person));
     }
 
     [HttpDelete("{id}")]
