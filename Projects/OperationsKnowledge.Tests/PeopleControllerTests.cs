@@ -209,7 +209,7 @@ public class PeopleControllerTests
         // Assert
         var updatedResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(StatusCodes.Status200OK, updatedResult.StatusCode);
-        var person = Assert.IsType<Person>(updatedResult.Value);
+        var person = Assert.IsType<PersonResponse>(updatedResult.Value);
         Assert.Equal(999, person.Id);
     }
 
