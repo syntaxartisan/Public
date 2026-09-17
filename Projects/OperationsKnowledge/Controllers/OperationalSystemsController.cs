@@ -1,12 +1,10 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OperationsKnowledge.Common;
 using OperationsKnowledge.Dtos;
 using OperationsKnowledge.Mappings;
 using OperationsKnowledge.Models;
 using OperationsKnowledge.Services;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OperationsKnowledge.Controllers;
 
@@ -69,10 +67,10 @@ public class OperationalSystemsController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    [ProducesResponseType(typeof(OperationalSystem), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<OperationalSystem>> UpdateOperationalSystemAsync(int id, UpdateOperationalSystemRequest request)
+    public async Task<ActionResult> UpdateOperationalSystemAsync(int id, UpdateOperationalSystemRequest request)
     {
         var system = new OperationalSystem
         {
@@ -87,7 +85,12 @@ public class OperationalSystemsController : ControllerBase
         {
             OperationResultStatus.Success => NoContent(),
             OperationResultStatus.NotFound => NotFound(),
-            OperationResultStatus.InvalidOwner => BadRequest("The specified owner does not exist."),
+            OperationResultStatus.InvalidOwner => BadRequest(new ProblemDetails
+            {
+                Title = "Invalid owner",
+                Detail = "The specified owner does not exist.",
+                Status = StatusCodes.Status400BadRequest
+            }),
             _ => StatusCode(500)
         };
     }
