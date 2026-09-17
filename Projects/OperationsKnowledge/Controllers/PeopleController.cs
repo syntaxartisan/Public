@@ -84,8 +84,12 @@ public class PeopleController : ControllerBase
             PhoneNumber = request.PhoneNumber
         };
         OperationResult result = await _service.UpdateAsync(person);
-        if (result.Status == OperationResultStatus.NotFound) { return NotFound(); }
-        return Ok(ToResponse(person));
+        return result.Status switch
+        {
+            OperationResultStatus.Success => Ok(ToResponse(person)),
+            OperationResultStatus.NotFound => NotFound(),
+            _ => StatusCode(StatusCodes.Status500InternalServerError)
+        };
     }
 
     [HttpDelete("{id}")]
