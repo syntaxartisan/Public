@@ -15,10 +15,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 {
     // key is read from secrets.json file
     var jwtKey = builder.Configuration["Jwt:Key"]!;
-    Console.WriteLine($"API key length: {jwtKey.Length}");
-    Console.WriteLine($"API key hash: {Convert.ToHexString(
-        System.Security.Cryptography.SHA256.HashData(
-            Encoding.UTF8.GetBytes(jwtKey)))}");
 
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -33,16 +29,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         { KeyId = "OperationsKnowledgeDev" },
         ValidateLifetime = true
     };
-
-    // Uncomment to debug authentication failures
-    //options.Events = new JwtBearerEvents
-    //{
-    //    OnAuthenticationFailed = context =>
-    //    {
-    //        Console.WriteLine($"JWT authentication failed: {context.Exception.Message}");
-    //        return Task.CompletedTask;
-    //    }
-    //};
 });
 builder.Services.AddAuthorization(options =>
 {
@@ -111,4 +97,5 @@ app.MapControllers();
 
 app.Run();
 
+// Integration tests need Program class for WebApplicationFactory<Program>
 public partial class Program { }
