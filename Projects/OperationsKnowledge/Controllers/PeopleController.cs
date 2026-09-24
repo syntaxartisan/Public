@@ -20,7 +20,7 @@ public class PeopleController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<PersonResponse>), StatusCodes.Status200OK)]
-    public async Task<IEnumerable<PersonResponse>> PeopleAsync()
+    public async Task<IEnumerable<PersonResponse>> GetPeopleAsync()
     {
         var people = await _service.GetAllAsync();
         return people.Select(ToResponse);

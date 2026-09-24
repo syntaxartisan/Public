@@ -86,7 +86,7 @@ public class PeopleControllerTests
         var controller = new PeopleController(service.Object);
 
         // Act
-        var result = await controller.PeopleAsync();
+        var result = await controller.GetPeopleAsync();
 
         // Assert
         var responses = result.ToList();
