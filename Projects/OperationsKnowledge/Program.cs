@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +52,10 @@ builder.Services.AddAuthorization(options =>
     });
 });
 builder.Services.AddProblemDetails();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new ProducesAttribute("application/json"));
+});
 builder.Services.AddScoped<IOperationalSystemService, OperationalSystemService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
