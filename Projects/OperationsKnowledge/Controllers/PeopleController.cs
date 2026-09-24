@@ -29,6 +29,7 @@ public class PeopleController : ControllerBase
     [HttpGet("{id}")]
     [Authorize]
     [ProducesResponseType(typeof(PersonResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PersonResponse>> GetPerson(int id)
     {
@@ -52,6 +53,7 @@ public class PeopleController : ControllerBase
     [Authorize]
     [ProducesResponseType(typeof(PersonResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<PersonResponse>> CreatePersonAsync(CreatePersonRequest request)
     {
         var person = new Person
@@ -72,6 +74,7 @@ public class PeopleController : ControllerBase
     [Authorize]
     [ProducesResponseType(typeof(PersonResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PersonResponse>> UpdatePersonAsync(int id, UpdatePersonRequest request)
     {
@@ -95,6 +98,8 @@ public class PeopleController : ControllerBase
     [HttpDelete("{id}")]
     [Authorize(Policy = "AdministratorOnly")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeletePersonAsync(int id)
     {

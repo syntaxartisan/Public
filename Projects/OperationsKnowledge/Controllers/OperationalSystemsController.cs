@@ -39,6 +39,7 @@ public class OperationalSystemsController : ControllerBase
     [Authorize]
     [ProducesResponseType(typeof(OperationalSystemResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<OperationalSystemResponse>> CreateOperationalSystemAsync(CreateOperationalSystemRequest request)
     {
         var system = new OperationalSystem
@@ -69,6 +70,7 @@ public class OperationalSystemsController : ControllerBase
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> UpdateOperationalSystemAsync(int id, UpdateOperationalSystemRequest request)
     {
@@ -98,6 +100,8 @@ public class OperationalSystemsController : ControllerBase
     [HttpDelete("{id}")]
     [Authorize(Policy = "AdministratorOnly")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeleteOperationalSystemAsync(int id)
     {
