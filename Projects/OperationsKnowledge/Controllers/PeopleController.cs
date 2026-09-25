@@ -23,7 +23,7 @@ public class PeopleController : ControllerBase
     public async Task<IEnumerable<PersonResponse>> GetPeopleAsync()
     {
         var people = await _service.GetAllAsync();
-        return people.Select(ToResponse);
+        return people.Select(PersonMapper.ToResponse);
     }
 
     [HttpGet("{id}")]
@@ -35,7 +35,7 @@ public class PeopleController : ControllerBase
     {
         var person = await _service.GetByIdAsync(id);
         if (person == null) { return NotFound(); }
-        return Ok(ToResponse(person));
+        return Ok(PersonMapper.ToResponse(person));
     }
 
     [HttpGet("{id}/owned-systems")]
@@ -67,7 +67,7 @@ public class PeopleController : ControllerBase
         return CreatedAtAction(
             nameof(GetPerson), // throws "No route matches the supplied values." when using name "GetPersonAsync"
             new { id = person.Id },
-            ToResponse(person));
+            PersonMapper.ToResponse(person));
     }
 
     [HttpPut("{id}")]
@@ -89,7 +89,7 @@ public class PeopleController : ControllerBase
         OperationResult result = await _service.UpdateAsync(person);
         return result.Status switch
         {
-            OperationResultStatus.Success => Ok(ToResponse(person)),
+            OperationResultStatus.Success => Ok(PersonMapper.ToResponse(person)),
             OperationResultStatus.NotFound => NotFound(),
             _ => StatusCode(StatusCodes.Status500InternalServerError)
         };
@@ -106,17 +106,5 @@ public class PeopleController : ControllerBase
         bool deleted = await _service.DeleteAsync(id);
         if (!deleted) { return NotFound(); }
         return NoContent();
-    }
-
-    private static PersonResponse ToResponse(Person p)
-    {
-        return new PersonResponse
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Department = p.Department,
-            Email = p.Email,
-            PhoneNumber = p.PhoneNumber
-        };
     }
 }
