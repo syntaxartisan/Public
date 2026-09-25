@@ -120,19 +120,24 @@ public class OperationalSystemServiceTests
         };
         context.People.Add(person);
         await context.SaveChangesAsync();
+        
+        // Remove person from the context to confirm that CreateAsync loads them again
+        context.Entry(person).State = EntityState.Detached;
 
         var systemWithOwner = new OperationalSystem()
         {
             Name = "Software Library",
             Status = "Operational",
             Description = "This system houses a software library",
-            OwnerId = person.Id,
-            Owner = person
+            OwnerId = person.Id
         };
         OperationResult result = await service.CreateAsync(systemWithOwner);
 
         // Assert
         Assert.Equal(OperationResultStatus.Success, result.Status);
+        Assert.NotNull(systemWithOwner.Owner);
+        Assert.Equal(person.Id, systemWithOwner.Owner.Id);
+        Assert.Equal(person.Name, systemWithOwner.Owner.Name);
     }
 
     [Fact]
