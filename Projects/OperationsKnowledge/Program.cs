@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    // key is read from secrets.json file
+    // key is read from User Secrets
     var jwtKey = builder.Configuration["Jwt:Key"]!;
 
     options.TokenValidationParameters = new TokenValidationParameters
@@ -44,7 +44,6 @@ builder.Services.AddControllers(options =>
 });
 builder.Services.AddScoped<IOperationalSystemService, OperationalSystemService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -81,7 +80,6 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

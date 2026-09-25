@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OperationsKnowledge.Common;
 using OperationsKnowledge.Dtos;
@@ -41,7 +40,7 @@ public class PeopleController : ControllerBase
     [HttpGet("{id}/owned-systems")]
     [ProducesResponseType(typeof(IEnumerable<OperationalSystemResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IEnumerable<OperationalSystemResponse>>> OwnedSystemsAsync(int id)
+    public async Task<ActionResult<IEnumerable<OperationalSystemResponse>>> GetOwnedSystemsAsync(int id)
     {
         var person = await _service.GetByIdAsync(id);
         if (person == null) { return NotFound(); }

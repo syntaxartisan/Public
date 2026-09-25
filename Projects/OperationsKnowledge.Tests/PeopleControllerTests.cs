@@ -131,7 +131,7 @@ public class PeopleControllerTests
         var controller = new PeopleController(service.Object);
 
         // Act
-        var result = await controller.OwnedSystemsAsync(person.Id);
+        var result = await controller.GetOwnedSystemsAsync(person.Id);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -154,7 +154,7 @@ public class PeopleControllerTests
         var controller = new PeopleController(service.Object);
 
         // Act
-        var result = await controller.OwnedSystemsAsync(999);
+        var result = await controller.GetOwnedSystemsAsync(999);
 
         // Assert
         Assert.IsType<NotFoundResult>(result.Result);
