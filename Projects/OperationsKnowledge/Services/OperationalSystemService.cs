@@ -33,6 +33,10 @@ public class OperationalSystemService : IOperationalSystemService
         }
         await _context.OperationalSystems.AddAsync(system);
         await _context.SaveChangesAsync();
+        if (system.OwnerId.HasValue)
+        {
+            system.Owner = await _context.People.FirstOrDefaultAsync(p => p.Id == system.OwnerId);
+        }
         return new OperationResult(OperationResultStatus.Success);
     }
 

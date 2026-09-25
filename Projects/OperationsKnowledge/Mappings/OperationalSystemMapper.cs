@@ -3,7 +3,7 @@ using OperationsKnowledge.Models;
 
 namespace OperationsKnowledge.Mappings;
 
-public class OperationalSystemMapper
+public static class OperationalSystemMapper
 {
     public static OperationalSystemResponse ToResponse(OperationalSystem system)
     {
