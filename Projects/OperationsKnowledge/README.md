@@ -4,7 +4,7 @@ This is a backend-focused ASP.NET Core Web API for managing operational systems,
 
 ## Overview
 
-The Operations Knowledge Management System provides endpoints for maintaining information about operational systems and the people responsible for them. For example, Susan might manage a software library. Give me details about the software library, or about Susan, or about other systems that Susan manages.
+The Operations Knowledge Management System provides endpoints for maintaining information about operational systems and the people responsible for them. For example, Susan might manage a software library. The API can provide details about the software library, about Susan, or about other systems that Susan manages.
 
 The API supports:
 
@@ -28,7 +28,7 @@ The application follows a layered architecture that separates HTTP handling, bus
 
 ## API
 
-The API exposes endpoints for managing various entities such as people and operational systems. The list of entity types can grow as needed.
+The API exposes endpoints for managing various entities such as people and operational systems. Additional entity types can be added as the application grows.
 
 ### People
 
