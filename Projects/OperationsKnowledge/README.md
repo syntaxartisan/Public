@@ -87,7 +87,7 @@ Follow these steps to run the project on your local machine. Commands listed bel
 1. Generate an access token.
    1. Run the project `OperationsKnowledge.TokenGenerator` from Visual Studio.
    2. Tokens are generated and displayed in command line output.
-   3. Copy the token that you'd like to use. One provides Administrator access and the other provides standard User access.
+   3. Copy the token that you'd like to use. One token provides Administrator access and the other provides standard User access.
 1. Run the project.
    1. Run the project `OperationsKnowledge` from Visual Studio.
    2. The Swagger UI launches in a web browser.
