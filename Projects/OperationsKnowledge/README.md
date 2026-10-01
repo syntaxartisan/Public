@@ -57,7 +57,7 @@ Interactive API documentation is provided through Swagger/OpenAPI when running t
 
 ## Authentication & Authorization
 
-Some API endpoints require authentication. The API uses JWT bearer authentication for these endpoints. Administrative operations, such as deleting people or operational systems, require the `Administrator` role. For local development, authentication configuration is stored using ASP.NET Core User Secrets rather than committed to source control. A separate token-generator project is included for generating development tokens.
+Some API endpoints require authentication. The API uses JSON Web Toekn (JWT) bearer authentication for these endpoints. Administrative operations, such as deleting people or operational systems, require the `Administrator` role. For local development, authentication configuration is stored using ASP.NET Core User Secrets rather than committed to source control. A separate token-generator project is included for generating development tokens.
 
 ## Data Access
 
@@ -69,14 +69,19 @@ The project includes automated unit and integration tests using xUnit. Unit test
 
 ## Running Locally
 
-The application is configured to run locally using SQL Server LocalDB.
+The application is configured to run locally using SQL Server LocalDB. A separate token-generator project is included in the repository for generating development JWTs. The generated token can be entered into Swagger's authorization dialog to access protected endpoints.
 
-Before running the API:
+Follow these steps to run the project on your local machine. Commands listed below are run using Powershell.
 
-1. Configure the required database connection settings.
-1. Apply the Entity Framework Core migrations to create the database.
-1. Configure the JWT settings using ASP.NET Core User Secrets.
-1. Start the API.
-1. Use Swagger to interact with the API and test authenticated endpoints.
-
-A separate token-generator project is included in the repository for generating development JWTs. The generated token can be entered into Swagger's authorization dialog to access protected endpoints.
+1. Clone the repository.
+1. Configure the database connection string. This value can be found in `appsettings.json` under the `DefaultConnection` key.
+1. Apply the Entity Framework Core migrations.
+   1. Install the Entity Framework Core CLI tool with `dotnet tool install --global dotnet-ef`.
+   2. From the OperationsKnowledge project directory, run `dotnet ef database update`.
+1. Configure the JWT signing key.
+   1. Generate a secret key `[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))`
+   2. From the OperationsKnowledge project directory, run `dotnet user-secrets set "Jwt:Key" "<generated key>"`
+   3. From the OperationsKnowledge.TokenGenerator project directory, run `dotnet user-secrets set "Jwt:Key" "<generated key>"`
+   4. Use the same key for both projects.
+1. Run the API.
+1. Open Swagger to interact with the API.
