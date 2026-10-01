@@ -74,14 +74,16 @@ The application is configured to run locally using SQL Server LocalDB. A separat
 Follow these steps to run the project on your local machine. Commands listed below are run using Powershell.
 
 1. Clone the repository.
-1. Configure the database connection string. This value can be found in `appsettings.json` under the `DefaultConnection` key.
-1. Apply the Entity Framework Core migrations.
+1. Configure SQL.
+   1. Install SQL Server LocalDB.
+   1. Create a blank database.
+   1. Configure the database connection string to point to the database. The connection string can be found in `appsettings.json` under the `DefaultConnection` key.
+1. Build the database by applying the Entity Framework Core migrations.
    1. Install the Entity Framework Core CLI tool with `dotnet tool install --global dotnet-ef`.
    2. From the OperationsKnowledge project directory, run `dotnet ef database update`.
 1. Configure the JWT signing key.
    1. Generate a secret key `[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))`
    2. From the OperationsKnowledge project directory, run `dotnet user-secrets set "Jwt:Key" "<generated key>"`
    3. From the OperationsKnowledge.TokenGenerator project directory, run `dotnet user-secrets set "Jwt:Key" "<generated key>"`
-   4. Use the same key for both projects.
-1. Run the API.
-1. Open Swagger to interact with the API.
+   4. Enter the same key for both projects.
+1. Run the project `OperationsKnowledge` from Visual Studio.
