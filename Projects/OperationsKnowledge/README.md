@@ -18,7 +18,7 @@ The API supports:
 
 ## Architecture
 
-The application follows a layered architecture that separates HTTP handling, business logic, data access, and persistence.
+The application follows a layered architecture that separates HTTP handling, business logic, data access, and API models.
 
 - Controllers handle incoming API requests and return HTTP responses. They receive request Data Transfer Objects (DTOs), pass the data to the appropriate service, and convert the resulting entities into response DTOs.
 - Services contain business logic and coordinate database operations through Entity Framework Core. This keeps business rules out of the controllers and makes the logic independently testable.
@@ -72,11 +72,8 @@ The application is configured to run locally using SQL Server LocalDB. A separat
 Follow these steps to run the project on your local machine. Commands listed below are run using Powershell.
 
 1. Clone the repository.
-1. Configure SQL.
-   1. Install SQL Server LocalDB.
-   1. Create a blank database.
-   1. Configure the database connection string to point to the database. The connection string can be found in `appsettings.json` under the `DefaultConnection` key.
-1. Build the database by applying the Entity Framework Core migrations.
+1. Install SQL Server LocalDB.
+1. Apply the Entity Framework Core migrations to the database schema.
    1. Install the Entity Framework Core CLI tool with `dotnet tool install --global dotnet-ef`.
    2. From the OperationsKnowledge project directory, run `dotnet ef database update`.
 1. Configure the JWT signing key.
@@ -86,9 +83,9 @@ Follow these steps to run the project on your local machine. Commands listed bel
    4. Use the same key for both projects.
 1. Generate an access token.
    1. Run the project `OperationsKnowledge.TokenGenerator` from Visual Studio.
-   2. Tokens are generated and displayed in command line output.
+   2. The generated tokens are displayed in the console.
    3. Copy the token that you'd like to use. One token provides Administrator access and the other provides standard User access.
-1. Run the project.
+1. Run the project and authorize Swagger.
    1. Run the project `OperationsKnowledge` from Visual Studio.
    2. The Swagger UI launches in a web browser.
    3. Click the `Authorize` button and paste your access token.
