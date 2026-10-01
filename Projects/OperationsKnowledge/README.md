@@ -80,8 +80,15 @@ Follow these steps to run the project on your local machine. Commands listed bel
    1. Install the Entity Framework Core CLI tool with `dotnet tool install --global dotnet-ef`.
    2. From the OperationsKnowledge project directory, run `dotnet ef database update`.
 1. Configure the JWT signing key.
-   1. Generate a secret key using command `[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))`
-   2. From the OperationsKnowledge project directory, run `dotnet user-secrets set "Jwt:Key" "<generated key>"`
-   3. From the OperationsKnowledge.TokenGenerator project directory, run `dotnet user-secrets set "Jwt:Key" "<generated key>"`
+   1. Generate a signing key using command `[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))`
+   2. From the OperationsKnowledge project directory, run `dotnet user-secrets set "Jwt:Key" "<generated signing key>"`
+   3. From the OperationsKnowledge.TokenGenerator project directory, run `dotnet user-secrets set "Jwt:Key" "<generated signing key>"`
    4. Enter the same key for both projects.
-1. Run the project `OperationsKnowledge` from Visual Studio.
+1. Generate an access token.
+   1. Run the project `OperationsKnowledge.TokenGenerator` from Visual Studio.
+   2. Tokens are generated and displayed in command line output.
+   3. Copy the token that you'd like to use. One provides Administrator access and the other provides standard User access.
+1. Run the project.
+   1. Run the project `OperationsKnowledge` from Visual Studio.
+   2. The Swagger UI launches in a web browser.
+   3. Click the `Authorize` button and paste your access token.
