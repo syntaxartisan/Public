@@ -1,0 +1,82 @@
+# Operations Knowledge Management System
+
+This is a backend-focused ASP.NET Core Web API for managing operational systems, their owners, status, and related organizational information. This project was built to demonstrate practical backend engineering skills including RESTful API design, Entity Framework Core, SQL Server, authentication and authorization, DTOs, service-layer architecture, error handling, and automated testing.
+
+## Overview
+
+The Operations Knowledge Management System provides endpoints for maintaining information about operational systems and the people responsible for them.
+
+The API supports:
+
+- Managing operational systems and their status and descriptions
+- Managing people and their organizational information
+- Assigning operational systems to owners
+- Viewing the systems owned by a specific person
+- Creating, updating, and deleting records
+- Securing write operations with JWT authentication
+- Restricting administrative operations with role-based authorization
+
+## Architecture
+
+The application follows a layered architecture that separates HTTP handling, business logic, data access, and persistence.
+
+- Controllers handle HTTP requests and responses. They receive request DTOs, call the appropriate service, and map the resulting entities to response DTOs.
+- Services contain business logic and coordinate database operations through Entity Framework Core. This keeps business rules out of the controllers and makes the logic independently testable.
+- Data Transfer Objects (DTOs) define the API's request and response contracts without exposing the Entity Framework entities directly to API clients.
+- Mappers handle conversion between Entity Framework entities and response DTOs. Mapping is kept explicit rather than relying on a mapping framework.
+- Entity Framework Core provides the data-access layer and maps the application's entities to the SQL Server database.
+
+## API
+
+The API exposes endpoints for managing people and operational systems.
+
+### People
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/people` | Get all people |
+| GET | `/people/{id}` | Get a person |
+| GET | `/people/{id}/owned-systems` | Get the operational systems owned by a person |
+| POST | `/people` | Create a person |
+| PUT | `/people/{id}` | Update a person |
+| DELETE | `/people/{id}` | Delete a person |
+
+### Operational Systems
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/operational-systems` | Get all operational systems |
+| GET | `/operational-systems/{id}` | Get an operational system |
+| POST | `/operational-systems` | Create an operational system |
+| PUT | `/operational-systems/{id}` | Update an operational system |
+| DELETE | `/operational-systems/{id}` | Delete an operational system |
+
+The API uses standard HTTP status codes to communicate the outcome of requests, including `200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, and `404 Not Found`.
+
+Interactive API documentation is provided through Swagger/OpenAPI when running the application in the Development environment.
+
+## Authentication & Authorization
+
+Some API endpoints require authentication. The API uses JWT bearer authentication for these endpoints. Administrative operations, such as deleting people or operational systems, require the `Administrator` role. For local development, authentication configuration is stored using ASP.NET Core User Secrets rather than committed to source control. A separate token-generator project is included for generating development tokens.
+
+## Data Access
+
+Entity Framework Core is used for data access, along with a SQL Server database. Database schema changes are managed through Entity Framework Core migrations. The service layer uses Entity Framework Core for querying and saving data, keeping database operations separate from the controllers.
+
+## Testing
+
+The project includes automated unit and integration tests using xUnit. Unit tests cover the service layer and its business logic. Integration tests exercise the API through HTTP requests, including authentication, authorization, validation, and error handling. Tests use an isolated in-memory SQLite database so they can run without requiring a separate database server.
+
+## Running Locally
+
+The application is configured to run locally using SQL Server LocalDB.
+
+Before running the API:
+
+1. Configure the required database connection settings.
+1. Apply the Entity Framework Core migrations to create the database.
+1. Configure the JWT settings using ASP.NET Core User Secrets.
+1. Start the API.
+1. Use Swagger to interact with the API and test authenticated endpoints.
+
+A separate token-generator project is included in the repository for generating development JWTs. The generated token can be entered into Swagger's authorization dialog to access protected endpoints.
