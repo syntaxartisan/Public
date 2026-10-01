@@ -69,11 +69,11 @@ The project includes automated unit and integration tests using xUnit. Unit test
 
 The application is configured to run locally using SQL Server LocalDB. A separate token-generator project is included in the repository for generating access tokens (JWTs). The generated token can be entered into Swagger's authorization dialog to access protected endpoints.
 
-Follow these steps to run the project on your local machine. Commands listed below are run using Powershell.
+Follow these steps to run the project on your local machine. Commands listed below are run using PowerShell.
 
-1. Clone the repository.
+1. Clone the repository and open the solution in Visual Studio.
 1. Install SQL Server LocalDB.
-1. Apply the Entity Framework Core migrations to the database schema.
+1. Apply the Entity Framework Core migrations to the database.
    1. Install the Entity Framework Core CLI tool with `dotnet tool install --global dotnet-ef`.
    2. From the OperationsKnowledge project directory, run `dotnet ef database update`.
 1. Configure the JWT signing key.
