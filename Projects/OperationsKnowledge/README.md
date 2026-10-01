@@ -83,7 +83,7 @@ Follow these steps to run the project on your local machine. Commands listed bel
    1. Generate a signing key using command `[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))`
    2. From the OperationsKnowledge project directory, run `dotnet user-secrets set "Jwt:Key" "<generated signing key>"`
    3. From the OperationsKnowledge.TokenGenerator project directory, run `dotnet user-secrets set "Jwt:Key" "<generated signing key>"`
-   4. Enter the same key for both projects.
+   4. Use the same key for both projects.
 1. Generate an access token.
    1. Run the project `OperationsKnowledge.TokenGenerator` from Visual Studio.
    2. Tokens are generated and displayed in command line output.
