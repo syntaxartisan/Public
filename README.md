@@ -12,4 +12,4 @@ This folder contains various C# projects that I've built.
 
 ### Scripts
 
-This folder contains various Powershell scripts and SQL samples that I've built.
+This folder contains various PowerShell scripts and SQL samples that I've built.
