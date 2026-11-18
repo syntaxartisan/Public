@@ -28,7 +28,7 @@ The application follows a layered architecture that separates HTTP handling, bus
 
 ## API
 
-The API exposes endpoints for managing various entities such as people and operational systems. Additional entity types can be added as the application grows.
+The API exposes endpoints for managing various entities such as people and operational systems. Additional entity types can be added as the application grows. Here are the current endpoints.
 
 ### People
 
